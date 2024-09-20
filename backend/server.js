@@ -22,5 +22,5 @@ app.use('/api/v1/recurring-bills', recurringBillsRouter);
 
 // listen for requests
 app.listen(process.env.PORT, () => {
-  console.log('listening on port 4000..');
+  console.log(`listening on port ${process.env.PORT}..`);
 });
