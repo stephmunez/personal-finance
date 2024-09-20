@@ -11,6 +11,7 @@ const recurringBillsRouter = require('./routes/recurring-bills');
 const app = express();
 
 // middleware
+app.use(express.json());
 app.use(morgan('dev'));
 
 // routes
