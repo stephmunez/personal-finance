@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
     const transaction = await Transaction.create(req.body);
     res.status(StatusCodes.OK).send(transaction);
   } catch (error) {
-    console.log(error);
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
 });
 

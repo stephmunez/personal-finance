@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
     const pot = await Pot.create(req.body);
     res.status(StatusCodes.OK).send(pot);
   } catch (error) {
-    console.log(error);
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
 });
 
