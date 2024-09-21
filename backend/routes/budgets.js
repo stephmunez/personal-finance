@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const Budget = require('../models/Budget');
+const { StatusCodes } = require('http-status-codes');
 
 // Get all budgets
 router.get('/', (req, res) => {
@@ -17,8 +19,13 @@ router.get('/:id/transactions', (req, res) => {
 });
 
 // Create a new budget
-router.post('/', (req, res) => {
-  res.send('Create a new budget');
+router.post('/', async (req, res) => {
+  try {
+    const budget = await Budget.create(req.body);
+    res.status(StatusCodes.OK).send(budget);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // Update an existing budget by ID

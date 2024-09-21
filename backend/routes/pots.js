@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const Pot = require('../models/Pot');
+const { StatusCodes } = require('http-status-codes');
 
 // Get all pots
 router.get('/', (req, res) => {
@@ -12,8 +14,13 @@ router.get('/:id', (req, res) => {
 });
 
 // Create a new pot
-router.post('/', (req, res) => {
-  res.send('Create a new pot');
+router.post('/', async (req, res) => {
+  try {
+    const pot = await Pot.create(req.body);
+    res.status(StatusCodes.OK).send(pot);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // Add money to a pot
