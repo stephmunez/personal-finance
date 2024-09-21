@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const Transaction = require('../models/Transaction');
+const { StatusCodes } = require('http-status-codes');
 
 router.get('/', (req, res) => {
   res.send('Get all transactions');
@@ -9,8 +11,13 @@ router.get('/search', (req, res) => {
   res.send('Search and filter transactions');
 });
 
-router.post('/', (req, res) => {
-  res.send('Create a new transaction');
+router.post('/', async (req, res) => {
+  try {
+    const transaction = await Transaction.create(req.body);
+    res.status(StatusCodes.OK).send(transaction);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.patch('/:id', (req, res) => {
