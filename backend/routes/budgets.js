@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     const budget = await Budget.create(req.body);
     res.status(StatusCodes.OK).send(budget);
   } catch (error) {
-    console.log(error);
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
 });
 
