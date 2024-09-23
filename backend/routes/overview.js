@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const { getOverview } = require('../controllers/overview');
 
-router.get('/', (req, res) => {
-  res.send('this is the overview route');
-});
+router.get('/', getOverview);
 
 module.exports = router;
