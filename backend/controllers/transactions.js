@@ -14,8 +14,15 @@ const getTransactions = async (req, res) => {
 
 const getTransaction = async (req, res) => {
   try {
-    const { params } = req;
-    const transaction = await Transaction.findOne({ _id: params.id });
+    const { id } = req.params;
+    const transaction = await Transaction.findOne({ _id: id });
+
+    if (!transaction) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ error: `No job with id ${id}` });
+    }
+
     res.status(StatusCodes.OK).send(transaction);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -23,9 +30,8 @@ const getTransaction = async (req, res) => {
 };
 
 const createTransaction = async (req, res) => {
-  const { body } = req;
   try {
-    const transaction = await Transaction.create(body);
+    const transaction = await Transaction.create(req.body);
     res.status(StatusCodes.OK).send(transaction);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -33,10 +39,10 @@ const createTransaction = async (req, res) => {
 };
 
 const updateTransaction = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
     const transaction = await Transaction.findOneAndUpdate(
-      { _id: params.id },
+      { _id: id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -47,10 +53,10 @@ const updateTransaction = async (req, res) => {
 };
 
 const deleteTransaction = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
     const transaction = await Transaction.findOneAndDelete({
-      _id: params.id,
+      _id: id,
     });
     res.status(StatusCodes.OK).send();
   } catch (error) {
