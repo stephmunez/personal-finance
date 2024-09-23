@@ -1,31 +1,35 @@
+const mongoose = require('mongoose');
 const Transaction = require('../models/Transaction');
 const { StatusCodes } = require('http-status-codes');
 
 const getTransactions = async (req, res) => {
-  try {
-    const transactions = await Transaction.find({});
-    res
-      .status(StatusCodes.OK)
-      .send({ transactions, count: transactions.length });
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).send({ message: error.message });
-  }
+  const transactions = await Transaction.find({}).sort({ createdAt: -1 });
+  res.status(StatusCodes.OK).send({ transactions, count: transactions.length });
 };
 
 const getTransaction = async (req, res) => {
-  try {
-    const { params } = req;
-    const transaction = await Transaction.findOne({ _id: params.id });
-    res.status(StatusCodes.OK).send(transaction);
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No transaction with id ${id}` });
   }
+
+  const transaction = await Transaction.findOne({ _id: id });
+
+  if (!transaction) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No job with id ${id}` });
+  }
+
+  res.status(StatusCodes.OK).send(transaction);
 };
 
 const createTransaction = async (req, res) => {
-  const { body } = req;
   try {
-    const transaction = await Transaction.create(body);
+    const transaction = await Transaction.create(req.body);
     res.status(StatusCodes.OK).send(transaction);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -33,10 +37,10 @@ const createTransaction = async (req, res) => {
 };
 
 const updateTransaction = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
     const transaction = await Transaction.findOneAndUpdate(
-      { _id: params.id },
+      { _id: id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -47,10 +51,10 @@ const updateTransaction = async (req, res) => {
 };
 
 const deleteTransaction = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
     const transaction = await Transaction.findOneAndDelete({
-      _id: params.id,
+      _id: id,
     });
     res.status(StatusCodes.OK).send();
   } catch (error) {

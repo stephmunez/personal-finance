@@ -1,29 +1,35 @@
+const mongoose = require('mongoose');
 const Budget = require('../models/Budget');
 const { StatusCodes } = require('http-status-codes');
 
 const getBudgets = async (req, res) => {
-  try {
-    const budgets = await Budget.find({});
-    res.status(StatusCodes.OK).send({ budgets, count: budgets.length });
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).send({ message: error.message });
-  }
+  const budgets = await Budget.find({}).sort({ createdAt: -1 });
+  res.status(StatusCodes.OK).send({ budgets, count: budgets.length });
 };
 
 const getBudget = async (req, res) => {
-  try {
-    const { params } = req;
-    const budget = await Budget.findOne({ _id: params.id });
-    res.status(StatusCodes.OK).send(budget);
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No budget with id ${id}` });
   }
+
+  const budget = await Budget.findOne({ _id: id });
+
+  if (!budget) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No job with id ${id}` });
+  }
+
+  res.status(StatusCodes.OK).send(budget);
 };
 
 const createBudget = async (req, res) => {
-  const { body } = req;
   try {
-    const budget = await Budget.create(body);
+    const budget = await Budget.create(req.body);
     res.status(StatusCodes.OK).send(budget);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -31,9 +37,9 @@ const createBudget = async (req, res) => {
 };
 
 const updateBudget = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
-    const budget = await Budget.findOneAndUpdate({ _id: params.id }, req.body, {
+    const budget = await Budget.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
       runValidators: true,
     });
@@ -44,10 +50,10 @@ const updateBudget = async (req, res) => {
 };
 
 const deleteBudget = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
     const budget = await Budget.findOneAndDelete({
-      _id: params.id,
+      _id: id,
     });
     res.status(StatusCodes.OK).send();
   } catch (error) {
