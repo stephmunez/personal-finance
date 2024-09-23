@@ -11,4 +11,13 @@ const getTransactions = async (req, res) => {
   }
 };
 
-module.exports = { getTransactions };
+const createTransaction = async (req, res) => {
+  try {
+    const transaction = await Transaction.create(req.body);
+    res.status(StatusCodes.OK).send(transaction);
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  }
+};
+
+module.exports = { getTransactions, createTransaction };
