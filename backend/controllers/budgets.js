@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Budget = require('../models/Budget');
 const { StatusCodes } = require('http-status-codes');
 
@@ -11,20 +12,23 @@ const getBudgets = async (req, res) => {
 };
 
 const getBudget = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const budget = await Budget.findOne({ _id: id });
+  const { id } = req.params;
 
-    if (!budget) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ error: `No job with id ${id}` });
-    }
-
-    res.status(StatusCodes.OK).send(budget);
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No budget with id ${id}` });
   }
+
+  const budget = await Budget.findOne({ _id: id });
+
+  if (!budget) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No job with id ${id}` });
+  }
+
+  res.status(StatusCodes.OK).send(budget);
 };
 
 const createBudget = async (req, res) => {

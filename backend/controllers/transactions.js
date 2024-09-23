@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Transaction = require('../models/Transaction');
 const { StatusCodes } = require('http-status-codes');
 
@@ -13,20 +14,23 @@ const getTransactions = async (req, res) => {
 };
 
 const getTransaction = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const transaction = await Transaction.findOne({ _id: id });
+  const { id } = req.params;
 
-    if (!transaction) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .send({ error: `No job with id ${id}` });
-    }
-
-    res.status(StatusCodes.OK).send(transaction);
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No transaction with id ${id}` });
   }
+
+  const transaction = await Transaction.findOne({ _id: id });
+
+  if (!transaction) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No job with id ${id}` });
+  }
+
+  res.status(StatusCodes.OK).send(transaction);
 };
 
 const createTransaction = async (req, res) => {
