@@ -3,12 +3,8 @@ const Budget = require('../models/Budget');
 const { StatusCodes } = require('http-status-codes');
 
 const getBudgets = async (req, res) => {
-  try {
-    const budgets = await Budget.find({});
-    res.status(StatusCodes.OK).send({ budgets, count: budgets.length });
-  } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).send({ message: error.message });
-  }
+  const budgets = await Budget.find({}).sort({ createdAt: -1 });
+  res.status(StatusCodes.OK).send({ budgets, count: budgets.length });
 };
 
 const getBudget = async (req, res) => {
