@@ -20,4 +20,33 @@ const createTransaction = async (req, res) => {
   }
 };
 
-module.exports = { getTransactions, createTransaction };
+const updateTransaction = async (req, res) => {
+  try {
+    const transaction = await Transaction.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    res.status(StatusCodes.OK).send({ transaction });
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  }
+};
+
+const deleteTransaction = async (req, res) => {
+  try {
+    const transaction = await Transaction.findOneAndDelete({
+      _id: req.params.id,
+    });
+    res.status(StatusCodes.OK).send();
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  }
+};
+
+module.exports = {
+  getTransactions,
+  createTransaction,
+  updateTransaction,
+  deleteTransaction,
+};
