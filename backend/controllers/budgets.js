@@ -12,8 +12,8 @@ const getBudgets = async (req, res) => {
 
 const getBudget = async (req, res) => {
   try {
-    const { params } = req;
-    const budget = await Budget.findOne({ _id: params.id });
+    const { id } = req.params;
+    const budget = await Budget.findOne({ _id: id });
     res.status(StatusCodes.OK).send(budget);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -21,9 +21,8 @@ const getBudget = async (req, res) => {
 };
 
 const createBudget = async (req, res) => {
-  const { body } = req;
   try {
-    const budget = await Budget.create(body);
+    const budget = await Budget.create(req.body);
     res.status(StatusCodes.OK).send(budget);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -31,9 +30,9 @@ const createBudget = async (req, res) => {
 };
 
 const updateBudget = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
-    const budget = await Budget.findOneAndUpdate({ _id: params.id }, req.body, {
+    const budget = await Budget.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
       runValidators: true,
     });
@@ -44,10 +43,10 @@ const updateBudget = async (req, res) => {
 };
 
 const deleteBudget = async (req, res) => {
-  const { params } = req;
+  const { id } = req.params;
   try {
     const budget = await Budget.findOneAndDelete({
-      _id: params.id,
+      _id: id,
     });
     res.status(StatusCodes.OK).send();
   } catch (error) {
