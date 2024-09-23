@@ -6,7 +6,7 @@ const {
   createTransaction,
   updateTransaction,
   deleteTransaction,
-} = require('../controllers/transaction');
+} = require('../controllers/transactions');
 
 router.get('/', getTransactions);
 router.get('/:id', getTransaction);

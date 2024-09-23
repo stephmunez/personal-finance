@@ -45,7 +45,7 @@ const updateTransaction = async (req, res) => {
 };
 
 const deleteTransaction = async (req, res) => {
-  const params = req;
+  const { params } = req;
   try {
     const transaction = await Transaction.findOneAndDelete({
       _id: params.id,
