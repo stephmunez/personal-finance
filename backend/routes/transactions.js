@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Transaction = require('../models/Transaction');
-const { StatusCodes } = require('http-status-codes');
+const { getTransactions } = require('../controllers/transaction');
 
-router.get('/', (req, res) => {
-  res.send('Get all transactions');
-});
+router.get('/', getTransactions);
 
 router.get('/search', (req, res) => {
   res.send('Search and filter transactions');
