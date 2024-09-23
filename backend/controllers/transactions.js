@@ -4,7 +4,9 @@ const { StatusCodes } = require('http-status-codes');
 const getTransactions = async (req, res) => {
   try {
     const transactions = await Transaction.find({});
-    res.status(StatusCodes.OK).send(transactions);
+    res
+      .status(StatusCodes.OK)
+      .send({ transactions, count: transactions.length });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ message: error.message });
   }

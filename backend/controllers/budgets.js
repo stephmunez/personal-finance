@@ -4,7 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 const getBudgets = async (req, res) => {
   try {
     const budgets = await Budget.find({});
-    res.status(StatusCodes.OK).send(budgets);
+    res.status(StatusCodes.OK).send({ budgets, count: budgets.length });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ message: error.message });
   }
