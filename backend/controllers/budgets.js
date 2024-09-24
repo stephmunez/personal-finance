@@ -38,6 +38,13 @@ const createBudget = async (req, res) => {
 
 const updateBudget = async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No budget with id ${id}` });
+  }
+
   try {
     const budget = await Budget.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
@@ -51,6 +58,13 @@ const updateBudget = async (req, res) => {
 
 const deleteBudget = async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No budget with id ${id}` });
+  }
+
   try {
     const budget = await Budget.findOneAndDelete({
       _id: id,
