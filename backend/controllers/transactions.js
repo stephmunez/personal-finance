@@ -51,6 +51,13 @@ const updateTransaction = async (req, res) => {
       req.body,
       { new: true, runValidators: true }
     );
+
+    if (!transaction) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .send({ error: `No job with id ${id}` });
+    }
+
     res.status(StatusCodes.OK).send({ transaction });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -70,7 +77,14 @@ const deleteTransaction = async (req, res) => {
     const transaction = await Transaction.findOneAndDelete({
       _id: id,
     });
-    res.status(StatusCodes.OK).send();
+
+    if (!transaction) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .send({ error: `No job with id ${id}` });
+    }
+
+    res.status(StatusCodes.OK).send(transaction);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
