@@ -38,6 +38,13 @@ const createTransaction = async (req, res) => {
 
 const updateTransaction = async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No transaction with id ${id}` });
+  }
+
   try {
     const transaction = await Transaction.findOneAndUpdate(
       { _id: id },
@@ -52,6 +59,13 @@ const updateTransaction = async (req, res) => {
 
 const deleteTransaction = async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No transaction with id ${id}` });
+  }
+
   try {
     const transaction = await Transaction.findOneAndDelete({
       _id: id,

@@ -38,6 +38,13 @@ const createPot = async (req, res) => {
 
 const updatePot = async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No pot with id ${id}` });
+  }
+
   try {
     const pot = await Pot.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
@@ -51,6 +58,13 @@ const updatePot = async (req, res) => {
 
 const deletePot = async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ error: `No pot with id ${id}` });
+  }
+
   try {
     const pot = await Pot.findOneAndDelete({
       _id: id,
