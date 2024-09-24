@@ -3,8 +3,62 @@ const Transaction = require('../models/Transaction');
 const { StatusCodes } = require('http-status-codes');
 
 const getTransactions = async (req, res) => {
-  const transactions = await Transaction.find({}).sort({ createdAt: -1 });
-  res.status(StatusCodes.OK).send({ transactions, count: transactions.length });
+  const { search, category, sort } = req.query;
+
+  const queryObject = {};
+
+  if (search) {
+    queryObject.name = { $regex: search, $options: 'i' };
+  }
+
+  if (category && category !== 'All') {
+    queryObject.category = category;
+  }
+
+  let sortOption = {};
+  switch (sort) {
+    case 'Latest':
+      sortOption = { date: -1 };
+      break;
+    case 'Oldest':
+      sortOption = { date: 1 };
+      break;
+    case 'A-Z':
+      sortOption = { name: 1 };
+      break;
+    case 'Z-A':
+      sortOption = { name: -1 };
+      break;
+    case 'Highest':
+      sortOption = { amount: -1 };
+      break;
+    case 'Lowest':
+      sortOption = { amount: 1 };
+      break;
+    default:
+      sortOption = { createdAt: -1 };
+  }
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  try {
+    const transactions = await Transaction.find(queryObject)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+
+    const totalTransactions = await Transaction.countDocuments(queryObject);
+
+    res.status(StatusCodes.OK).send({
+      transactions,
+      count: transactions.length,
+      totalPages: Math.ceil(totalTransactions / limit),
+    });
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  }
 };
 
 const getTransaction = async (req, res) => {
