@@ -69,7 +69,14 @@ const deletePot = async (req, res) => {
     const pot = await Pot.findOneAndDelete({
       _id: id,
     });
-    res.status(StatusCodes.OK).send();
+
+    if (!pot) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .send({ error: `No job with id ${id}` });
+    }
+
+    res.status(StatusCodes.OK).send(pot);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }

@@ -69,7 +69,14 @@ const deleteBudget = async (req, res) => {
     const budget = await Budget.findOneAndDelete({
       _id: id,
     });
-    res.status(StatusCodes.OK).send();
+
+    if (!budget) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .send({ error: `No job with id ${id}` });
+    }
+
+    res.status(StatusCodes.OK).send(budget);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
