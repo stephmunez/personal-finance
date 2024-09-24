@@ -50,6 +50,13 @@ const updateBudget = async (req, res) => {
       new: true,
       runValidators: true,
     });
+
+    if (!budget) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .send({ error: `No job with id ${id}` });
+    }
+
     res.status(StatusCodes.OK).send({ budget });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
