@@ -53,7 +53,7 @@ const getTransactions = async (req, res) => {
 
     res.status(StatusCodes.OK).send({
       transactions,
-      count: transactions.length,
+      count: totalTransactions,
       totalPages: Math.ceil(totalTransactions / limit),
     });
   } catch (error) {
