@@ -50,12 +50,12 @@ const MobileNav = () => {
     <nav className="fixed bottom-0 left-0 w-full rounded-t-lg bg-grey-900 px-4 pt-2">
       <ul className="flex items-center justify-between">
         {navItems.map(({ path, icon, activeIcon, alt }) => (
-          <li className="max-w-16 flex-1" key={path}>
+          <li className="max-w-28 flex-1" key={path}>
             <Link
               to={path}
               className={`flex h-11 w-full items-center justify-center rounded-t-lg transition-colors ${
                 location.pathname === path
-                  ? "border- border-b-4 border-solid border-green bg-beige-100 transition-none"
+                  ? "border-b-4 border-solid border-green bg-beige-100 transition-none"
                   : "bg-grey-900"
               }`}
             >
