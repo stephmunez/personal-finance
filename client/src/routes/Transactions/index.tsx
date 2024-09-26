@@ -18,10 +18,8 @@ const Transactions = () => {
       const response = await fetch("http://localhost:4000/api/v1/transactions");
       const data = await response.json();
 
-      console.log(data);
-
       if (response.ok) {
-        setTransactions(data.transactions); // Access data.transactions array
+        setTransactions(data.transactions);
       }
     };
 

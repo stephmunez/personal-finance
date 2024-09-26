@@ -1,8 +1,10 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet } from "react-router-dom";
+import MobileNav from "../components/MobileNav";
 
 const Root = () => {
   return (
     <>
+      <MobileNav />
       <Outlet />
     </>
   );
