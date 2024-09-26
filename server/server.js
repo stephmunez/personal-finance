@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const cors = require('cors');
 const overviewRouter = require('./routes/overview.js');
 const balanceRouter = require('./routes/balance.js');
 const transactionsRouter = require('./routes/transactions');
@@ -15,6 +16,7 @@ const app = express();
 // middleware
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(cors());
 
 // routes
 app.use('/api/v1/overview', overviewRouter);
