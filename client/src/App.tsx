@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Budgets from "./routes/Budgets";
 import Home from "./routes/Home";
+import Pots from "./routes/Pots";
 import Root from "./routes/root";
 import Transactions from "./routes/Transactions";
 
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/budgets",
         element: <Budgets />,
+      },
+      {
+        path: "/pots",
+        element: <Pots />,
       },
     ],
   },
