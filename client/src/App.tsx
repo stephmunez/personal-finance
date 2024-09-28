@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Budgets from "./routes/Budgets";
 import Home from "./routes/Home";
 import Pots from "./routes/Pots";
+import RecurringBills from "./routes/RecurringBills";
 import Root from "./routes/root";
 import Transactions from "./routes/Transactions";
 
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "/pots",
         element: <Pots />,
+      },
+      {
+        path: "/recurring-bills",
+        element: <RecurringBills />,
       },
     ],
   },
