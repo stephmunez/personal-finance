@@ -1,6 +1,9 @@
-import { styled } from "@mui/material/styles";
 import usePagination from "@mui/material/usePagination";
 import { useEffect, useState } from "react";
+import iconFilterMobile from "../../assets/images/icon-filter-mobile.svg";
+import iconSearch from "../../assets/images/icon-search.svg";
+import iconSortMobile from "../../assets/images/icon-sort-mobile.svg";
+import CustomSelect from "../../components/CustomSelect";
 
 interface Transaction {
   _id: string;
@@ -12,13 +15,6 @@ interface Transaction {
   recurring: boolean;
 }
 
-const List = styled("ul")({
-  listStyle: "none",
-  padding: 0,
-  margin: 0,
-  display: "flex",
-});
-
 const Transactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -26,6 +22,7 @@ const Transactions = () => {
   const [sortOption, setSortOption] = useState<string>("Latest");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [openSelect, setOpenSelect] = useState<string | null>(null);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -59,88 +56,131 @@ const Transactions = () => {
     onChange: (_, page) => setCurrentPage(page),
   });
 
+  const handleToggle = (selectName: string) => {
+    setOpenSelect((prev) => (prev === selectName ? null : selectName));
+  };
+
   return (
-    <main>
-      <div>
-        <input
-          type="text"
-          placeholder="Search by name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <select
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          value={categoryFilter}
-        >
-          <option value="All">All</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Bills">Bills</option>
-          <option value="Groceries">Groceries</option>
-          <option value="Dining Out">Dining Out</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Personal Care">Personal Care</option>
-          <option value="Education">Education</option>
-          <option value="Lifestyle">Lifestyle</option>
-          <option value="Shopping">Shopping</option>
-          <option value="General">General</option>
-        </select>
-        <select
-          onChange={(e) => setSortOption(e.target.value)}
-          value={sortOption}
-        >
-          <option value="Latest">Latest</option>
-          <option value="Oldest">Oldest</option>
-          <option value="A-Z">A-Z</option>
-          <option value="Z-A">Z-A</option>
-          <option value="Highest">Highest</option>
-          <option value="Lowest">Lowest</option>
-        </select>
-      </div>
+    <main className="flex flex-col gap-8 px-4 pb-20 pt-6">
+      <h1 className="my-2 text-[2rem] font-bold leading-[1.20] tracking-normal">
+        Transactions
+      </h1>
+      <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
+        <div className="flex items-center justify-between">
+          <div className="relative w-[71%]">
+            <img
+              src={iconSearch}
+              alt="Search"
+              className="absolute right-5 top-1/2 -translate-y-1/2 transform"
+            />
+            <input
+              type="text"
+              placeholder="Search transaction"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-lg border border-solid border-beige-500 px-5 py-3 text-[0.875rem] leading-normal text-grey-900 outline-none placeholder:text-beige-500"
+            />
+          </div>
+          <div className="flex items-center gap-6">
+            <CustomSelect
+              options={[
+                "All",
+                "Entertainment",
+                "Bills",
+                "Groceries",
+                "Dining Out",
+                "Transportation",
+                "Personal Care",
+                "Education",
+                "Lifestyle",
+                "Shopping",
+                "General",
+              ]}
+              value={categoryFilter}
+              onChange={setCategoryFilter}
+              placeholder="Select category"
+              placeholderImage={iconFilterMobile}
+              isOpen={openSelect === "category"}
+              setIsOpen={() => handleToggle("category")}
+            />
 
-      {transactions.map((transaction) => (
-        <div key={transaction._id}>
-          {/* <img src={transaction.avatar} alt={transaction.name} /> */}
-          <p>{transaction.name}</p>
-          <p>{transaction.category}</p>
-          <p>{new Date(transaction.date).toLocaleDateString()}</p>
-          <p>{transaction.amount}</p>
-          <p>{transaction.recurring ? "Recurring" : "One-time"}</p>
+            <CustomSelect
+              options={["Latest", "Oldest", "A-Z", "Z-A", "Highest", "Lowest"]}
+              value={sortOption}
+              onChange={setSortOption}
+              placeholder="Sort by"
+              placeholderImage={iconSortMobile}
+              isOpen={openSelect === "sort"}
+              setIsOpen={() => handleToggle("sort")}
+            />
+          </div>
         </div>
-      ))}
 
-      <nav>
-        <List>
-          {items.map(({ page, type, selected, ...item }, index) => {
-            let children = null;
+        <ul>
+          {transactions.map((transaction) => (
+            <li key={transaction._id}>
+              {/* <img src={transaction.avatar} alt={transaction.name} /> */}
+              <p>{transaction.name}</p>
+              <p>{transaction.category}</p>
+              <p>{new Date(transaction.date).toLocaleDateString()}</p>
+              <p>{transaction.amount}</p>
+              <p>{transaction.recurring ? "Recurring" : "One-time"}</p>
+            </li>
+          ))}
+        </ul>
 
-            if (type === "start-ellipsis" || type === "end-ellipsis") {
-              children = "…";
-            } else if (type === "page") {
-              children = (
-                <button
-                  type="button"
-                  className={`${selected ? "font-bold" : ""}`}
-                  onClick={() => {
-                    if (page !== null) {
-                      setCurrentPage(page);
-                    }
-                  }}
-                >
-                  {page}
-                </button>
-              );
-            } else {
-              children = (
-                <button type="button" {...item}>
-                  {type}
-                </button>
-              );
-            }
+        <nav>
+          <ul className="flex items-center justify-between">
+            <li>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+            </li>
 
-            return <li key={index}>{children}</li>;
-          })}
-        </List>
-      </nav>
+            <div className="flex flex-1 justify-center">
+              {items.map(({ page, type, selected, ...item }, index) => {
+                let children = null;
+
+                if (type === "start-ellipsis" || type === "end-ellipsis") {
+                  children = "…";
+                } else if (type === "page") {
+                  children = (
+                    <button
+                      type="button"
+                      className={`${selected ? "font-bold" : ""}`}
+                      onClick={() => {
+                        if (page !== null) {
+                          setCurrentPage(page);
+                        }
+                      }}
+                    >
+                      {page}
+                    </button>
+                  );
+                }
+
+                return <li key={index}>{children}</li>;
+              })}
+            </div>
+
+            <li>
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </main>
   );
 };
