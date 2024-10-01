@@ -1,18 +1,33 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Home from './routes/Home';
-import Root from './routes/root';
-import Transactions from './routes/Transactions';
+import Budgets from "./routes/Budgets";
+import Home from "./routes/Home";
+import Pots from "./routes/Pots";
+import RecurringBills from "./routes/RecurringBills";
+import Root from "./routes/root";
+import Transactions from "./routes/Transactions";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Root />,
     children: [
       { index: true, element: <Home /> },
       {
-        path: '/transactions',
+        path: "/transactions",
         element: <Transactions />,
+      },
+      {
+        path: "/budgets",
+        element: <Budgets />,
+      },
+      {
+        path: "/pots",
+        element: <Pots />,
+      },
+      {
+        path: "/recurring-bills",
+        element: <RecurringBills />,
       },
     ],
   },
