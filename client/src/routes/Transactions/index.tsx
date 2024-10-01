@@ -1,5 +1,7 @@
 import usePagination from "@mui/material/usePagination";
 import { useEffect, useState } from "react";
+import iconCaretLeft from "../../assets/images/icon-caret-left.svg";
+import iconCaretRight from "../../assets/images/icon-caret-right.svg";
 import iconFilterMobile from "../../assets/images/icon-filter-mobile.svg";
 import iconSearch from "../../assets/images/icon-search.svg";
 import iconSortMobile from "../../assets/images/icon-sort-mobile.svg";
@@ -163,13 +165,14 @@ const Transactions = () => {
                 type="button"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
+                className="mr-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500"
               >
-                Previous
+                <img src={iconCaretLeft} alt="icon caret left" />
               </button>
             </li>
 
-            <div className="flex flex-1 justify-center">
-              {items.map(({ page, type, selected, ...item }, index) => {
+            <div className="flex flex-1 justify-center gap-2">
+              {items.map(({ page, type, selected }, index) => {
                 let children = null;
 
                 if (type === "start-ellipsis" || type === "end-ellipsis") {
@@ -178,7 +181,7 @@ const Transactions = () => {
                   children = (
                     <button
                       type="button"
-                      className={`${selected ? "font-bold" : ""}`}
+                      className={`flex h-10 w-10 items-center justify-center rounded-lg border-solid border-beige-500 text-[0.875rem] leading-normal tracking-normal ${index === 0 || index === items.length - 1 ? "hidden" : ""} ${selected ? "border-none bg-black text-white" : "border text-grey-900"}`}
                       onClick={() => {
                         if (page !== null) {
                           setCurrentPage(page);
@@ -201,8 +204,9 @@ const Transactions = () => {
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
+                className="ml-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500"
               >
-                Next
+                <img src={iconCaretRight} alt="icon caret right" />
               </button>
             </li>
           </ul>
