@@ -1,5 +1,5 @@
 import usePagination from "@mui/material/usePagination";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import iconCaretLeft from "../../assets/images/icon-caret-left.svg";
 import iconCaretRight from "../../assets/images/icon-caret-right.svg";
 import iconFilterMobile from "../../assets/images/icon-filter-mobile.svg";
@@ -26,6 +26,7 @@ const Transactions = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [openSelect, setOpenSelect] = useState<string | null>(null);
   const itemsPerPage = 10;
+  const mainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -62,8 +63,14 @@ const Transactions = () => {
     setOpenSelect((prev) => (prev === selectName ? null : selectName));
   };
 
+  const scrollToTop = () => {
+    if (mainRef.current) {
+      mainRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <main className="flex flex-col gap-8 px-4 pb-20 pt-6">
+    <main ref={mainRef} className="flex flex-col gap-8 px-4 pb-20 pt-6">
       <h1 className="my-2 text-[2rem] font-bold leading-[1.20] tracking-normal">
         Transactions
       </h1>
@@ -163,7 +170,13 @@ const Transactions = () => {
             <li>
               <button
                 type="button"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                onClick={() => {
+                  setCurrentPage((prev) => {
+                    const newPage = Math.min(prev - 1, totalPages);
+                    scrollToTop();
+                    return newPage;
+                  });
+                }}
                 disabled={currentPage === 1}
                 className="mr-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500"
               >
@@ -184,7 +197,10 @@ const Transactions = () => {
                       className={`flex h-10 w-10 items-center justify-center rounded-lg border-solid border-beige-500 text-[0.875rem] leading-normal tracking-normal ${index === 0 || index === items.length - 1 ? "hidden" : ""} ${selected ? "border-none bg-black text-white" : "border text-grey-900"}`}
                       onClick={() => {
                         if (page !== null) {
-                          setCurrentPage(page);
+                          setCurrentPage(() => {
+                            scrollToTop();
+                            return page;
+                          });
                         }
                       }}
                     >
@@ -200,9 +216,13 @@ const Transactions = () => {
             <li>
               <button
                 type="button"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
+                onClick={() => {
+                  setCurrentPage((prev) => {
+                    const newPage = Math.min(prev + 1, totalPages);
+                    scrollToTop();
+                    return newPage;
+                  });
+                }}
                 disabled={currentPage === totalPages}
                 className="ml-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500"
               >
