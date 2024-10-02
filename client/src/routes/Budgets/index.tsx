@@ -24,13 +24,18 @@ const Budgets = () => {
   }, []);
 
   return (
-    <main>
-      {budgets &&
-        budgets.map((budget) => (
-          <div key={budget._id}>
-            <p>{budget.category}</p>
-          </div>
-        ))}
+    <main className="flex w-full flex-col gap-8 px-4 py-6">
+      <div className="flex items-center justify-between">
+        <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
+          Budgets
+        </h1>
+        <button
+          type="button"
+          className="h-14 w-40 rounded-lg bg-black text-[0.875rem] font-bold leading-normal tracking-normal text-white"
+        >
+          + Add New Budget
+        </button>
+      </div>
     </main>
   );
 };
