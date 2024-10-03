@@ -47,7 +47,7 @@ const MobileNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full rounded-t-lg bg-grey-900 px-4 pt-2">
+    <nav className="fixed bottom-0 left-0 z-50 w-full rounded-t-lg bg-grey-900 px-4 pt-2">
       <ul className="flex items-center justify-between">
         {navItems.map(({ path, icon, activeIcon, alt }) => (
           <li className="max-w-28 flex-1" key={path}>
