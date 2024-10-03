@@ -1,5 +1,6 @@
+import { debounce } from "lodash";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsPagination from "../../components/TransactionsPagination";
@@ -11,7 +12,6 @@ const Transactions = () => {
   const navigate = useNavigate();
   const parsedParams = queryString.parse(location.search);
 
-  // Extract parameters or set default values
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>(
     parsedParams.search ? String(parsedParams.search) : "",
@@ -29,6 +29,15 @@ const Transactions = () => {
   const itemsPerPage = 10;
   const mainRef = useRef<HTMLDivElement>(null);
 
+  const [cache, setCache] = useState<
+    Map<string, { transactions: Transaction[]; totalPages: number }>
+  >(new Map());
+
+  const debouncedSetSearchQuery = useCallback(
+    debounce((query: string) => setSearchQuery(query), 300),
+    [],
+  );
+
   useEffect(() => {
     const fetchTransactions = async () => {
       const queryParams = new URLSearchParams({
@@ -39,19 +48,33 @@ const Transactions = () => {
         sort: sortOption,
       });
 
-      const response = await fetch(
-        `http://localhost:4000/api/v1/transactions?${queryParams}`,
-      );
-      const data = await response.json();
+      const cacheKey = queryParams.toString();
+      if (cache.has(cacheKey)) {
+        const cachedData = cache.get(cacheKey);
+        setTransactions(cachedData!.transactions);
+        setTotalPages(cachedData!.totalPages);
+      } else {
+        const response = await fetch(
+          `http://localhost:4000/api/v1/transactions?${queryParams}`,
+        );
+        const data = await response.json();
 
-      if (response.ok) {
-        setTransactions(data.transactions);
-        setTotalPages(data.totalPages);
+        if (response.ok) {
+          setTransactions(data.transactions);
+          setTotalPages(data.totalPages);
+          // Cache the response
+          setCache((prevCache) =>
+            new Map(prevCache).set(cacheKey, {
+              transactions: data.transactions,
+              totalPages: data.totalPages,
+            }),
+          );
+        }
       }
     };
 
     fetchTransactions();
-  }, [currentPage, searchQuery, categoryFilter, sortOption]);
+  }, [currentPage, searchQuery, categoryFilter, sortOption, cache]);
 
   // Update the URL whenever state changes
   useEffect(() => {
@@ -90,7 +113,7 @@ const Transactions = () => {
       <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
         <TransactionSearchBar
           searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          setSearchQuery={debouncedSetSearchQuery} // Use debounced setter
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}
           sortOption={sortOption}
