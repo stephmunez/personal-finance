@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import iconCaretRight from "../../assets/images/icon-caret-right.svg";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
 
+// Interfaces for Budget and Transaction types
 interface Budget {
   _id: string;
   category: string;
@@ -13,10 +14,11 @@ interface Budget {
 interface Transaction {
   category: string;
   amount: number;
-  date: string; // Assuming the date is a string, you might need to adjust based on your data structure
-  name: string; // Assuming you have a name field for transactions
+  date: string;
+  name: string;
 }
 
+// Define order of categories for sorting budgets
 const categoryOrder = [
   "Entertainment",
   "Bills",
@@ -31,14 +33,16 @@ const categoryOrder = [
 ];
 
 const Budgets = () => {
+  // State to manage budgets, transactions, and total spent per category
   const [budgets, setBudgets] = useState<Budget[] | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalSpent, setTotalSpent] = useState<{ [key: string]: number }>({});
 
+  // Fetch budgets and transactions on component mount
   useEffect(() => {
     const fetchBudgetsAndTransactions = async () => {
       try {
-        // Fetch budgets
+        // Fetch and sort budgets by defined category order
         const budgetsResponse = await fetch(
           "http://localhost:4000/api/v1/budgets",
         );
@@ -55,29 +59,23 @@ const Budgets = () => {
           setBudgets(sortedBudgets);
         }
 
-        // Fetch transactions
+        // Fetch transactions and calculate total spent for each category
         const transactionsResponse = await fetch(
           "http://localhost:4000/api/v1/transactions",
         );
         const transactionsData = await transactionsResponse.json();
         if (transactionsResponse.ok) {
           const transactions = transactionsData.transactions;
-
-          // Calculate total spent for each category
           const spent = transactions.reduce(
             (acc: { [key: string]: number }, transaction: Transaction) => {
-              if (acc[transaction.category]) {
-                acc[transaction.category] += transaction.amount;
-              } else {
-                acc[transaction.category] = transaction.amount;
-              }
+              acc[transaction.category] =
+                (acc[transaction.category] || 0) + transaction.amount;
               return acc;
             },
             {},
           );
-
           setTotalSpent(spent);
-          setTransactions(transactions); // Store the transactions
+          setTransactions(transactions);
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -102,12 +100,13 @@ const Budgets = () => {
       </div>
       <div className="flex w-full flex-col gap-6">
         <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
-          <div>{/* pie chart goes here */}</div>
+          <div>{/* Pie chart placeholder */}</div>
           <div className="flex w-full flex-col gap-6">
             <h2 className="text-xl font-bold leading-[1.2] tracking-normal text-grey-900">
               Spending Summary
             </h2>
             <ul className="flex w-full flex-col gap-4">
+              {/* Display each budget category and spent amount */}
               {budgets &&
                 budgets.map((budget, i) => (
                   <li
@@ -145,9 +144,10 @@ const Budgets = () => {
           </div>
         </div>
         <div className="flex w-full flex-col gap-6">
+          {/* Display individual budget details and latest transactions */}
           {budgets &&
             budgets.map((budget) => {
-              // Filter the latest three transactions for this budget category
+              // Get the latest three transactions for this budget category
               const latestTransactions = transactions
                 .filter(
                   (transaction) => transaction.category === budget.category,
@@ -156,7 +156,7 @@ const Budgets = () => {
                   (a, b) =>
                     new Date(b.date).getTime() - new Date(a.date).getTime(),
                 )
-                .slice(0, 3); // Get the latest three transactions
+                .slice(0, 3);
 
               return (
                 <div
@@ -239,35 +239,29 @@ const Budgets = () => {
                       </Link>
                     </div>
                     <ul className="flex flex-col gap-3">
+                      {/* Display latest transactions */}
                       {latestTransactions.length > 0 ? (
                         latestTransactions.map((transaction) => (
                           <li
-                            key={transaction.name + transaction.date} // Use a unique key
-                            className={`flex w-full items-center justify-between border-b border-solid border-grey-500/15 pb-3`}
+                            key={transaction.name + transaction.date}
+                            className={`flex w-full items-center justify-between ${
+                              latestTransactions.indexOf(transaction) !==
+                              latestTransactions.length - 1
+                                ? "border-b border-solid border-grey-500/15 pb-3"
+                                : ""
+                            }`}
                           >
-                            <span className="text-xs font-bold leading-normal tracking-normal text-grey-900">
+                            <span className="text-[0.875rem] leading-normal tracking-normal text-grey-500">
                               {transaction.name}
                             </span>
-                            <div className="flex flex-col items-end gap-1">
-                              <span className="text-xs font-bold leading-normal tracking-normal text-grey-900">
-                                P{transaction.amount.toFixed(2)}
-                              </span>
-                              <span className="text-xs leading-normal tracking-normal text-grey-500">
-                                {new Date(transaction.date).toLocaleDateString(
-                                  "en-PH",
-                                  {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  },
-                                )}
-                              </span>
-                            </div>
+                            <span className="text-base font-bold tracking-normal text-grey-900">
+                              P{Math.abs(Number(transaction.amount)).toFixed(2)}
+                            </span>
                           </li>
                         ))
                       ) : (
-                        <li className="text-sm text-grey-500">
-                          No transactions
+                        <li className="text-center text-[0.875rem] leading-normal tracking-normal text-grey-500">
+                          No transactions yet.
                         </li>
                       )}
                     </ul>
