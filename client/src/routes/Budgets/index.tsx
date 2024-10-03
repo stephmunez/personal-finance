@@ -39,8 +39,41 @@ const Budgets = () => {
         </button>
       </div>
       <div className="flex w-full flex-col gap-6">
-        <div>
-          <h2>Spending Summary</h2>
+        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
+          <div>{/* pie chart goes here */}</div>
+          <div className="flex w-full flex-col gap-6">
+            <h2 className="text-xl font-bold leading-[1.2] tracking-normal text-grey-900">
+              Spending Summary
+            </h2>
+            <ul className="flex w-full flex-col gap-4">
+              {budgets &&
+                budgets.map((budget, i) => (
+                  <li
+                    key={budget._id}
+                    className={`b flex w-full items-center justify-between ${i !== budgets.length - 1 ? "border-b border-solid border-grey-500/15 pb-4" : ""}`}
+                  >
+                    <div className="relative flex items-center pl-5">
+                      <span
+                        className="absolute left-0 right-0 h-full w-1 rounded-lg"
+                        style={{ backgroundColor: budget.theme }}
+                      ></span>
+                      <span className="text-[0.875rem] leading-normal tracking-normal text-grey-500">
+                        {budget.category}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-bold tracking-normal text-grey-900">
+                        P250.00
+                      </span>
+                      <span className="text-xs leading-normal tracking-normal text-grey-500">
+                        of P750.00
+                      </span>
+                    </div>
+                  </li>
+                ))}
+            </ul>
+          </div>
         </div>
         <div className="flex w-full flex-col gap-6">
           {budgets &&
