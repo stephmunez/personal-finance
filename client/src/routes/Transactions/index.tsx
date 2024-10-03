@@ -1,5 +1,6 @@
+import { debounce } from "lodash";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsPagination from "../../components/TransactionsPagination";
@@ -7,11 +8,12 @@ import TransactionSearchBar from "../../components/TransactionsSearchBar";
 import { Transaction } from "../../types/Transaction";
 
 const Transactions = () => {
+  // Hooks to get location and navigation functions from React Router
   const location = useLocation();
   const navigate = useNavigate();
   const parsedParams = queryString.parse(location.search);
 
-  // Extract parameters or set default values
+  // State for managing transactions and filters
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>(
     parsedParams.search ? String(parsedParams.search) : "",
@@ -27,8 +29,22 @@ const Transactions = () => {
   );
   const [totalPages, setTotalPages] = useState<number>(1);
   const itemsPerPage = 10;
+
+  // Ref to manage scrolling
   const mainRef = useRef<HTMLDivElement>(null);
 
+  // Cache to store previously fetched results
+  const [cache, setCache] = useState<
+    Map<string, { transactions: Transaction[]; totalPages: number }>
+  >(new Map());
+
+  // Debounced function to update search query
+  const debouncedSetSearchQuery = useCallback(
+    debounce((query: string) => setSearchQuery(query), 300),
+    [],
+  );
+
+  // Fetch transactions based on filters
   useEffect(() => {
     const fetchTransactions = async () => {
       const queryParams = new URLSearchParams({
@@ -39,21 +55,39 @@ const Transactions = () => {
         sort: sortOption,
       });
 
-      const response = await fetch(
-        `http://localhost:4000/api/v1/transactions?${queryParams}`,
-      );
-      const data = await response.json();
+      const cacheKey = queryParams.toString();
 
-      if (response.ok) {
-        setTransactions(data.transactions);
-        setTotalPages(data.totalPages);
+      // Check if data is cached
+      if (cache.has(cacheKey)) {
+        const cachedData = cache.get(cacheKey);
+        setTransactions(cachedData!.transactions);
+        setTotalPages(cachedData!.totalPages);
+      } else {
+        // Fetch from API if not cached
+        const response = await fetch(
+          `http://localhost:4000/api/v1/transactions?${queryParams}`,
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setTransactions(data.transactions);
+          setTotalPages(data.totalPages);
+
+          // Cache the new data
+          setCache((prevCache) =>
+            new Map(prevCache).set(cacheKey, {
+              transactions: data.transactions,
+              totalPages: data.totalPages,
+            }),
+          );
+        }
       }
     };
 
     fetchTransactions();
-  }, [currentPage, searchQuery, categoryFilter, sortOption]);
+  }, [currentPage, searchQuery, categoryFilter, sortOption, cache]);
 
-  // Update the URL whenever state changes
+  // Sync state changes with the URL
   useEffect(() => {
     const params = {
       page: currentPage !== 1 ? currentPage.toString() : undefined,
@@ -76,6 +110,7 @@ const Transactions = () => {
     location.pathname,
   ]);
 
+  // Scroll to top of page
   const scrollToTop = () => {
     if (mainRef.current) {
       mainRef.current.scrollIntoView({ behavior: "smooth" });
@@ -90,7 +125,7 @@ const Transactions = () => {
       <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
         <TransactionSearchBar
           searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          setSearchQuery={debouncedSetSearchQuery}
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}
           sortOption={sortOption}
