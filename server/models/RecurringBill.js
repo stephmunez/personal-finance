@@ -11,6 +11,10 @@ const recurringBillSchema = new Schema(
       type: String,
       required: true,
     },
+    category: {
+      type: String,
+      required: true,
+    },
     amount: {
       type: Number,
       required: true,
@@ -27,6 +31,10 @@ const recurringBillSchema = new Schema(
       type: String,
       required: true,
       default: 'due',
+    },
+    transactionId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Transaction',
     },
   },
   { timestamps: true }

@@ -23,6 +23,10 @@ const transactionSchema = new Schema(
       type: Number,
       required: true,
     },
+    recurring: {
+      type: Boolean,
+      required: true,
+    },
   },
   { timestamps: true }
 );
