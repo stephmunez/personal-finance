@@ -20,11 +20,12 @@ const recurringBillSchema = new Schema(
       required: true,
     },
     dueDate: {
-      type: Date,
+      type: Number, // Represents day of the month for monthly, day number of the week for weekly/biweekly
       required: true,
     },
     frequency: {
       type: String,
+      enum: ['monthly', 'weekly', 'biweekly'],
       required: true,
     },
     status: {
