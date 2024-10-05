@@ -20,7 +20,7 @@ const recurringBillSchema = new Schema(
       required: true,
     },
     dueDate: {
-      type: Number, // Represents day of the month for monthly, day number of the week for weekly/biweekly
+      type: Number,
       required: true,
     },
     frequency: {
@@ -33,9 +33,9 @@ const recurringBillSchema = new Schema(
       required: true,
       default: 'due',
     },
-    transactionId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Transaction',
+    startDate: {
+      type: Date,
+      required: true,
     },
   },
   { timestamps: true }
