@@ -20,11 +20,12 @@ const recurringBillSchema = new Schema(
       required: true,
     },
     dueDate: {
-      type: Date,
+      type: Number,
       required: true,
     },
     frequency: {
       type: String,
+      enum: ['monthly', 'weekly', 'biweekly'],
       required: true,
     },
     status: {
@@ -32,9 +33,9 @@ const recurringBillSchema = new Schema(
       required: true,
       default: 'due',
     },
-    transactionId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Transaction',
+    startDate: {
+      type: Date,
+      required: true,
     },
   },
   { timestamps: true }
