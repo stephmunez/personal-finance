@@ -1,44 +1,17 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const express = require('express');
+const router = express.Router();
+const {
+  getRecurringBills,
+  getRecurringBill,
+  createRecurringBill,
+  updateRecurringBill,
+  deleteRecurringBill,
+} = require('../controllers/recurring-bills');
 
-const recurringBillSchema = new Schema(
-  {
-    avatar: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    amount: {
-      type: Number,
-      required: true,
-    },
-    dueDate: {
-      type: Date,
-      required: true,
-    },
-    frequency: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      required: true,
-      default: 'due',
-    },
-    transactionId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Transaction',
-    },
-  },
-  { timestamps: true }
-);
+router.get('/', getRecurringBills);
+router.get('/:id', getRecurringBill);
+router.post('/', createRecurringBill);
+router.patch('/:id', updateRecurringBill);
+router.delete('/:id', deleteRecurringBill);
 
-const RecurringBill = mongoose.model('RecurringBill', recurringBillSchema);
-module.exports = RecurringBill;
+module.exports = router;
