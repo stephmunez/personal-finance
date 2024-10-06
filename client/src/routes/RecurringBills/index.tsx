@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import iconRecurringBills from "../../assets/images/icon-recurring-bills.svg";
-import iconSearch from "../../assets/images/icon-search.svg";
+import RecurringBillsSearchBar from "../../components/RecurringBillsSearchBar";
 
 interface RecurringBill {
   _id?: string;
@@ -8,7 +8,7 @@ interface RecurringBill {
   name: string;
   category: string;
   amount: number;
-  dueDate: number; // Updated to a number representing the day of the month or week
+  dueDate: number; // Represents the day of the month or week
   frequency: string;
   status: string;
 }
@@ -17,6 +17,8 @@ const RecurringBills = () => {
   const [recurringBills, setRecurringBills] = useState<RecurringBill[] | null>(
     null,
   );
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortOption, setSortOption] = useState<string>("Latest");
 
   useEffect(() => {
     const fetchRecurringBills = async () => {
@@ -32,6 +34,43 @@ const RecurringBills = () => {
 
     fetchRecurringBills();
   }, []);
+
+  // Helper functions to calculate totals and filter/search bills
+  const filterAndSortBills = (bills: RecurringBill[]) => {
+    let filteredBills = bills;
+
+    // Filter based on search query
+    if (searchQuery) {
+      filteredBills = filteredBills.filter((bill) =>
+        bill.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    // Sort based on the selected sort option
+    switch (sortOption) {
+      case "A-Z":
+        filteredBills.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "Z-A":
+        filteredBills.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "Highest":
+        filteredBills.sort((a, b) => b.amount - a.amount);
+        break;
+      case "Lowest":
+        filteredBills.sort((a, b) => a.amount - b.amount);
+        break;
+      case "Oldest":
+        filteredBills.sort((a, b) => a.dueDate - b.dueDate);
+        break;
+      case "Latest":
+      default:
+        filteredBills.sort((a, b) => b.dueDate - a.dueDate);
+        break;
+    }
+
+    return filteredBills;
+  };
 
   const totalAmount = recurringBills
     ? recurringBills.reduce((sum, bill) => sum + bill.amount, 0).toFixed(2)
@@ -150,29 +189,42 @@ const RecurringBills = () => {
             </div>
           </div>
         </div>
-        <div>
-          <div>
-            <div className="relative w-[85%]">
-              <img
-                src={iconSearch}
-                alt="Search"
-                className="absolute right-5 top-1/2 -translate-y-1/2 transform"
-              />
-              <input
-                type="text"
-                placeholder="Search bills"
-                className="w-full rounded-lg border border-solid border-beige-500 px-5 py-3 text-[0.875rem] leading-normal text-grey-900 outline-none placeholder:text-beige-500"
-              />
-            </div>
-          </div>
+        <div className="flex min-h-80 flex-col gap-6 rounded-xl bg-white px-5 py-6">
+          <RecurringBillsSearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+          <ul>
+            {recurringBills &&
+              filterAndSortBills(recurringBills).map((recurring) => (
+                <li key={recurring._id} className="flex items-center gap-4 p-4">
+                  <img
+                    src={recurring.avatar}
+                    alt={recurring.name}
+                    className="h-12 w-12 rounded-full"
+                  />
+                  <div className="flex-1">
+                    <p className="font-bold text-grey-900">{recurring.name}</p>
+                    <p className="text-sm text-grey-500">P{recurring.amount}</p>
+                  </div>
+                  <div>
+                    <p
+                      className={`${
+                        recurring.status === "paid"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {recurring.status}
+                    </p>
+                  </div>
+                </li>
+              ))}
+          </ul>
         </div>
       </div>
-      {recurringBills &&
-        recurringBills.map((recurring) => (
-          <div key={recurring._id}>
-            <p>{recurring.name}</p>
-          </div>
-        ))}
     </main>
   );
 };
