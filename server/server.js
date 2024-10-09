@@ -9,6 +9,7 @@ const transactionsRouter = require('./routes/transactions');
 const budgetsRouter = require('./routes/budgets');
 const potsRouter = require('./routes/pots');
 const recurringBillsRouter = require('./routes/recurring-bills');
+require('./utils/scheduler');
 
 // express app
 const app = express();
