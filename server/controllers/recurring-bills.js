@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const RecurringBill = require('../models/RecurringBill');
 const { StatusCodes } = require('http-status-codes');
+const { calculateNextDueDate } = require('../utils/recurringBillUtils');
 
 const getRecurringBills = async (req, res) => {
   const recurringBills = await RecurringBill.find({}).sort({ createdAt: -1 });
@@ -31,7 +33,13 @@ const getRecurringBill = async (req, res) => {
 
 const createRecurringBill = async (req, res) => {
   try {
-    const recurringBill = await RecurringBill.create(req.body);
+    const { frequency, startDate } = req.body;
+    const nextDueDate = calculateNextDueDate(frequency, startDate);
+
+    const recurringBill = await RecurringBill.create({
+      ...req.body,
+      nextDueDate,
+    });
     res.status(StatusCodes.OK).send(recurringBill);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -101,4 +109,5 @@ module.exports = {
   createRecurringBill,
   updateRecurringBill,
   deleteRecurringBill,
+  calculateNextDueDate,
 };
