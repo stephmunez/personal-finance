@@ -37,6 +37,10 @@ const recurringBillSchema = new Schema(
       type: Date,
       required: true,
     },
+    nextDueDate: {
+      type: Date,
+      required: true,
+    },
   },
   { timestamps: true }
 );
