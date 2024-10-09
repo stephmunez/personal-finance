@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import iconBillDue from "../../assets/images/icon-bill-due.svg";
+import iconBillPaid from "../../assets/images/icon-bill-paid.svg";
 import iconRecurringBills from "../../assets/images/icon-recurring-bills.svg";
 import RecurringBillsSearchBar from "../../components/RecurringBillsSearchBar";
 
@@ -8,7 +10,7 @@ interface RecurringBill {
   name: string;
   category: string;
   amount: number;
-  dueDate: number; // Represents the day of the month or week
+  dueDate: number;
   frequency: string;
   status: string;
 }
@@ -60,12 +62,14 @@ const RecurringBills = () => {
       case "Lowest":
         filteredBills.sort((a, b) => a.amount - b.amount);
         break;
-      case "Oldest":
+      case "Latest":
         filteredBills.sort((a, b) => a.dueDate - b.dueDate);
         break;
-      case "Latest":
-      default:
+      case "Oldest":
         filteredBills.sort((a, b) => b.dueDate - a.dueDate);
+        break;
+      default:
+        filteredBills.sort((a, b) => a.dueDate - b.dueDate);
         break;
     }
 
@@ -83,7 +87,7 @@ const RecurringBills = () => {
         .toFixed(2)
     : "0.00";
 
-  const totalUpcoming = recurringBills
+  const totalUnpaid = recurringBills
     ? recurringBills
         .filter((bill) => bill.status !== "paid")
         .reduce((sum, bill) => sum + bill.amount, 0)
@@ -92,7 +96,10 @@ const RecurringBills = () => {
 
   const today = new Date();
   const todayDay = today.getDate();
+  const todayMonth = today.getMonth();
+  const todayYear = today.getFullYear();
   const currentDayOfWeek = today.getDay();
+
   const fiveDaysFromNow = new Date(today);
   fiveDaysFromNow.setDate(today.getDate() + 5);
   const upcomingDay = fiveDaysFromNow.getDate();
@@ -114,12 +121,44 @@ const RecurringBills = () => {
     return false;
   };
 
+  const isOverdue = (bill: RecurringBill) => {
+    let dueDate;
+
+    if (bill.frequency === "monthly") {
+      dueDate = new Date(todayYear, todayMonth, bill.dueDate);
+    } else if (bill.frequency === "weekly") {
+      const daysToNextDue = (7 + bill.dueDate - todayDay) % 7;
+      dueDate = new Date(todayYear, todayMonth, todayDay + daysToNextDue);
+    } else if (bill.frequency === "biweekly") {
+      const daysToNextDue = (14 + bill.dueDate - todayDay) % 14;
+      dueDate = new Date(todayYear, todayMonth, todayDay + daysToNextDue);
+    } else {
+      return false;
+    }
+
+    return dueDate < today;
+  };
+
   const totalDueSoon = recurringBills
     ? recurringBills
         .filter((bill) => isDueSoon(bill) && bill.status !== "paid")
         .reduce((sum, bill) => sum + bill.amount, 0)
         .toFixed(2)
     : "0.00";
+
+  const getDayWithSuffix = (dueDate: number) => {
+    if (dueDate > 3 && dueDate < 21) return `${dueDate}th`;
+    switch (dueDate % 10) {
+      case 1:
+        return `${dueDate}st`;
+      case 2:
+        return `${dueDate}nd`;
+      case 3:
+        return `${dueDate}rd`;
+      default:
+        return `${dueDate}th`;
+    }
+  };
 
   return (
     <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
@@ -164,14 +203,14 @@ const RecurringBills = () => {
             </div>
             <div className="flex items-center justify-between border-b border-solid border-grey-500/15 pb-4">
               <span className="text-xs leading-normal tracking-normal text-grey-500">
-                Total Upcoming
+                Total Unpaid
               </span>
               <span className="text-xs font-bold leading-normal tracking-normal text-grey-900">
                 {
                   recurringBills?.filter((bill) => bill.status !== "paid")
                     .length
                 }{" "}
-                (P{totalUpcoming})
+                (P{totalUnpaid})
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -198,27 +237,35 @@ const RecurringBills = () => {
           />
           <ul>
             {recurringBills &&
-              filterAndSortBills(recurringBills).map((recurring) => (
-                <li key={recurring._id} className="flex items-center gap-4 p-4">
-                  <img
-                    src={recurring.avatar}
-                    alt={recurring.name}
-                    className="h-12 w-12 rounded-full"
-                  />
-                  <div className="flex-1">
-                    <p className="font-bold text-grey-900">{recurring.name}</p>
-                    <p className="text-sm text-grey-500">P{recurring.amount}</p>
+              filterAndSortBills(recurringBills).map((bill) => (
+                <li key={bill._id} className="flex flex-col gap-2 p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="h-8 w-8 rounded-full bg-green">
+                      {/* avatar goes here */}
+                    </div>
+                    <span className="text-sm font-bold leading-normal tracking-normal text-grey-900">
+                      {bill.name}
+                    </span>
                   </div>
-                  <div>
-                    <p
-                      className={`${
-                        recurring.status === "paid"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {recurring.status}
-                    </p>
+                  <div className="flex w-full items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs capitalize leading-normal tracking-normal text-green">
+                        {bill.frequency} - {getDayWithSuffix(bill.dueDate)}
+                      </span>
+                      <span>
+                        {bill.status === "paid" ? (
+                          <img src={iconBillPaid} alt="bill paid icon" />
+                        ) : (isDueSoon(bill) && bill.status !== "paid") ||
+                          (isOverdue(bill) && bill.status !== "paid") ? (
+                          <img src={iconBillDue} alt="bill due icon" />
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                    </div>
+                    <span className="text-sm font-bold leading-normal tracking-normal text-grey-900">
+                      P{bill.amount.toFixed(2)}
+                    </span>
                   </div>
                 </li>
               ))}
