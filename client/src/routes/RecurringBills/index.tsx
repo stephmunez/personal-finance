@@ -200,23 +200,23 @@ const RecurringBills = () => {
   const getThemeByCategory = (category: string) => {
     switch (category) {
       case "Entertainment":
-        return "#934F6F";
+        return "#277C78";
       case "Bills":
-        return "#93674F";
+        return "#82C9D7";
       case "Groceries":
-        return "#7F9161";
+        return "#C94736";
       case "Dining Out":
         return "#CAB361";
       case "Transportation":
         return "#3F82B2";
       case "Personal Care":
-        return "#BE6C49";
+        return "#626070";
       case "Education":
-        return "#F2CDAC";
+        return "#93674F";
       case "Lifestyle":
-        return "#AF81BA";
+        return "#826CB0";
       case "Shopping":
-        return "#82C9D7";
+        return "#BE6C49";
       case "General":
         return "#97A0AC";
       default:
