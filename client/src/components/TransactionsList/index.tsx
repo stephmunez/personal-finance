@@ -1,4 +1,5 @@
 import { Transaction } from "../../types/Transaction";
+import { getIconByCategory, getThemeByCategory } from "../../utils";
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -17,9 +18,17 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
           }`}
         >
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-black">
-              {/* <img src={transaction.avatar} alt={transaction.name} /> */}
-              {/* will add image later */}
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-full"
+              style={{
+                backgroundColor: getThemeByCategory(transaction.category),
+              }}
+            >
+              <img
+                className="h-4 w-4"
+                src={getIconByCategory(transaction.category)}
+                alt={`${transaction.category} icon`}
+              />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-[0.875rem] font-bold leading-normal tracking-normal text-grey-900">
