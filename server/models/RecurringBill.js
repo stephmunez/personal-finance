@@ -13,6 +13,18 @@ const recurringBillSchema = new Schema(
     },
     category: {
       type: String,
+      enum: [
+        'Entertainment',
+        'Bills',
+        'Groceries',
+        'Dining Out',
+        'Transportation',
+        'Personal Care',
+        'Education',
+        'Lifestyle',
+        'Shopping',
+        'General',
+      ],
       required: true,
     },
     amount: {
