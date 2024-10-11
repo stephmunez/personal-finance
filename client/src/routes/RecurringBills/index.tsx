@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import iconBillDue from "../../assets/images/icon-bill-due.svg";
 import iconBillPaid from "../../assets/images/icon-bill-paid.svg";
+import iconBills from "../../assets/images/icon-bills.svg";
+import iconDiningOut from "../../assets/images/icon-dining-out.svg";
+import iconEducation from "../../assets/images/icon-education.svg";
+import iconEntertainment from "../../assets/images/icon-entertainment.svg";
+import iconGeneral from "../../assets/images/icon-general.svg";
+import iconGroceries from "../../assets/images/icon-groceries.svg";
+import iconLifestyle from "../../assets/images/icon-lifestyle.svg";
+import iconPersonalCare from "../../assets/images/icon-personal-care.svg";
 import iconRecurringBills from "../../assets/images/icon-recurring-bills.svg";
+import iconShopping from "../../assets/images/icon-shopping.svg";
+import iconTransportation from "../../assets/images/icon-transportation.svg";
 import RecurringBillsSearchBar from "../../components/RecurringBillsSearchBar";
 
 interface RecurringBill {
@@ -160,6 +170,60 @@ const RecurringBills = () => {
     }
   };
 
+  const getIconByCategory = (category: string) => {
+    switch (category) {
+      case "Entertainment":
+        return iconEntertainment;
+      case "Bills":
+        return iconBills;
+      case "Groceries":
+        return iconGroceries;
+      case "Dining Out":
+        return iconDiningOut;
+      case "Transportation":
+        return iconTransportation;
+      case "Personal Care":
+        return iconPersonalCare;
+      case "Education":
+        return iconEducation;
+      case "Lifestyle":
+        return iconLifestyle;
+      case "Shopping":
+        return iconShopping;
+      case "General":
+        return iconGeneral;
+      default:
+        return "";
+    }
+  };
+
+  const getThemeByCategory = (category: string) => {
+    switch (category) {
+      case "Entertainment":
+        return "#934F6F";
+      case "Bills":
+        return "#93674F";
+      case "Groceries":
+        return "#7F9161";
+      case "Dining Out":
+        return "#CAB361";
+      case "Transportation":
+        return "#3F82B2";
+      case "Personal Care":
+        return "#BE6C49";
+      case "Education":
+        return "#F2CDAC";
+      case "Lifestyle":
+        return "#AF81BA";
+      case "Shopping":
+        return "#82C9D7";
+      case "General":
+        return "#97A0AC";
+      default:
+        return "";
+    }
+  };
+
   return (
     <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
       <div className="flex items-center justify-between">
@@ -240,8 +304,17 @@ const RecurringBills = () => {
               filterAndSortBills(recurringBills).map((bill) => (
                 <li key={bill._id} className="flex flex-col gap-2 p-4">
                   <div className="flex items-center gap-4">
-                    <div className="h-8 w-8 rounded-full bg-green">
-                      {/* avatar goes here */}
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded-full"
+                      style={{
+                        backgroundColor: getThemeByCategory(bill.category),
+                      }}
+                    >
+                      <img
+                        className="h-4 w-4"
+                        src={getIconByCategory(bill.category)}
+                        alt={`${bill.category} icon`}
+                      />
                     </div>
                     <span className="text-sm font-bold leading-normal tracking-normal text-grey-900">
                       {bill.name}
