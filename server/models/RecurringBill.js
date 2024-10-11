@@ -3,16 +3,24 @@ const { Schema } = mongoose;
 
 const recurringBillSchema = new Schema(
   {
-    avatar: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
     },
     category: {
       type: String,
+      enum: [
+        'Entertainment',
+        'Bills',
+        'Groceries',
+        'Dining Out',
+        'Transportation',
+        'Personal Care',
+        'Education',
+        'Lifestyle',
+        'Shopping',
+        'General',
+      ],
       required: true,
     },
     amount: {
