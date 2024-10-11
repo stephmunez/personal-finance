@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import iconCaretRight from "../../assets/images/icon-caret-right.svg";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
+import { getThemeByCategory } from "../../utils";
 
 // Interfaces for Budget and Transaction types
 interface Budget {
@@ -120,7 +121,9 @@ const Budgets = () => {
                     <div className="relative flex items-center pl-5">
                       <span
                         className="absolute left-0 right-0 h-full w-1 rounded-lg"
-                        style={{ backgroundColor: budget.theme }}
+                        style={{
+                          backgroundColor: getThemeByCategory(budget.category),
+                        }}
                       ></span>
                       <span className="text-[0.875rem] leading-normal tracking-normal text-grey-500">
                         {budget.category}
@@ -167,7 +170,9 @@ const Budgets = () => {
                     <div className="flex w-full items-center gap-4">
                       <div
                         className={`h-4 w-4 rounded-full`}
-                        style={{ backgroundColor: budget.theme }}
+                        style={{
+                          backgroundColor: getThemeByCategory(budget.category),
+                        }}
                       ></div>
                       <h3 className="text-xl font-bold leading-[1.2] tracking-normal text-grey-900">
                         {budget.category}
@@ -185,7 +190,7 @@ const Budgets = () => {
                     <div className="h-8 w-full rounded-[4px] bg-beige-100 p-1">
                       <div
                         style={{
-                          backgroundColor: budget.theme,
+                          backgroundColor: getThemeByCategory(budget.category),
                           width: `${((Math.abs(totalSpent[budget.category]) || 0) / Math.abs(budget.maximum)) * 100}%`,
                         }}
                         className="h-full rounded-[4px]"
@@ -195,7 +200,11 @@ const Budgets = () => {
                       <div className="relative flex flex-1 flex-col gap-1 pl-4">
                         <span
                           className="absolute left-0 right-0 h-full w-1 rounded-lg"
-                          style={{ backgroundColor: budget.theme }}
+                          style={{
+                            backgroundColor: getThemeByCategory(
+                              budget.category,
+                            ),
+                          }}
                         ></span>
                         <span className="text-xs leading-[1.2] tracking-normal text-grey-500">
                           Spent
@@ -239,7 +248,6 @@ const Budgets = () => {
                       </Link>
                     </div>
                     <ul className="flex flex-col gap-3">
-                      {/* Display latest transactions */}
                       {latestTransactions.length > 0 ? (
                         latestTransactions.map((transaction) => (
                           <li
