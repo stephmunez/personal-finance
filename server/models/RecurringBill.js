@@ -3,10 +3,6 @@ const { Schema } = mongoose;
 
 const recurringBillSchema = new Schema(
   {
-    avatar: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
