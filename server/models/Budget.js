@@ -11,10 +11,6 @@ const budgetSchema = new Schema(
       type: Number,
       required: true,
     },
-    theme: {
-      type: String,
-      required: true,
-    },
   },
   { timestamps: true }
 );
