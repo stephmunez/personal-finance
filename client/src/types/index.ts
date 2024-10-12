@@ -1,11 +1,9 @@
 export interface Transaction {
-  _id: string;
-  avatar: string;
+  _id?: string;
   name: string;
   category: string;
   date: string;
   amount: number;
-  recurring: boolean;
 }
 
 export interface RecurringBill {
@@ -24,5 +22,12 @@ export interface Pot {
   name: string;
   target: number;
   total: number;
+  theme: string;
+}
+
+export interface Budget {
+  _id: string;
+  category: string;
+  maximum: number;
   theme: string;
 }
