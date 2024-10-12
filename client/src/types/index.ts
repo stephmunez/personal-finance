@@ -18,3 +18,11 @@ export interface RecurringBill {
   frequency: string;
   status: string;
 }
+
+export interface Pot {
+  _id: string;
+  name: string;
+  target: number;
+  total: number;
+  theme: string;
+}
