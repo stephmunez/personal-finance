@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsPagination from "../../components/TransactionsPagination";
 import TransactionSearchBar from "../../components/TransactionsSearchBar";
-import { Transaction } from "../../types/Transaction";
+import { Transaction } from "../../types";
 
 const Transactions = () => {
   // Hooks to get location and navigation functions from React Router
