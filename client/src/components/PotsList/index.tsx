@@ -8,7 +8,7 @@ interface PotsListProps {
 const PotsList = ({ pots }: PotsListProps) => {
   return (
     <div className="flex w-full flex-col gap-6">
-      {pots &&
+      {pots && pots.length > 0 ? (
         pots.map((pot) => (
           <div
             key={pot._id}
@@ -66,7 +66,12 @@ const PotsList = ({ pots }: PotsListProps) => {
               </button>
             </div>
           </div>
-        ))}
+        ))
+      ) : (
+        <li className="text-center text-[0.875rem] leading-normal tracking-normal text-grey-500">
+          No pots yet.
+        </li>
+      )}
     </div>
   );
 };

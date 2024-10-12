@@ -52,10 +52,15 @@ const RecurringBillsList = ({
 
   return (
     <ul>
-      {recurringBills &&
+      {recurringBills && recurringBills.length > 0 ? (
         filterAndSortBills(recurringBills).map((bill) => (
           <RecurringBillItem key={bill._id} bill={bill} />
-        ))}
+        ))
+      ) : (
+        <li className="text-center text-[0.875rem] leading-normal tracking-normal text-grey-500">
+          No recurring bills yet.
+        </li>
+      )}
     </ul>
   );
 };
