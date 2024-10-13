@@ -7,5 +7,5 @@
 @tailwind utilities;
 
 :root {
-  @apply bg-beige-100 font-sans;
+  @apply min-w-80 bg-beige-100 font-sans;
 }
