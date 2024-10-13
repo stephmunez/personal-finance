@@ -21,11 +21,9 @@ const TransactionSearchBar = ({
   sortOption,
   setSortOption,
 }: TransactionSearchBarProps) => {
-  const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
-  const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
-
-  const toggleCategoryOpen = () => setIsCategoryOpen((prev) => !prev);
-  const toggleSortOpen = () => setIsSortOpen((prev) => !prev);
+  const [openSelect, setOpenSelect] = useState<"category" | "sort" | null>(
+    null,
+  );
 
   return (
     <div className="flex items-center justify-between">
@@ -60,8 +58,10 @@ const TransactionSearchBar = ({
           ]}
           value={categoryFilter}
           onChange={setCategoryFilter}
-          isOpen={isCategoryOpen}
-          setIsOpen={toggleCategoryOpen}
+          isOpen={openSelect === "category"}
+          setIsOpen={() =>
+            setOpenSelect(openSelect === "category" ? null : "category")
+          }
           placeholder="Select category"
           placeholderImage={iconFilterMobile}
         />
@@ -69,8 +69,8 @@ const TransactionSearchBar = ({
           options={["Latest", "Oldest", "A-Z", "Z-A", "Highest", "Lowest"]}
           value={sortOption}
           onChange={setSortOption}
-          isOpen={isSortOpen}
-          setIsOpen={toggleSortOpen}
+          isOpen={openSelect === "sort"}
+          setIsOpen={() => setOpenSelect(openSelect === "sort" ? null : "sort")}
           placeholder="Sort by"
           placeholderImage={iconSortMobile}
         />
