@@ -97,10 +97,13 @@ const Transactions = () => {
     };
 
     const queryParams = queryString.stringify(params);
-    navigate({
-      pathname: location.pathname,
-      search: queryParams,
-    });
+    navigate(
+      {
+        pathname: location.pathname,
+        search: queryParams,
+      },
+      { replace: true },
+    );
   }, [
     currentPage,
     searchQuery,
