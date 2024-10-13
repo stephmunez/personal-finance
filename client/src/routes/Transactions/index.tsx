@@ -40,7 +40,7 @@ const Transactions = () => {
 
   // Debounced function to update search query
   const debouncedSetSearchQuery = useCallback(
-    debounce((query: string) => setSearchQuery(query), 300),
+    debounce((query: string) => setSearchQuery(query), 30),
     [],
   );
 
