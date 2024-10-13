@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface CustomSelectProps {
   options: string[];
@@ -20,6 +20,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   placeholderImage,
 }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (option: string) => {
     onChange(option);
@@ -39,7 +40,6 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     }
   };
 
-  // Update window width on resize
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -47,11 +47,31 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup event listener on unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, setIsOpen]);
 
   return (
     <div
@@ -59,6 +79,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       role="combobox"
       aria-expanded={isOpen}
       aria-controls="options-list"
+      ref={dropdownRef} // Attach the ref to the wrapper div
     >
       <button
         className="flex items-center justify-center"
