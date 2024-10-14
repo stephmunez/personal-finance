@@ -3,38 +3,19 @@ import OverviewSummary from "../../components/OverviewSummary";
 import { Transaction } from "../../types";
 
 const Home = () => {
-  const [balance, setBalance] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
-
-  const calculateTotals = (transactions: Transaction[]) => {
-    let income = 0;
-    let expenses = 0;
-
-    transactions.forEach((transaction) => {
-      if (transaction.amount > 0) {
-        income += transaction.amount;
-      } else {
-        expenses += Math.abs(transaction.amount);
-      }
-    });
-
-    setTotalIncome(income);
-    setTotalExpenses(expenses);
-    setBalance(income - expenses);
-  };
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    const fetchRecurringBills = async () => {
+    const fetchTransactions = async () => {
       const response = await fetch("http://localhost:4000/api/v1/transactions");
       const data = await response.json();
 
       if (response.ok) {
-        calculateTotals(data.transactions);
+        setTransactions(data.transactions);
       }
     };
 
-    fetchRecurringBills();
+    fetchTransactions();
   }, []);
 
   return (
@@ -44,11 +25,7 @@ const Home = () => {
           Overview
         </h1>
       </div>
-      <OverviewSummary
-        balance={balance}
-        totalIncome={totalIncome}
-        totalExpenses={totalExpenses}
-      />
+      <OverviewSummary transactions={transactions} />
     </main>
   );
 };
