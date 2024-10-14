@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import OverviewPots from "../../components/OverviewPots";
 import OverviewSummary from "../../components/OverviewSummary";
-import { Transaction } from "../../types";
+import { Pot, Transaction } from "../../types";
 
 const Home = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [pots, setPots] = useState<Pot[]>([]);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -15,7 +17,17 @@ const Home = () => {
       }
     };
 
+    const fetchPots = async () => {
+      const response = await fetch("http://localhost:4000/api/v1/pots");
+      const data = await response.json();
+
+      if (response.ok) {
+        setPots(data.pots);
+      }
+    };
+
     fetchTransactions();
+    fetchPots();
   }, []);
 
   return (
@@ -26,6 +38,11 @@ const Home = () => {
         </h1>
       </div>
       <OverviewSummary transactions={transactions} />
+      <div className="flex w-full flex-col gap-6">
+        <div className="flex w-full flex-col gap-4">
+          <OverviewPots pots={pots} />
+        </div>
+      </div>
     </main>
   );
 };
