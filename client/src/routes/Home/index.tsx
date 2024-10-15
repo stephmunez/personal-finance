@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import OverviewBudgets from "../../components/OverviewBudgets";
 import OverviewPots from "../../components/OverviewPots";
+import OverviewRecurringBills from "../../components/OverviewRecurringBills";
 import OverviewSummary from "../../components/OverviewSummary";
 import OverviewTransactions from "../../components/OverviewTransactions";
-import { Budget, Pot, Transaction } from "../../types";
+import { Budget, Pot, RecurringBill, Transaction } from "../../types";
 
 const Home = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [pots, setPots] = useState<Pot[]>([]);
   const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [recurringBills, setRecurringBills] = useState<RecurringBill[]>([]);
   const [totalSpent, setTotalSpent] = useState<{ [key: string]: number }>({});
 
   const categoryOrder = [
@@ -68,9 +70,21 @@ const Home = () => {
       }
     };
 
+    const fetchRecurringBills = async () => {
+      const response = await fetch(
+        "http://localhost:4000/api/v1/recurring-bills",
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setRecurringBills(data.recurringBills);
+      }
+    };
+
     fetchTransactions();
     fetchPots();
     fetchBudgets();
+    fetchRecurringBills();
   }, []);
 
   return (
@@ -88,6 +102,7 @@ const Home = () => {
         </div>
         <div className="flex w-full flex-col gap-4">
           <OverviewBudgets budgets={budgets} totalSpent={totalSpent} />
+          <OverviewRecurringBills recurringBills={recurringBills} />
         </div>
       </div>
     </main>
