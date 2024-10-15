@@ -57,6 +57,7 @@ const OverviewTransactions = ({ transactions }: OverviewTransactionsProps) => {
                   }}
                 >
                   <img
+                    className="h-4 w-4"
                     src={getIconByCategory(transaction.category)}
                     alt={`${transaction.category} icon`}
                   />

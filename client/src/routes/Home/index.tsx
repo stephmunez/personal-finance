@@ -1,12 +1,28 @@
 import { useEffect, useState } from "react";
+import OverviewBudgets from "../../components/OverviewBudgets";
 import OverviewPots from "../../components/OverviewPots";
 import OverviewSummary from "../../components/OverviewSummary";
 import OverviewTransactions from "../../components/OverviewTransactions";
-import { Pot, Transaction } from "../../types";
+import { Budget, Pot, Transaction } from "../../types";
 
 const Home = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [pots, setPots] = useState<Pot[]>([]);
+  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [totalSpent, setTotalSpent] = useState<{ [key: string]: number }>({});
+
+  const categoryOrder = [
+    "Entertainment",
+    "Bills",
+    "Groceries",
+    "Dining Out",
+    "Transportation",
+    "Personal Care",
+    "Education",
+    "Lifestyle",
+    "Shopping",
+    "General",
+  ];
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -14,6 +30,16 @@ const Home = () => {
       const data = await response.json();
 
       if (response.ok) {
+        const transactions = data.transactions;
+        const spent = transactions.reduce(
+          (acc: { [key: string]: number }, transaction: Transaction) => {
+            acc[transaction.category] =
+              (acc[transaction.category] || 0) + transaction.amount;
+            return acc;
+          },
+          {},
+        );
+        setTotalSpent(spent);
         setTransactions(data.transactions);
       }
     };
@@ -27,8 +53,24 @@ const Home = () => {
       }
     };
 
+    const fetchBudgets = async () => {
+      const response = await fetch("http://localhost:4000/api/v1/budgets");
+      const data = await response.json();
+
+      if (response.ok) {
+        const sortedBudgets = data.budgets.sort((a: Budget, b: Budget) => {
+          return (
+            categoryOrder.indexOf(a.category) -
+            categoryOrder.indexOf(b.category)
+          );
+        });
+        setBudgets(sortedBudgets);
+      }
+    };
+
     fetchTransactions();
     fetchPots();
+    fetchBudgets();
   }, []);
 
   return (
@@ -43,6 +85,9 @@ const Home = () => {
         <div className="flex w-full flex-col gap-4">
           <OverviewPots pots={pots} />
           <OverviewTransactions transactions={transactions} />
+        </div>
+        <div className="flex w-full flex-col gap-4">
+          <OverviewBudgets budgets={budgets} totalSpent={totalSpent} />
         </div>
       </div>
     </main>
