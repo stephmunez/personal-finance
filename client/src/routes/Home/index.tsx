@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import OverviewPots from "../../components/OverviewPots";
 import OverviewSummary from "../../components/OverviewSummary";
+import OverviewTransactions from "../../components/OverviewTransactions";
 import { Pot, Transaction } from "../../types";
 
 const Home = () => {
@@ -41,6 +42,7 @@ const Home = () => {
       <div className="flex w-full flex-col gap-6">
         <div className="flex w-full flex-col gap-4">
           <OverviewPots pots={pots} />
+          <OverviewTransactions transactions={transactions} />
         </div>
       </div>
     </main>
