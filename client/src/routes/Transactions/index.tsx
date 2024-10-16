@@ -135,12 +135,16 @@ const Transactions = () => {
           setSortOption={setSortOption}
         />
         <TransactionsList transactions={transactions} />
-        <TransactionsPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          setCurrentPage={setCurrentPage}
-          scrollToTop={scrollToTop}
-        />
+        {transactions.length > 0 ? (
+          <TransactionsPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+            scrollToTop={scrollToTop}
+          />
+        ) : (
+          ""
+        )}
       </div>
     </main>
   );
