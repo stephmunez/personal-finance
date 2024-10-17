@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Transaction } from "../../types";
 import { getIconByCategory, getThemeByCategory } from "../../utils";
 
@@ -16,6 +16,7 @@ const TransactionList = ({
   const [selectedTransaction, setSelectedTransaction] = useState<string | null>(
     null,
   );
+  const transactionListRef = useRef<HTMLUListElement | null>(null);
 
   const handleTransactionClick = (transactionId: string) => {
     if (selectedTransaction === transactionId) {
@@ -25,10 +26,27 @@ const TransactionList = ({
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        transactionListRef.current &&
+        !transactionListRef.current.contains(event.target as Node)
+      ) {
+        setSelectedTransaction(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       {transactions.length > 0 ? (
-        <ul>
+        <ul ref={transactionListRef}>
           {transactions.map((transaction, i) => (
             <li
               key={transaction._id}
