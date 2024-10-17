@@ -122,9 +122,17 @@ const Transactions = () => {
 
   return (
     <main ref={mainRef} className="flex flex-col gap-8 px-4 pb-20 pt-6">
-      <h1 className="my-2 text-[2rem] font-bold leading-[1.20] tracking-normal">
-        Transactions
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
+          Transactions
+        </h1>
+        <button
+          type="button"
+          className="h-14 rounded-lg bg-black p-4 text-[0.875rem] font-bold leading-normal tracking-normal text-white"
+        >
+          + Add New
+        </button>
+      </div>
       <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
         <TransactionSearchBar
           searchQuery={searchQuery}
