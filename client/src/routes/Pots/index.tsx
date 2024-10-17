@@ -26,9 +26,9 @@ const Pots = () => {
         </h1>
         <button
           type="button"
-          className="h-14 w-40 rounded-lg bg-black text-[0.875rem] font-bold leading-normal tracking-normal text-white"
+          className="h-14 rounded-lg bg-black p-4 text-[0.875rem] font-bold leading-normal tracking-normal text-white"
         >
-          + Add New Pot
+          + Add New
         </button>
       </div>
       <PotsList pots={pots} />

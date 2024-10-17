@@ -30,13 +30,13 @@ const RecurringBills = () => {
     <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
       <div className="flex items-center justify-between">
         <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
-          Recurring Bills
+          Recurring <br className="min-[480px]:hidden" /> Bills
         </h1>
         <button
           type="button"
-          className="h-14 w-40 rounded-lg bg-black text-[0.875rem] font-bold leading-normal tracking-normal text-white"
+          className="h-14 rounded-lg bg-black p-4 text-[0.875rem] font-bold leading-normal tracking-normal text-white"
         >
-          + Add New Bill
+          + Add New
         </button>
       </div>
       <div className="flex w-full flex-col gap-6">
