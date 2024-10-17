@@ -99,7 +99,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       </button>
       {isOpen && (
         <ul
-          className="absolute right-0 mt-2 max-h-80 overflow-auto rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)]"
+          className="absolute right-0 z-10 mt-2 max-h-80 overflow-auto rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)]"
           role="listbox"
         >
           {options.map((option, index) => (
