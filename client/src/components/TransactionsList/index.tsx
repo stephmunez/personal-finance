@@ -32,7 +32,7 @@ const TransactionList = ({
           {transactions.map((transaction, i) => (
             <li
               key={transaction._id}
-              className={`relative flex cursor-pointer flex-col items-start justify-between py-4 ${
+              className={`relative flex cursor-auto flex-col items-start justify-between py-4 ${
                 i !== transactions.length - 1
                   ? "border-b border-solid border-grey-100"
                   : ""
@@ -85,7 +85,7 @@ const TransactionList = ({
               </div>
 
               <div
-                className={`absolute right-0 top-1/2 z-10 flex flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
+                className={`absolute right-0 top-1/2 z-10 flex cursor-auto flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
                   selectedTransaction === transaction._id
                     ? "visible opacity-100"
                     : "invisible opacity-0"
