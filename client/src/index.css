@@ -9,13 +9,3 @@
 :root {
   @apply min-h-[667px] min-w-80 bg-beige-100 font-sans;
 }
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-}
