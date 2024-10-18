@@ -2,7 +2,7 @@ import { useState } from "react";
 import iconFilterMobile from "../../assets/images/icon-filter-mobile.svg";
 import iconSearch from "../../assets/images/icon-search.svg";
 import iconSortMobile from "../../assets/images/icon-sort-mobile.svg";
-import CustomSelect from "../../components/CustomSelect";
+import CustomSelect from "../CustomSearchSelect";
 
 interface TransactionSearchBarProps {
   searchQuery: string;

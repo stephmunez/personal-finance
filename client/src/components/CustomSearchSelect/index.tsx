@@ -102,12 +102,12 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           className="absolute right-0 z-10 mt-2 max-h-80 overflow-auto rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)]"
           role="listbox"
         >
-          {options.map((option, index) => (
+          {options.map((option, i) => (
             <li
-              key={index}
-              className={`cursor-pointer py-3 ${
-                index !== options.length - 1 ? "border-b" : ""
-              }`}
+              key={i}
+              className={`cursor-pointer py-3 text-sm leading-normal text-grey-900 ${
+                i !== options.length - 1 ? "border-b" : ""
+              } ${option === value ? "font-bold" : ""}`}
               role="option"
               tabIndex={0}
               onClick={() => handleSelect(option)}

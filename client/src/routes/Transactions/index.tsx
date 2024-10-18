@@ -131,7 +131,14 @@ const Transactions = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setTransactions((prevTransactions) => [data, ...prevTransactions]);
+        const updatedTransactions = [data, ...transactions];
+
+        // Sort the transactions based on the date
+        const sortedTransactions = updatedTransactions.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
+        setTransactions(sortedTransactions);
         setTotalPages((prevTotalPages) =>
           Math.ceil((prevTotalPages * itemsPerPage + 1) / itemsPerPage),
         );

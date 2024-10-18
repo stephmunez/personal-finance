@@ -20,18 +20,24 @@ const CustomDropdown = ({ options, value, onChange }: CustomDropdownProps) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between rounded-md border border-gray-300 p-2"
+        className="flex w-full items-center justify-between rounded-lg border border-beige-500 px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-grey-500 focus:outline-none"
       >
         {value}
-        <img src={iconCaretDown} alt="caret down icon" />
+        <img
+          className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+          src={iconCaretDown}
+          alt="caret down icon"
+        />
       </button>
       {isOpen && (
-        <ul className="absolute left-0 top-full z-10 max-h-40 w-full overflow-y-auto border border-gray-300 bg-white shadow-lg">
-          {options.map((option) => (
+        <ul className="absolute z-10 mt-2 max-h-80 w-full overflow-auto rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)]">
+          {options.map((option, i) => (
             <li
               key={option}
               onClick={() => handleOptionClick(option)}
-              className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+              className={`cursor-pointer py-3 text-sm leading-normal text-grey-900 ${
+                i !== options.length - 1 ? "border-b" : ""
+              } ${option === value ? "font-bold" : ""}`}
             >
               {option}
             </li>
