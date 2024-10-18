@@ -104,7 +104,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         >
           {options.map((option, i) => (
             <li
-              key={index}
+              key={i}
               className={`cursor-pointer py-3 text-sm leading-normal text-grey-900 ${
                 i !== options.length - 1 ? "border-b" : ""
               } ${option === value ? "font-bold" : ""}`}
