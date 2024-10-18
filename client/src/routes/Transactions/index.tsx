@@ -2,6 +2,7 @@ import { debounce } from "lodash";
 import queryString from "query-string";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import CreateTransactionModal from "../../components/CreateTransactionModal";
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsPagination from "../../components/TransactionsPagination";
 import TransactionSearchBar from "../../components/TransactionsSearchBar";
@@ -29,6 +30,7 @@ const Transactions = () => {
   );
   const [totalPages, setTotalPages] = useState<number>(1);
   const itemsPerPage = 10;
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Ref to manage scrolling
   const mainRef = useRef<HTMLDivElement>(null);
@@ -113,6 +115,39 @@ const Transactions = () => {
     location.pathname,
   ]);
 
+  const createTransaction = async (newTransaction: Transaction) => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/v1/transactions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newTransaction),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setTransactions((prevTransactions) => [data, ...prevTransactions]);
+        setTotalPages((prevTotalPages) =>
+          Math.ceil((prevTotalPages * itemsPerPage + 1) / itemsPerPage),
+        );
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      // Narrowing the type of error
+      if (error instanceof Error) {
+        console.log(`Error: ${error.message}`);
+      } else {
+        console.log("An unknown error occurred");
+      }
+    }
+  };
+
   // Scroll to top of page
   const scrollToTop = () => {
     if (mainRef.current) {
@@ -121,7 +156,10 @@ const Transactions = () => {
   };
 
   return (
-    <main ref={mainRef} className="flex flex-col gap-8 px-4 pb-20 pt-6">
+    <main
+      ref={mainRef}
+      className="relative flex flex-col gap-8 px-4 pb-20 pt-6"
+    >
       <div className="flex items-center justify-between">
         <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
           Transactions
@@ -129,6 +167,7 @@ const Transactions = () => {
         <button
           type="button"
           className="h-14 rounded-lg bg-black p-4 text-[0.875rem] font-bold leading-normal tracking-normal text-white"
+          onClick={() => setIsModalOpen(true)}
         >
           + Add New
         </button>
@@ -154,6 +193,11 @@ const Transactions = () => {
           ""
         )}
       </div>
+      <CreateTransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreateTransaction={createTransaction}
+      />
     </main>
   );
 };
