@@ -1,7 +1,7 @@
 import { useState } from "react";
 import iconSearch from "../../assets/images/icon-search.svg";
 import iconSortMobile from "../../assets/images/icon-sort-mobile.svg";
-import CustomSelect from "../CustomSelect";
+import CustomSelect from "../CustomSearchSelect";
 
 interface RecurringBillsSearchBarProps {
   searchQuery: string;
