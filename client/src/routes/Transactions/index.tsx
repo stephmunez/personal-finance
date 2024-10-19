@@ -3,6 +3,7 @@ import queryString from "query-string";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CreateTransactionModal from "../../components/CreateTransactionModal";
+import EditTransactionModal from "../../components/EditTransactionModal";
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsPagination from "../../components/TransactionsPagination";
 import TransactionSearchBar from "../../components/TransactionsSearchBar";
@@ -30,7 +31,10 @@ const Transactions = () => {
   );
   const [totalPages, setTotalPages] = useState<number>(1);
   const itemsPerPage = 10;
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
 
   // Ref to manage scrolling
   const mainRef = useRef<HTMLDivElement>(null);
@@ -155,6 +159,55 @@ const Transactions = () => {
     }
   };
 
+  const openEditModal = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsEditModalOpen(true);
+  };
+
+  const editTransaction = async (updatedTransaction: Transaction) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/transactions/${updatedTransaction._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedTransaction),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Find the index of the updated transaction in the current state
+        const updatedTransactions = transactions.map((transaction) =>
+          transaction._id === updatedTransaction._id
+            ? data.transaction
+            : transaction,
+        );
+
+        const sortedTransactions = updatedTransactions.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
+        // Update the state with the new transactions
+        setTransactions(sortedTransactions);
+
+        // Close the edit modal
+        setIsEditModalOpen(false);
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error: ${error.message}`);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+  };
+
   // Scroll to top of page
   const scrollToTop = () => {
     if (mainRef.current) {
@@ -174,7 +227,7 @@ const Transactions = () => {
         <button
           type="button"
           className="h-14 rounded-lg bg-black p-4 text-[0.875rem] font-bold leading-normal tracking-normal text-white"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsCreateModalOpen(true)}
         >
           + Add New
         </button>
@@ -188,7 +241,7 @@ const Transactions = () => {
           sortOption={sortOption}
           setSortOption={setSortOption}
         />
-        <TransactionsList transactions={transactions} />
+        <TransactionsList transactions={transactions} onEdit={openEditModal} />
         {transactions.length > 0 ? (
           <TransactionsPagination
             currentPage={currentPage}
@@ -201,9 +254,15 @@ const Transactions = () => {
         )}
       </div>
       <CreateTransactionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
         onCreateTransaction={createTransaction}
+      />
+      <EditTransactionModal
+        isOpen={isEditModalOpen}
+        selectedTransaction={selectedTransaction}
+        onClose={() => setIsEditModalOpen(false)}
+        onEditTransaction={editTransaction}
       />
     </main>
   );
