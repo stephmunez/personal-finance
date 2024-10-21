@@ -1,7 +1,7 @@
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 import { FormEvent, useEffect, useState } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
 import CustomFormSelect from "../CustomFormSelect";
@@ -34,7 +34,7 @@ const CreateTransactionModal = ({
 }: CreateTransactionModalProps) => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("General");
-  const [date, setDate] = useState<Moment | null>(null);
+  const [date, setDate] = useState<Moment | null>(moment());
   const [amount, setAmount] = useState<string>("");
   const [placeholder, setPlaceholder] = useState<string>("");
   const [transactionType, setTransactionType] = useState<string>("Expense");
@@ -85,6 +85,11 @@ const CreateTransactionModal = ({
         date: formattedDate!,
         amount: formattedAmount,
       });
+      setName("");
+      setCategory("General");
+      setDate(moment());
+      setAmount("");
+      setTransactionType("Expense");
       onClose();
     } else {
       alert("Please fill in all fields.");
