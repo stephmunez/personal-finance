@@ -2,11 +2,10 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import moment, { Moment } from "moment";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
-import CustomFormSelect from "../CustomFormSelect";
-
 import { Transaction } from "../../types";
+import CustomFormSelect from "../CustomFormSelect";
 
 interface CreateTransactionModalProps {
   isOpen: boolean;
@@ -39,6 +38,8 @@ const CreateTransactionModal = ({
   const [placeholder, setPlaceholder] = useState<string>("");
   const [transactionType, setTransactionType] = useState<string>("Expense");
 
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
   const categories = [
     "Entertainment",
     "Bills",
@@ -59,16 +60,25 @@ const CreateTransactionModal = ({
         transactionPlaceholders[
           Math.floor(Math.random() * transactionPlaceholders.length)
         ];
-
       setPlaceholder(randomPlaceholder);
-    } else {
-      document.body.style.overflow = "";
-    }
 
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          modalRef.current &&
+          !modalRef.current.contains(event.target as Node)
+        ) {
+          onClose();
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.body.style.overflow = "";
+      };
+    }
+  }, [isOpen, onClose]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -107,6 +117,7 @@ const CreateTransactionModal = ({
         className="flex h-screen min-h-[480px] w-full flex-col items-center justify-center px-5 py-20"
       >
         <div
+          ref={modalRef}
           className={`flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 ${isOpen ? "translate-y-0" : "translate-y-5"}`}
         >
           <div className="flex w-full flex-col gap-5">

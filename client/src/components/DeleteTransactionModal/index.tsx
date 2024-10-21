@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
 import { Transaction } from "../../types";
 
@@ -14,10 +15,38 @@ const DeleteTransactionModal = ({
   onDeleteTransaction,
   selectedTransaction,
 }: DeleteTransactionModalProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          modalRef.current &&
+          !modalRef.current.contains(event.target as Node)
+        ) {
+          onClose();
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.body.style.overflow = "";
+      };
+    }
+  }, [isOpen, onClose]);
+
   return (
     <div
       aria-hidden={!isOpen}
-      className={`fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-black/50 transition-opacity duration-300 ${isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+      className={`fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-black/50 transition-opacity duration-300 ${
+        isOpen
+          ? "pointer-events-auto opacity-100"
+          : "pointer-events-none opacity-0"
+      }`}
     >
       <div
         role="dialog"
@@ -25,7 +54,10 @@ const DeleteTransactionModal = ({
         className="flex h-screen min-h-[480px] w-full flex-col items-center justify-center px-5 py-20"
       >
         <div
-          className={`flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 ${isOpen ? "translate-y-0" : "translate-y-5"}`}
+          ref={modalRef}
+          className={`flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 ${
+            isOpen ? "translate-y-0" : "translate-y-5"
+          }`}
         >
           <div className="flex w-full flex-col gap-5">
             <div className="flex w-full items-center justify-between gap-10">

@@ -2,7 +2,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import moment, { Moment } from "moment";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
 import { Transaction } from "../../types";
 import CustomFormSelect from "../CustomFormSelect";
@@ -53,6 +53,8 @@ const EditTransactionModal = ({
     "General",
   ];
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (isOpen && selectedTransaction) {
       document.body.style.overflow = "hidden";
@@ -71,7 +73,6 @@ const EditTransactionModal = ({
         transactionPlaceholders[
           Math.floor(Math.random() * transactionPlaceholders.length)
         ];
-
       setPlaceholder(randomPlaceholder);
     } else {
       document.body.style.overflow = "";
@@ -82,6 +83,28 @@ const EditTransactionModal = ({
     };
   }, [isOpen, selectedTransaction]);
 
+  // Close modal if clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
@@ -91,6 +114,7 @@ const EditTransactionModal = ({
         transactionType === "Expense"
           ? -Math.abs(Number(amount))
           : Number(amount);
+
       onEditTransaction({
         _id: selectedTransaction?._id,
         name,
@@ -107,7 +131,11 @@ const EditTransactionModal = ({
   return (
     <div
       aria-hidden={!isOpen}
-      className={`fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-black/50 transition-opacity duration-300 ${isOpen ? "pointer-events-auto visible opacity-100" : "pointer-events-none invisible opacity-0"}`}
+      className={`fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-black/50 transition-opacity duration-300 ${
+        isOpen
+          ? "pointer-events-auto opacity-100"
+          : "pointer-events-none opacity-0"
+      }`}
     >
       <div
         role="dialog"
@@ -115,7 +143,10 @@ const EditTransactionModal = ({
         className="flex h-screen min-h-[480px] w-full flex-col items-center justify-center px-5 py-20"
       >
         <div
-          className={`flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 ${isOpen ? "translate-y-0" : "translate-y-5"}`}
+          ref={modalRef}
+          className={`flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 ${
+            isOpen ? "translate-y-0" : "translate-y-5"
+          }`}
         >
           <div className="flex w-full flex-col gap-5">
             <div className="flex w-full items-center justify-between">
