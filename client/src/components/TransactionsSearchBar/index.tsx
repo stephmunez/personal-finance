@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
 import iconFilterMobile from "../../assets/images/icon-filter-mobile.svg";
 import iconSearch from "../../assets/images/icon-search.svg";
 import iconSortMobile from "../../assets/images/icon-sort-mobile.svg";
-import CustomSelect from "../CustomSearchSelect";
+import CustomSearchSelect from "../CustomSearchSelect";
 
 interface TransactionSearchBarProps {
   searchQuery: string;
@@ -21,12 +22,25 @@ const TransactionSearchBar = ({
   sortOption,
   setSortOption,
 }: TransactionSearchBarProps) => {
+  // State to manage dropdown select visibility
   const [openSelect, setOpenSelect] = useState<"category" | "sort" | null>(
     null,
   );
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+
+  // Debounce function to update search query
+  const handleSearchChange = debounce((query: string) => {
+    setDebouncedSearchQuery(query);
+  }, 300); // Adjust the delay as needed
+
+  // Effect to update search query when debounced value changes
+  useEffect(() => {
+    setSearchQuery(debouncedSearchQuery);
+  }, [debouncedSearchQuery, setSearchQuery]);
 
   return (
     <div className="flex items-center justify-between">
+      {/* Search Input */}
       <div className="relative w-[71%]">
         <img
           src={iconSearch}
@@ -36,13 +50,15 @@ const TransactionSearchBar = ({
         <input
           type="text"
           placeholder="Search transaction"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          defaultValue={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="w-full rounded-lg border border-solid border-beige-500 px-5 py-3 text-[0.875rem] leading-normal text-grey-900 outline-none placeholder:text-beige-500"
         />
       </div>
+
+      {/* Filters and Sorting */}
       <div className="flex items-center gap-6">
-        <CustomSelect
+        <CustomSearchSelect
           options={[
             "All",
             "Entertainment",
@@ -65,7 +81,7 @@ const TransactionSearchBar = ({
           placeholder="Select category"
           placeholderImage={iconFilterMobile}
         />
-        <CustomSelect
+        <CustomSearchSelect
           options={["Latest", "Oldest", "A-Z", "Z-A", "Highest", "Lowest"]}
           value={sortOption}
           onChange={setSortOption}

@@ -1,6 +1,5 @@
-import { debounce } from "lodash";
 import queryString from "query-string";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CreateTransactionModal from "../../components/CreateTransactionModal";
 import DeleteTransactionModal from "../../components/DeleteTransactionModal";
@@ -45,12 +44,6 @@ const Transactions = () => {
   const [cache, setCache] = useState<
     Map<string, { transactions: Transaction[]; totalPages: number }>
   >(new Map());
-
-  // Debounced function for updating search query
-  const debouncedSetSearchQuery = useCallback(
-    debounce((query: string) => setSearchQuery(query), 30),
-    [],
-  );
 
   // Fetch transactions from the API
   const fetchTransactions = async (forceRefresh = false) => {
@@ -237,7 +230,7 @@ const Transactions = () => {
       <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
         <TransactionSearchBar
           searchQuery={searchQuery}
-          setSearchQuery={debouncedSetSearchQuery}
+          setSearchQuery={setSearchQuery}
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}
           sortOption={sortOption}
