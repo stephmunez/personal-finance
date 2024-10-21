@@ -1,8 +1,8 @@
-import { debounce } from "lodash";
 import queryString from "query-string";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CreateTransactionModal from "../../components/CreateTransactionModal";
+import DeleteTransactionModal from "../../components/DeleteTransactionModal";
 import EditTransactionModal from "../../components/EditTransactionModal";
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsPagination from "../../components/TransactionsPagination";
@@ -10,12 +10,12 @@ import TransactionSearchBar from "../../components/TransactionsSearchBar";
 import { Transaction } from "../../types";
 
 const Transactions = () => {
-  // Hooks to get location and navigation functions from React Router
+  // React Router hooks to manage navigation and location
   const location = useLocation();
   const navigate = useNavigate();
   const parsedParams = queryString.parse(location.search);
 
-  // State for managing transactions and filters
+  // States for managing transactions, filters, pagination, and modals
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>(
     parsedParams.search ? String(parsedParams.search) : "",
@@ -30,56 +30,48 @@ const Transactions = () => {
     parsedParams.page ? Number(parsedParams.page) : 1,
   );
   const [totalPages, setTotalPages] = useState<number>(1);
-  const itemsPerPage = 10;
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
+  const itemsPerPage = 10;
 
-  // Ref to manage scrolling
+  // Ref to handle scrolling
   const mainRef = useRef<HTMLDivElement>(null);
 
-  // Cache to store previously fetched results
+  // Cache state for storing previously fetched results
   const [cache, setCache] = useState<
     Map<string, { transactions: Transaction[]; totalPages: number }>
   >(new Map());
 
-  // Debounced function to update search query
-  const debouncedSetSearchQuery = useCallback(
-    debounce((query: string) => setSearchQuery(query), 30),
-    [],
-  );
+  // Fetch transactions from the API
+  const fetchTransactions = async (forceRefresh = false) => {
+    const queryParams = new URLSearchParams({
+      page: currentPage.toString(),
+      limit: itemsPerPage.toString(),
+      search: searchQuery,
+      category: categoryFilter,
+      sort: sortOption,
+    });
 
-  // Fetch transactions based on filters
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      const queryParams = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: itemsPerPage.toString(),
-        search: searchQuery,
-        category: categoryFilter,
-        sort: sortOption,
-      });
+    const cacheKey = queryParams.toString();
 
-      const cacheKey = queryParams.toString();
+    if (!forceRefresh && cache.has(cacheKey)) {
+      const cachedData = cache.get(cacheKey);
+      setTransactions(cachedData!.transactions);
+      setTotalPages(cachedData!.totalPages);
+    } else {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/transactions?${queryParams}`,
+      );
+      const data = await response.json();
 
-      // Check if data is cached
-      if (cache.has(cacheKey)) {
-        const cachedData = cache.get(cacheKey);
-        setTransactions(cachedData!.transactions);
-        setTotalPages(cachedData!.totalPages);
-      } else {
-        // Fetch from API if not cached
-        const response = await fetch(
-          `http://localhost:4000/api/v1/transactions?${queryParams}`,
-        );
-        const data = await response.json();
+      if (response.ok) {
+        setTransactions(data.transactions);
+        setTotalPages(data.totalPages);
 
-        if (response.ok) {
-          setTransactions(data.transactions);
-          setTotalPages(data.totalPages);
-
-          // Cache the new data
+        if (!forceRefresh) {
           setCache((prevCache) =>
             new Map(prevCache).set(cacheKey, {
               transactions: data.transactions,
@@ -87,13 +79,15 @@ const Transactions = () => {
             }),
           );
         }
+
+        if (data.transactions.length === 0 && currentPage > 1) {
+          setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+        }
       }
-    };
+    }
+  };
 
-    fetchTransactions();
-  }, [currentPage, searchQuery, categoryFilter, sortOption, cache]);
-
-  // Sync state changes with the URL
+  // Sync state with URL parameters
   useEffect(() => {
     const params = {
       page: currentPage !== 1 ? currentPage.toString() : undefined,
@@ -104,10 +98,7 @@ const Transactions = () => {
 
     const queryParams = queryString.stringify(params);
     navigate(
-      {
-        pathname: location.pathname,
-        search: queryParams,
-      },
+      { pathname: location.pathname, search: queryParams },
       { replace: true },
     );
   }, [
@@ -119,15 +110,18 @@ const Transactions = () => {
     location.pathname,
   ]);
 
+  useEffect(() => {
+    fetchTransactions();
+  }, [currentPage, searchQuery, categoryFilter, sortOption]);
+
+  // Functions to handle Create, Edit, and Delete operations
   const createTransaction = async (newTransaction: Transaction) => {
     try {
       const response = await fetch(
         "http://localhost:4000/api/v1/transactions",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newTransaction),
         },
       );
@@ -135,33 +129,17 @@ const Transactions = () => {
       const data = await response.json();
 
       if (response.ok) {
-        const updatedTransactions = [data, ...transactions];
-
-        // Sort the transactions based on the date
-        const sortedTransactions = updatedTransactions.sort((a, b) => {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        });
-
-        setTransactions(sortedTransactions);
-        setTotalPages((prevTotalPages) =>
-          Math.ceil((prevTotalPages * itemsPerPage + 1) / itemsPerPage),
-        );
+        setCache(new Map()); // Clear cache on create
+        setIsCreateModalOpen(false);
+        await fetchTransactions(true); // Force refresh
       } else {
         alert(`Error: ${data.error}`);
       }
     } catch (error) {
-      // Narrowing the type of error
-      if (error instanceof Error) {
-        console.log(`Error: ${error.message}`);
-      } else {
-        console.log("An unknown error occurred");
-      }
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
     }
-  };
-
-  const openEditModal = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setIsEditModalOpen(true);
   };
 
   const editTransaction = async (updatedTransaction: Transaction) => {
@@ -170,9 +148,7 @@ const Transactions = () => {
         `http://localhost:4000/api/v1/transactions/${updatedTransaction._id}`,
         {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedTransaction),
         },
       );
@@ -180,39 +156,57 @@ const Transactions = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Find the index of the updated transaction in the current state
-        const updatedTransactions = transactions.map((transaction) =>
-          transaction._id === updatedTransaction._id
-            ? data.transaction
-            : transaction,
-        );
-
-        const sortedTransactions = updatedTransactions.sort((a, b) => {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        });
-
-        // Update the state with the new transactions
-        setTransactions(sortedTransactions);
-
-        // Close the edit modal
+        setCache(new Map()); // Clear cache on edit
         setIsEditModalOpen(false);
+        await fetchTransactions(true); // Force refresh
       } else {
         alert(`Error: ${data.error}`);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(`Error: ${error.message}`);
-      } else {
-        console.error("An unknown error occurred");
-      }
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
     }
   };
 
-  // Scroll to top of page
-  const scrollToTop = () => {
-    if (mainRef.current) {
-      mainRef.current.scrollIntoView({ behavior: "smooth" });
+  const deleteTransaction = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/transactions/${selectedTransaction?._id}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (response.ok) {
+        setCache(new Map()); // Clear cache on delete
+        setIsDeleteModalOpen(false);
+        await fetchTransactions(true); // Force refresh
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
     }
+  };
+
+  // Functions to open modals
+  const openEditModal = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsEditModalOpen(true);
+  };
+
+  const openDeleteModal = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    mainRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -232,37 +226,52 @@ const Transactions = () => {
           + Add New
         </button>
       </div>
+
       <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
         <TransactionSearchBar
           searchQuery={searchQuery}
-          setSearchQuery={debouncedSetSearchQuery}
+          setSearchQuery={setSearchQuery}
           categoryFilter={categoryFilter}
           setCategoryFilter={setCategoryFilter}
           sortOption={sortOption}
           setSortOption={setSortOption}
         />
-        <TransactionsList transactions={transactions} onEdit={openEditModal} />
-        {transactions.length > 0 ? (
+
+        <TransactionsList
+          transactions={transactions}
+          onEdit={openEditModal}
+          onDelete={openDeleteModal}
+        />
+
+        {transactions.length > 0 && (
           <TransactionsPagination
             currentPage={currentPage}
             totalPages={totalPages}
             setCurrentPage={setCurrentPage}
             scrollToTop={scrollToTop}
           />
-        ) : (
-          ""
         )}
       </div>
+
+      {/* Modal Components */}
       <CreateTransactionModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onCreateTransaction={createTransaction}
       />
+
       <EditTransactionModal
         isOpen={isEditModalOpen}
         selectedTransaction={selectedTransaction}
         onClose={() => setIsEditModalOpen(false)}
         onEditTransaction={editTransaction}
+      />
+
+      <DeleteTransactionModal
+        isOpen={isDeleteModalOpen}
+        selectedTransaction={selectedTransaction}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDeleteTransaction={deleteTransaction}
       />
     </main>
   );
