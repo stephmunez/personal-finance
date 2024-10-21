@@ -96,12 +96,19 @@ const CreateTransactionModal = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-black/50">
-      <div className="flex h-screen min-h-[480px] w-full flex-col items-center justify-center px-5 py-20">
-        <div className="flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6">
+    <div
+      aria-hidden={!isOpen}
+      className={`fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-black/50 transition-opacity duration-300 ${isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="flex h-screen min-h-[480px] w-full flex-col items-center justify-center px-5 py-20"
+      >
+        <div
+          className={`flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 ${isOpen ? "translate-y-0" : "translate-y-5"}`}
+        >
           <div className="flex w-full flex-col gap-5">
             <div className="flex w-full items-center justify-between">
               <h2 className="text-xl font-bold leading-[1.2] text-grey-900">
