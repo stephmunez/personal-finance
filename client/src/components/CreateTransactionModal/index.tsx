@@ -74,7 +74,7 @@ const CreateTransactionModal = ({
           modalRef.current &&
           !modalRef.current.contains(event.target as Node)
         ) {
-          onClose();
+          handleClose();
         }
       };
 
@@ -106,6 +106,11 @@ const CreateTransactionModal = ({
 
     setErrors(newErrors);
     return valid;
+  };
+
+  const handleClose = () => {
+    setErrors({ name: "", amount: "", date: "" });
+    onClose();
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -153,7 +158,7 @@ const CreateTransactionModal = ({
                 Add New Transaction
               </h2>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="flex h-8 w-8 items-center justify-center"
               >
                 <img
