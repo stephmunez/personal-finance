@@ -40,6 +40,12 @@ const EditTransactionModal = ({
   const [placeholder, setPlaceholder] = useState<string>("");
   const [transactionType, setTransactionType] = useState<string>("Expense");
 
+  const [errors, setErrors] = useState({
+    name: "",
+    amount: "",
+    date: "",
+  });
+
   const categories = [
     "Entertainment",
     "Bills",
@@ -105,16 +111,36 @@ const EditTransactionModal = ({
     };
   }, [isOpen, onClose]);
 
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { name: "", amount: "", date: "" };
+
+    if (!name.trim()) {
+      newErrors.name = "Transaction name is required.";
+      valid = false;
+    }
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      newErrors.amount = "Please enter a valid amount.";
+      valid = false;
+    }
+    if (!date) {
+      newErrors.date = "Date is required.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (name && category && date && amount) {
+    if (validateForm()) {
       const formattedDate = date?.toISOString();
       const formattedAmount =
         transactionType === "Expense"
           ? -Math.abs(Number(amount))
           : Number(amount);
-
       onEditTransaction({
         _id: selectedTransaction?._id,
         name,
@@ -122,9 +148,9 @@ const EditTransactionModal = ({
         date: formattedDate!,
         amount: formattedAmount,
       });
+
+      setErrors({ name: "", amount: "", date: "" });
       onClose();
-    } else {
-      alert("Please fill in all fields.");
     }
   };
 
@@ -180,10 +206,14 @@ const EditTransactionModal = ({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full rounded-lg border border-beige-500 px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none"
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.name ? "border-red" : "border-beige-500"}`}
                   placeholder={`e.g. ${placeholder}`}
                 />
+                {errors.name && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.name}
+                  </span>
+                )}
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold leading-normal text-grey-500">
@@ -236,6 +266,9 @@ const EditTransactionModal = ({
                     }}
                   />
                 </LocalizationProvider>
+                {errors.date && (
+                  <span className="text-red-500 text-xs">{errors.date}</span>
+                )}
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold leading-normal text-grey-500">
@@ -245,14 +278,18 @@ const EditTransactionModal = ({
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  required
                   placeholder="e.g. 100"
-                  className="w-full rounded-lg border border-beige-500 px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none"
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.amount ? "border-red" : "border-beige-500"}`}
                   style={{
                     WebkitAppearance: "none",
                     MozAppearance: "textfield",
                   }}
                 />
+                {errors.amount && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.amount}
+                  </span>
+                )}
               </div>
             </div>
             <button
