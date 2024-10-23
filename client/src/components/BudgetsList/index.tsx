@@ -61,7 +61,12 @@ const BudgetsList = ({
                   <div
                     style={{
                       backgroundColor: getThemeByCategory(budget.category),
-                      width: `${((Math.abs(totalSpent[budget.category]) || 0) / Math.abs(budget.maximum)) * 100}%`,
+                      width: `${Math.min(
+                        ((Math.abs(totalSpent[budget.category]) || 0) /
+                          Math.abs(budget.maximum)) *
+                          100,
+                        100,
+                      )}%`,
                     }}
                     className="h-full rounded-[4px]"
                   ></div>
@@ -91,9 +96,10 @@ const BudgetsList = ({
                     </span>
                     <span className="text-sm font-bold leading-[1.5] tracking-normal text-grey-900">
                       P
-                      {Math.abs(
+                      {Math.max(
                         budget.maximum +
                           (Number(totalSpent[budget.category]) || 0),
+                        0,
                       ).toFixed(2)}
                     </span>
                   </div>
