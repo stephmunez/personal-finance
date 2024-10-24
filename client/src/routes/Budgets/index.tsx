@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import BudgetsList from "../../components/BudgetsList";
 import BudgetsSummary from "../../components/BudgetsSummary";
+import DeleteBudgetModal from "../../components/DeleteBudgetModal";
 import EditBudgetModal from "../../components/EditBudgetModal";
 
 // Interfaces for Budget and Transaction types
@@ -88,7 +89,7 @@ const Budgets = () => {
     fetchBudgetsAndTransactions();
   }, []);
 
-  const EditBudget = async (updatedBudget: Budget) => {
+  const editBudget = async (updatedBudget: Budget) => {
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/budgets/${updatedBudget._id}`,
@@ -105,6 +106,29 @@ const Budgets = () => {
         setIsEditModalOpen(false);
         await fetchBudgetsAndTransactions();
       } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
+
+  const deleteBudget = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/budgets/${selectedBudget?._id}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (response.ok) {
+        setIsDeleteModalOpen(false);
+        await fetchBudgetsAndTransactions();
+      } else {
+        const data = await response.json();
         alert(`Error: ${data.error}`);
       }
     } catch (error) {
@@ -152,7 +176,13 @@ const Budgets = () => {
         isOpen={isEditModalOpen}
         selectedBudget={selectedBudget}
         onClose={() => setIsEditModalOpen(false)}
-        onEditBudget={EditBudget}
+        onEditBudget={editBudget}
+      />
+      <DeleteBudgetModal
+        isOpen={isDeleteModalOpen}
+        selectedBudget={selectedBudget}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDeleteBudget={deleteBudget}
       />
     </main>
   );
