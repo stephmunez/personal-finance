@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import iconCaretRight from "../../assets/images/icon-caret-right.svg";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
@@ -8,13 +9,45 @@ interface BudgetsSummaryProps {
   budgets: Budget[] | null;
   transactions: Transaction[] | null;
   totalSpent: { [key: string]: number };
+  onEdit: (budget: Budget) => void;
+  onDelete: (budget: Budget) => void;
 }
 
 const BudgetsList = ({
   budgets,
   transactions,
   totalSpent,
+  onEdit,
+  onDelete,
 }: BudgetsSummaryProps) => {
+  const [selectedBudget, setSelectedBudget] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const handleBudgetClick = (budgetId: string) => {
+    if (selectedBudget === budgetId) {
+      setSelectedBudget(null);
+    } else {
+      setSelectedBudget(budgetId);
+    }
+  };
+
+  // Close the dropdown when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setSelectedBudget(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="flex w-full flex-col gap-6">
       {budgets &&
@@ -34,7 +67,7 @@ const BudgetsList = ({
           return (
             <div
               key={budget._id}
-              className="flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6"
+              className="relative flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6"
             >
               <div className="flex w-full items-center justify-between">
                 <div className="flex w-full items-center gap-4">
@@ -48,7 +81,11 @@ const BudgetsList = ({
                     {budget.category}
                   </h3>
                 </div>
-                <button type="button" className="h-4 w-4">
+                <button
+                  type="button"
+                  className="h-4 w-4"
+                  onClick={() => handleBudgetClick(budget._id || "")}
+                >
                   <img src={iconEllipsis} alt="ellipsis icon" />
                 </button>
               </div>
@@ -147,6 +184,28 @@ const BudgetsList = ({
                     </li>
                   )}
                 </ul>
+              </div>
+
+              <div
+                ref={dropdownRef}
+                aria-hidden={!selectedBudget}
+                className={`absolute right-5 top-12 z-10 flex cursor-auto flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
+                  selectedBudget === budget._id ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <button
+                  className="text-left text-sm leading-normal text-grey-900"
+                  onClick={() => onEdit(budget)}
+                >
+                  Edit Budget
+                </button>
+                <div className="pointer-events-none h-px w-full bg-grey-100"></div>
+                <button
+                  className="text-left text-sm leading-normal text-red"
+                  onClick={() => onDelete(budget)}
+                >
+                  Delete Budget
+                </button>
               </div>
             </div>
           );

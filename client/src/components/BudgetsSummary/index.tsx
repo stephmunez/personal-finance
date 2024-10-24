@@ -43,6 +43,7 @@ const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
             legend: { hidden: true },
           }}
           tooltip={{ trigger: "none" }}
+          height={288}
         />
         <div className="absolute top-1/2 flex h-48 w-48 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-full bg-white/25">
           <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
