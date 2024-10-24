@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import BudgetsList from "../../components/BudgetsList";
 import BudgetsSummary from "../../components/BudgetsSummary";
+import EditBudgetModal from "../../components/EditBudgetModal";
 
 // Interfaces for Budget and Transaction types
 interface Budget {
@@ -36,56 +37,95 @@ const Budgets = () => {
   const [budgets, setBudgets] = useState<Budget[] | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalSpent, setTotalSpent] = useState<{ [key: string]: number }>({});
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
 
   // Fetch budgets and transactions on component mount
-  useEffect(() => {
-    const fetchBudgetsAndTransactions = async () => {
-      try {
-        // Fetch and sort budgets by defined category order
-        const budgetsResponse = await fetch(
-          "http://localhost:4000/api/v1/budgets",
-        );
-        const budgetsData = await budgetsResponse.json();
-        if (budgetsResponse.ok) {
-          const sortedBudgets = budgetsData.budgets.sort(
-            (a: Budget, b: Budget) => {
-              return (
-                categoryOrder.indexOf(a.category) -
-                categoryOrder.indexOf(b.category)
-              );
-            },
-          );
-          setBudgets(sortedBudgets);
-        }
 
-        // Fetch transactions and calculate total spent for each category
-        const transactionsResponse = await fetch(
-          "http://localhost:4000/api/v1/transactions",
+  const fetchBudgetsAndTransactions = async () => {
+    try {
+      // Fetch and sort budgets by defined category order
+      const budgetsResponse = await fetch(
+        "http://localhost:4000/api/v1/budgets",
+      );
+      const budgetsData = await budgetsResponse.json();
+      if (budgetsResponse.ok) {
+        const sortedBudgets = budgetsData.budgets.sort(
+          (a: Budget, b: Budget) => {
+            return (
+              categoryOrder.indexOf(a.category) -
+              categoryOrder.indexOf(b.category)
+            );
+          },
         );
-        const transactionsData = await transactionsResponse.json();
-        if (transactionsResponse.ok) {
-          const transactions = transactionsData.transactions;
-          const spent = transactions.reduce(
-            (acc: { [key: string]: number }, transaction: Transaction) => {
-              acc[transaction.category] =
-                (acc[transaction.category] || 0) + transaction.amount;
-              return acc;
-            },
-            {},
-          );
-          setTotalSpent(spent);
-          setTransactions(transactions);
-        }
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
+        setBudgets(sortedBudgets);
       }
-    };
 
+      // Fetch transactions and calculate total spent for each category
+      const transactionsResponse = await fetch(
+        "http://localhost:4000/api/v1/transactions",
+      );
+      const transactionsData = await transactionsResponse.json();
+      if (transactionsResponse.ok) {
+        const transactions = transactionsData.transactions;
+        const spent = transactions.reduce(
+          (acc: { [key: string]: number }, transaction: Transaction) => {
+            acc[transaction.category] =
+              (acc[transaction.category] || 0) + transaction.amount;
+            return acc;
+          },
+          {},
+        );
+        setTotalSpent(spent);
+        setTransactions(transactions);
+      }
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+  useEffect(() => {
     fetchBudgetsAndTransactions();
   }, []);
 
+  const EditBudget = async (updatedBudget: Budget) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/budgets/${updatedBudget._id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedBudget),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsEditModalOpen(false);
+        await fetchBudgetsAndTransactions();
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
+
+  const openEditModal = (budget: Budget) => {
+    setSelectedBudget(budget);
+    setIsEditModalOpen(true);
+  };
+
+  const openDeleteModal = (budget: Budget) => {
+    setSelectedBudget(budget);
+    setIsDeleteModalOpen(true);
+  };
+
   return (
-    <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
+    <main className="relative flex w-full flex-col gap-8 px-4 pb-20 pt-6">
       <div className="flex items-center justify-between">
         <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
           Budgets
@@ -103,8 +143,17 @@ const Budgets = () => {
           budgets={budgets}
           transactions={transactions}
           totalSpent={totalSpent}
+          onEdit={openEditModal}
+          onDelete={openDeleteModal}
         />
       </div>
+
+      <EditBudgetModal
+        isOpen={isEditModalOpen}
+        selectedBudget={selectedBudget}
+        onClose={() => setIsEditModalOpen(false)}
+        onEditBudget={EditBudget}
+      />
     </main>
   );
 };
