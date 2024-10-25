@@ -26,7 +26,7 @@ export interface Pot {
 }
 
 export interface Budget {
-  _id: string;
+  _id?: string;
   category: string;
   maximum: number;
   theme: string;
