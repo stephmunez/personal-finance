@@ -46,6 +46,7 @@ const EditBudgetModal = ({
       // Set the form fields with the selected transaction's data
       setCategory(selectedBudget.category);
       setTheme(selectedBudget.theme);
+      setMaximum(selectedBudget.maximum.toString());
     } else {
       document.body.style.overflow = "";
     }
