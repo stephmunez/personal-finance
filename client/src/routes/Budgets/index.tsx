@@ -1,23 +1,10 @@
 import { useEffect, useState } from "react";
 import BudgetsList from "../../components/BudgetsList";
 import BudgetsSummary from "../../components/BudgetsSummary";
+import CreateBudgetModal from "../../components/CreateBudgetModal";
 import DeleteBudgetModal from "../../components/DeleteBudgetModal";
 import EditBudgetModal from "../../components/EditBudgetModal";
-
-// Interfaces for Budget and Transaction types
-interface Budget {
-  _id: string;
-  category: string;
-  maximum: number;
-  theme: string;
-}
-
-interface Transaction {
-  category: string;
-  amount: number;
-  date: string;
-  name: string;
-}
+import { Budget, Transaction } from "../../types";
 
 // Define order of categories for sorting budgets
 const categoryOrder = [
@@ -38,9 +25,11 @@ const Budgets = () => {
   const [budgets, setBudgets] = useState<Budget[] | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalSpent, setTotalSpent] = useState<{ [key: string]: number }>({});
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
+  const [existingCategories, setExistingCategories] = useState<string[]>([]);
 
   // Fetch budgets and transactions on component mount
 
@@ -61,15 +50,22 @@ const Budgets = () => {
           },
         );
         setBudgets(sortedBudgets);
+
+        const uniqueCategories = Array.from(
+          new Set(sortedBudgets.map((budget: Budget) => budget.category)),
+        ) as string[];
+        setExistingCategories(uniqueCategories);
       }
 
-      // Fetch transactions and calculate total spent for each category
+      // Fetch transactions and filter only negative amounts
       const transactionsResponse = await fetch(
         "http://localhost:4000/api/v1/transactions",
       );
       const transactionsData = await transactionsResponse.json();
       if (transactionsResponse.ok) {
-        const transactions = transactionsData.transactions;
+        const transactions = transactionsData.transactions.filter(
+          (transaction: Transaction) => transaction.amount < 0,
+        );
         const spent = transactions.reduce(
           (acc: { [key: string]: number }, transaction: Transaction) => {
             acc[transaction.category] =
@@ -85,9 +81,33 @@ const Budgets = () => {
       console.error("Failed to fetch data:", error);
     }
   };
+
   useEffect(() => {
     fetchBudgetsAndTransactions();
   }, []);
+
+  const createBudget = async (newBudget: Budget) => {
+    try {
+      const response = await fetch("http://localhost:4000/api/v1/budgets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBudget),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsCreateModalOpen(false);
+        await fetchBudgetsAndTransactions();
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
 
   const editBudget = async (updatedBudget: Budget) => {
     try {
@@ -157,6 +177,7 @@ const Budgets = () => {
         <button
           type="button"
           className="h-14 rounded-lg bg-black p-4 text-[0.875rem] font-bold leading-normal tracking-normal text-white"
+          onClick={() => setIsCreateModalOpen(true)}
         >
           + Add New
         </button>
@@ -172,6 +193,12 @@ const Budgets = () => {
         />
       </div>
 
+      <CreateBudgetModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreateBudget={createBudget}
+        existingCategories={existingCategories}
+      />
       <EditBudgetModal
         isOpen={isEditModalOpen}
         selectedBudget={selectedBudget}

@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import iconCaretDown from "../../assets/images/icon-caret-down.svg";
 
-interface CustomDropdownProps {
+interface CustomFormSelectProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
+  existingCategories: string[];
 }
 
-const CustomDropdown = ({ options, value, onChange }: CustomDropdownProps) => {
+const CustomFormSelect = ({
+  options,
+  value,
+  onChange,
+  existingCategories,
+}: CustomFormSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -56,9 +62,9 @@ const CustomDropdown = ({ options, value, onChange }: CustomDropdownProps) => {
             <li
               key={option}
               onClick={() => handleOptionClick(option)}
-              className={`cursor-pointer py-3 text-sm leading-normal text-grey-900 ${
+              className={`cursor-pointer py-3 text-sm leading-normal ${
                 i !== options.length - 1 ? "border-b" : ""
-              } ${option === value ? "font-bold" : ""}`}
+              } ${option === value ? "font-bold" : ""} ${existingCategories.includes(option) ? "pointer-events-none text-grey-500" : "pointer-events-auto text-grey-900"}`}
             >
               {option}
             </li>
@@ -69,4 +75,4 @@ const CustomDropdown = ({ options, value, onChange }: CustomDropdownProps) => {
   );
 };
 
-export default CustomDropdown;
+export default CustomFormSelect;
