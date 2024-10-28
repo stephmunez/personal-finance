@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
 import { Pot } from "../../types";
 
@@ -19,6 +19,23 @@ const PotsList = ({ pots, onEdit, onDelete }: PotsListProps) => {
       setSelectedPot(potId);
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setSelectedPot(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="flex w-full flex-col gap-6">
       {pots && pots.length > 0 ? (
