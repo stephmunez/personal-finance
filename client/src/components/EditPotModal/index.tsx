@@ -188,7 +188,11 @@ const EditPotModal = ({
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex w-full flex-col gap-5">
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full flex-col gap-5"
+            noValidate
+          >
             <div className="flex w-full flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold leading-normal text-grey-500">
@@ -215,7 +219,7 @@ const EditPotModal = ({
                   value={target}
                   onChange={(e) => setTarget(e.target.value)}
                   placeholder="e.g. 100"
-                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.amount ? "border-red" : "border-beige-500"}`}
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.target ? "border-red" : "border-beige-500"}`}
                   style={{
                     WebkitAppearance: "none",
                     MozAppearance: "textfield",
