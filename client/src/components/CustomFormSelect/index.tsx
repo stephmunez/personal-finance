@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import iconCaretDown from "../../assets/images/icon-caret-down.svg";
+import { getColorByName } from "../../utils";
 
 interface CustomFormSelectProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
   existingCategories?: string[];
+  isColorTag?: boolean;
 }
 
 const CustomFormSelect = ({
@@ -13,6 +15,7 @@ const CustomFormSelect = ({
   value,
   onChange,
   existingCategories,
+  isColorTag,
 }: CustomFormSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -49,7 +52,16 @@ const CustomFormSelect = ({
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between rounded-lg border border-beige-500 px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-grey-500 focus:outline-none"
       >
-        {value}
+        <div className="flex items-center gap-3">
+          {isColorTag && (
+            <span
+              className="h-4 w-4 rounded-full"
+              style={{ backgroundColor: `${getColorByName(value)}` }}
+            ></span>
+          )}
+          <span> {value}</span>
+        </div>
+
         <img
           className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
           src={iconCaretDown}

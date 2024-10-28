@@ -1,18 +1,48 @@
+import { useEffect, useRef, useState } from "react";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
 import { Pot } from "../../types";
 
 interface PotsListProps {
   pots: Pot[] | null;
+  onEdit: (pot: Pot) => void;
+  onDelete: (pot: Pot) => void;
 }
 
-const PotsList = ({ pots }: PotsListProps) => {
+const PotsList = ({ pots, onEdit, onDelete }: PotsListProps) => {
+  const [selectedPot, setSelectedPot] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const handlePotClick = (potId: string) => {
+    if (selectedPot === potId) {
+      setSelectedPot(null);
+    } else {
+      setSelectedPot(potId);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setSelectedPot(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="flex w-full flex-col gap-6">
       {pots && pots.length > 0 ? (
         pots.map((pot) => (
           <div
             key={pot._id}
-            className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6"
+            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -24,7 +54,10 @@ const PotsList = ({ pots }: PotsListProps) => {
                   {pot.name}
                 </h2>
               </div>
-              <button className="flex h-4 w-4 items-center justify-center">
+              <button
+                className="flex h-4 w-4 items-center justify-center"
+                onClick={() => handlePotClick(pot._id || "")}
+              >
                 <img src={iconEllipsis} alt="ellipsis icon" />
               </button>
             </div>
@@ -63,6 +96,28 @@ const PotsList = ({ pots }: PotsListProps) => {
               </button>
               <button className="flex h-14 flex-1 items-center justify-center rounded-lg bg-beige-100 text-sm font-bold leading-normal tracking-normal text-grey-900">
                 Withdraw
+              </button>
+            </div>
+
+            <div
+              ref={dropdownRef}
+              aria-hidden={!selectedPot}
+              className={`absolute right-5 top-12 z-10 flex cursor-auto flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
+                selectedPot === pot._id ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <button
+                className="text-left text-sm leading-normal text-grey-900"
+                onClick={() => onEdit(pot)}
+              >
+                Edit Pot
+              </button>
+              <div className="pointer-events-none h-px w-full bg-grey-100"></div>
+              <button
+                className="text-left text-sm leading-normal text-red"
+                onClick={() => onDelete(pot)}
+              >
+                Delete Pot
               </button>
             </div>
           </div>
