@@ -64,6 +64,80 @@ export const getThemeByCategory = (category: string) => {
   }
 };
 
+export const getColorByName = (name: string) => {
+  switch (name) {
+    case "Green":
+      return "#277C78";
+    case "Yellow":
+      return "#F2CDAC";
+    case "Cyan":
+      return "#82C9D7";
+    case "Navy":
+      return "#626070";
+    case "Red":
+      return "#C94736";
+    case "Purple":
+      return "#826CB0";
+    case "Turquoise":
+      return "#597C7C";
+    case "Brown":
+      return "#93674F";
+    case "Magenta":
+      return "#934F6F";
+    case "Blue":
+      return "3F82B2";
+    case "Grey":
+      return "#97A0AC";
+    case "Army":
+      return "#7F9161";
+    case "Pink":
+      return "#AF81BA";
+    case "Gold":
+      return "#CAB361";
+    case "Orange":
+      return "#BE6C49";
+    default:
+      return "";
+  }
+};
+
+export const getNameByColor = (color: string) => {
+  switch (color) {
+    case "#277C78":
+      return "Green";
+    case "#F2CDAC":
+      return "Yellow";
+    case "#82C9D7":
+      return "Cyan";
+    case "#626070":
+      return "Navy";
+    case "#C94736":
+      return "Red";
+    case "#826CB0":
+      return "Purple";
+    case "#597C7C":
+      return "Turquoise";
+    case "#93674F":
+      return "Brown";
+    case "#934F6F":
+      return "Magenta";
+    case "3F82B2":
+      return "Blue";
+    case "#97A0AC":
+      return "Grey";
+    case "#7F9161":
+      return "Army";
+    case "#AF81BA":
+      return "Pink";
+    case "#CAB361":
+      return "Gold";
+    case "#BE6C49":
+      return "Orange";
+    default:
+      return "";
+  }
+};
+
 const today = new Date();
 const todayDay = today.getDate();
 const todayMonth = today.getMonth();
