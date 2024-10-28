@@ -76,13 +76,13 @@ const PotsList = ({ pots, onEdit, onDelete }: PotsListProps) => {
                     className="h-2 rounded-[4px]"
                     style={{
                       backgroundColor: pot.theme,
-                      width: `${(pot.total / pot.target) * 100}%`,
+                      width: `${Math.min((pot.total / pot.target) * 100, 100)}%`,
                     }}
                   ></div>
                 </div>
                 <div className="flex w-full items-center justify-between">
                   <span className="text-xs font-bold leading-normal tracking-normal text-grey-500">
-                    {((pot.total / pot.target) * 100).toFixed(1)}%
+                    {`${Math.min((pot.total / pot.target) * 100, 100).toFixed(1)}%`}
                   </span>
                   <span className="text-xs leading-normal tracking-normal text-grey-500">
                     Target of P{pot.target}
