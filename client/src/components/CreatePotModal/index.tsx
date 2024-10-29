@@ -7,7 +7,7 @@ import CustomFormSelect from "../CustomFormSelect";
 interface CreatePotModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreatePot: (budget: Pot) => void;
+  onCreatePot: (pot: Pot) => void;
   existingColors: string[];
 }
 
@@ -57,7 +57,6 @@ const CreateTransactionModal = ({
   const [errors, setErrors] = useState({
     name: "",
     target: "",
-
     theme: "",
   });
 
@@ -81,8 +80,9 @@ const CreateTransactionModal = ({
       const randomPlaceholder =
         potPlaceholders[Math.floor(Math.random() * potPlaceholders.length)];
       setPlaceholder(randomPlaceholder);
-      setColor(getNextAvailableColor());
-      setTheme(getColorByName(color));
+      const nextColor = getNextAvailableColor();
+      setColor(nextColor);
+      setTheme(getColorByName(nextColor)); // Set theme based on initial color
 
       const handleClickOutside = (event: MouseEvent) => {
         if (
@@ -101,6 +101,12 @@ const CreateTransactionModal = ({
       };
     }
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (color) {
+      setTheme(getColorByName(color));
+    }
+  }, [color]);
 
   const validateForm = () => {
     let valid = true;
@@ -141,6 +147,7 @@ const CreateTransactionModal = ({
         theme,
       });
 
+      setName("");
       setColor(getNextAvailableColor());
       setTarget("");
       setErrors({ name: "", target: "", theme: "" });
@@ -212,7 +219,7 @@ const CreateTransactionModal = ({
                   value={target}
                   onChange={(e) => setTarget(e.target.value)}
                   placeholder="e.g. 100"
-                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.amount ? "border-red" : "border-beige-500"}`}
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.target ? "border-red" : "border-beige-500"}`}
                   style={{
                     WebkitAppearance: "none",
                     MozAppearance: "textfield",
@@ -231,7 +238,10 @@ const CreateTransactionModal = ({
                 <CustomFormSelect
                   options={colors}
                   value={color}
-                  onChange={setColor}
+                  onChange={(selectedColor) => {
+                    setColor(selectedColor);
+                    setTheme(getColorByName(selectedColor)); // Ensure theme updates with color change
+                  }}
                   existingColors={existingColors}
                   isColorTag
                 />
