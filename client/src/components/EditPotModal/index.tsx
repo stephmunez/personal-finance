@@ -99,7 +99,7 @@ const EditPotModal = ({
     }
 
     if (!theme.trim()) {
-      newErrors.name = "Pot theme is required.";
+      newErrors.theme = "Pot theme is required.";
       valid = false;
     }
 
