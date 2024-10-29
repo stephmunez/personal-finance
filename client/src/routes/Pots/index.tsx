@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import DeletePotModal from "../../components/DeletePotModal";
 import EditPotModal from "../../components/EditPotModal";
 import PotsList from "../../components/PotsList";
 import { Pot } from "../../types";
@@ -48,6 +49,29 @@ const Pots = () => {
     }
   };
 
+  const deletePot = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/pots/${selectedPot?._id}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (response.ok) {
+        setIsDeleteModalOpen(false);
+        await fetchPots();
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
+
   const openEditModal = (pot: Pot) => {
     setSelectedPot(pot);
     setIsEditModalOpen(true);
@@ -72,11 +96,18 @@ const Pots = () => {
         </button>
       </div>
       <PotsList pots={pots} onEdit={openEditModal} onDelete={openDeleteModal} />
+
       <EditPotModal
         isOpen={isEditModalOpen}
         selectedPot={selectedPot}
         onClose={() => setIsEditModalOpen(false)}
         onEditPot={editPot}
+      />
+      <DeletePotModal
+        isOpen={isDeleteModalOpen}
+        selectedPot={selectedPot}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDeletePot={deletePot}
       />
     </main>
   );
