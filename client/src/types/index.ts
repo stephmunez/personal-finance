@@ -18,7 +18,7 @@ export interface RecurringBill {
 }
 
 export interface Pot {
-  _id: string;
+  _id?: string;
   name: string;
   target: number;
   total: number;
