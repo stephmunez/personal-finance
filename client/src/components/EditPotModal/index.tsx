@@ -7,7 +7,7 @@ import CustomFormSelect from "../CustomFormSelect";
 interface EditPotModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEditPot: (budget: Pot) => void;
+  onEditPot: (pot: Pot) => void;
   selectedPot: Pot | null;
   existingColors: string[];
 }
@@ -45,7 +45,6 @@ const EditPotModal = ({
   const [errors, setErrors] = useState({
     name: "",
     target: "",
-    total: "",
     theme: "",
   });
 
@@ -102,11 +101,6 @@ const EditPotModal = ({
 
     if (!theme.trim()) {
       newErrors.theme = "Pot theme is required.";
-      valid = false;
-    }
-
-    if (!total || isNaN(Number(total)) || Number(total) <= 0) {
-      newErrors.total = "Please enter a valid amount.";
       valid = false;
     }
 
