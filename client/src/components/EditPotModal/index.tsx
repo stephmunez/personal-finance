@@ -9,6 +9,7 @@ interface EditPotModalProps {
   onClose: () => void;
   onEditPot: (budget: Pot) => void;
   selectedPot: Pot | null;
+  existingColors: string[];
 }
 const colors = [
   "Green",
@@ -33,6 +34,7 @@ const EditPotModal = ({
   onClose,
   onEditPot,
   selectedPot,
+  existingColors,
 }: EditPotModalProps) => {
   const [name, setName] = useState("");
   const [target, setTarget] = useState("");
@@ -239,7 +241,9 @@ const EditPotModal = ({
                   options={colors}
                   value={color}
                   onChange={handleColorChange}
+                  existingColors={existingColors}
                   isColorTag={true}
+                  currentTheme={selectedPot?.theme}
                 />
               </div>
             </div>

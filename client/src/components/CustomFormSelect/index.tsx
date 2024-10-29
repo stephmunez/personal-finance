@@ -9,6 +9,7 @@ interface CustomFormSelectProps {
   existingCategories?: string[];
   existingColors?: string[];
   isColorTag?: boolean;
+  currentTheme?: string;
 }
 
 const CustomFormSelect = ({
@@ -18,6 +19,7 @@ const CustomFormSelect = ({
   existingCategories,
   isColorTag,
   existingColors,
+  currentTheme,
 }: CustomFormSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -78,7 +80,7 @@ const CustomFormSelect = ({
               onClick={() => handleOptionClick(option)}
               className={`cursor-pointer py-3 text-sm leading-normal ${
                 i !== options.length - 1 ? "border-b" : ""
-              } ${option === value ? "font-bold" : ""} ${existingCategories?.includes(option) || existingColors?.includes(option) ? "pointer-events-none text-grey-500" : "pointer-events-auto text-grey-900"}`}
+              } ${option === value ? "font-bold" : ""} ${existingCategories?.includes(option) || (existingColors?.includes(option) && getColorByName(option) !== currentTheme) ? "pointer-events-none text-grey-500" : "pointer-events-auto text-grey-900"}`}
             >
               {option}
             </li>
