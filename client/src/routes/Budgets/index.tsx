@@ -204,6 +204,7 @@ const Budgets = () => {
         selectedBudget={selectedBudget}
         onClose={() => setIsEditModalOpen(false)}
         onEditBudget={editBudget}
+        existingCategories={existingCategories}
       />
       <DeleteBudgetModal
         isOpen={isDeleteModalOpen}
