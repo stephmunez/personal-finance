@@ -8,6 +8,7 @@ interface EditBudgetModalProps {
   onClose: () => void;
   onEditBudget: (budget: Budget) => void;
   selectedBudget: Budget | null;
+  existingCategories: string[];
 }
 
 const categories = [
@@ -28,6 +29,7 @@ const EditBudgetModal = ({
   onClose,
   onEditBudget,
   selectedBudget,
+  existingCategories,
 }: EditBudgetModalProps) => {
   const [category, setCategory] = useState("General");
   const [maximum, setMaximum] = useState("");
@@ -164,6 +166,7 @@ const EditBudgetModal = ({
                   options={categories}
                   value={category}
                   onChange={setCategory}
+                  existingCategories={existingCategories}
                 />
               </div>
 

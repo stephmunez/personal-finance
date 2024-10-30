@@ -201,12 +201,20 @@ const CreateTransactionModal = ({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.name ? "border-red" : "border-beige-500"}`}
+                  maxLength={30}
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${
+                    errors.name ? "border-red" : "border-beige-500"
+                  }`}
                   placeholder={`e.g. ${placeholder}`}
                 />
-                {errors.name && (
+
+                {errors.name ? (
                   <span className="text-xs leading-normal text-red">
                     {errors.name}
+                  </span>
+                ) : (
+                  <span className="self-end text-xs text-grey-500">
+                    {30 - name.length} of 30 characters left
                   </span>
                 )}
               </div>
