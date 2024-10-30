@@ -90,6 +90,12 @@ const EditPotModal = ({
     };
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (color) {
+      setTheme(getColorByName(color));
+    }
+  }, [color]);
+
   const validateForm = () => {
     let valid = true;
     const newErrors = { name: "", target: "", total: "", theme: "" };
@@ -234,10 +240,12 @@ const EditPotModal = ({
                 <CustomFormSelect
                   options={colors}
                   value={color}
-                  onChange={handleColorChange}
+                  onChange={(selectedColor) => {
+                    setColor(selectedColor);
+                    setTheme(getColorByName(selectedColor));
+                  }}
                   existingColors={existingColors}
-                  isColorTag={true}
-                  currentTheme={selectedPot?.theme}
+                  isColorTag
                 />
               </div>
             </div>

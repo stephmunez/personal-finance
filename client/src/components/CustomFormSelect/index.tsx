@@ -81,13 +81,19 @@ const CustomFormSelect = ({
               onClick={() => handleOptionClick(option)}
               className={`flex w-full cursor-pointer items-center justify-between py-3 text-sm leading-normal ${
                 i !== options.length - 1 ? "border-b" : ""
-              } ${option === value ? "font-bold" : ""} ${existingCategories?.includes(option) || (existingColors?.includes(option) && getColorByName(option) !== currentTheme) ? "pointer-events-none text-grey-500" : "pointer-events-auto text-grey-900"}`}
+              } ${option === value ? "font-bold" : ""} ${
+                (existingCategories?.includes(option) ||
+                  existingColors?.includes(option)) &&
+                option !== value
+                  ? "pointer-events-none text-grey-500"
+                  : "pointer-events-auto text-grey-900"
+              }`}
             >
               {option}
 
               {(existingCategories?.includes(option) ||
                 existingColors?.includes(option)) &&
-                option !== currentTheme && <span>Already used</span>}
+                option !== value && <span>Already used</span>}
 
               {option === value && (
                 <span className="h-4 w-4">
