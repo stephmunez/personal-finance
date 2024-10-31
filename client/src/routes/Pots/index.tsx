@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AddToPot from "../../components/AddToPotModal";
 import CreatePotModal from "../../components/CreatePotModal";
 import DeletePotModal from "../../components/DeletePotModal";
 import EditPotModal from "../../components/EditPotModal";
@@ -9,6 +10,8 @@ import { getNameByColor } from "../../utils";
 const Pots = () => {
   const [pots, setPots] = useState<Pot[] | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [isAddToPotModalOpen, setIsAddToPotModalOpen] =
+    useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedPot, setSelectedPot] = useState<Pot | null>(null);
@@ -114,6 +117,11 @@ const Pots = () => {
     setIsDeleteModalOpen(true);
   };
 
+  const openAddToPotModal = (pot: Pot) => {
+    setSelectedPot(pot);
+    setIsAddToPotModalOpen(true);
+  };
+
   return (
     <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
       <div className="flex items-center justify-between">
@@ -128,7 +136,12 @@ const Pots = () => {
           + Add New
         </button>
       </div>
-      <PotsList pots={pots} onEdit={openEditModal} onDelete={openDeleteModal} />
+      <PotsList
+        pots={pots}
+        onEdit={openEditModal}
+        onDelete={openDeleteModal}
+        onAddToPot={openAddToPotModal}
+      />
 
       <CreatePotModal
         isOpen={isCreateModalOpen}
@@ -148,6 +161,12 @@ const Pots = () => {
         selectedPot={selectedPot}
         onClose={() => setIsDeleteModalOpen(false)}
         onDeletePot={deletePot}
+      />
+      <AddToPot
+        isOpen={isAddToPotModalOpen}
+        selectedPot={selectedPot}
+        onClose={() => setIsAddToPotModalOpen(false)}
+        onAddToPot={editPot}
       />
     </main>
   );
