@@ -2,19 +2,19 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
 import { Pot } from "../../types";
 
-interface AddToPotProps {
+interface WithdrawFromPotProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddToPot: (pot: Pot) => void;
+  onWithdrawFromPot: (pot: Pot) => void;
   selectedPot: Pot | null;
 }
 
-const AddToPot = ({
+const WithdrawFromPot = ({
   isOpen,
   onClose,
-  onAddToPot,
+  onWithdrawFromPot,
   selectedPot,
-}: AddToPotProps) => {
+}: WithdrawFromPotProps) => {
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({ amount: "" });
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -48,10 +48,7 @@ const AddToPot = ({
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
       newErrors.amount = "Please enter a valid amount.";
       valid = false;
-    } else if (
-      selectedPot &&
-      Number(amount) > selectedPot.target - selectedPot.total
-    ) {
+    } else if (selectedPot && Number(amount) > selectedPot.total) {
       newErrors.amount = `Amount exceeds the remaining balance to reach the target of P${selectedPot.target}.`;
       valid = false;
     }
@@ -71,9 +68,9 @@ const AddToPot = ({
 
     if (validateForm()) {
       if (selectedPot) {
-        onAddToPot({
+        onWithdrawFromPot({
           ...selectedPot,
-          total: selectedPot.total + Number(amount),
+          total: selectedPot.total - Number(amount),
         });
       }
 
@@ -85,9 +82,7 @@ const AddToPot = ({
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputAmount = Number(e.target.value);
-    const maxAmount = selectedPot
-      ? selectedPot.target - selectedPot.total
-      : Infinity;
+    const maxAmount = selectedPot ? selectedPot.total : Infinity;
 
     if (inputAmount > 0 && inputAmount <= maxAmount) {
       setErrors({ amount: "" });
@@ -138,9 +133,8 @@ const AddToPot = ({
               </button>
             </div>
             <p className="text-sm leading-normal text-grey-500">
-              Add money to your pot to keep it separate from your main balance.
-              As soon as you add this money, it will be deducted from your
-              current balance.
+              Withdraw from your pot to put money back in your main balance.
+              This will reduce the amount you have in this pot.
             </p>
 
             {selectedPot && (
@@ -150,28 +144,30 @@ const AddToPot = ({
                     New Amount
                   </span>
                   <span className="text-[2rem] font-bold leading-[1.2] text-grey-900">
-                    P{(selectedPot.total + Number(amount)).toFixed(2)}
+                    P{(selectedPot.total - Number(amount)).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex w-full flex-col gap-3">
                   <div className="relative h-2 w-full overflow-hidden rounded-lg bg-beige-100">
                     <div
                       className={`h-full bg-grey-900 transition-all duration-300 ${!amount ? "rounded-r-lg" : ""}`}
-                      style={{ width: `${Math.min(currentProgress, 100)}%` }}
+                      style={{
+                        width: `${Math.min(currentProgress - projectedProgress, 100)}%`,
+                      }}
                     ></div>
                     <div
-                      className={`absolute top-0 h-full rounded-r-lg bg-green transition-all duration-300 ${selectedPot.total === 0 ? "rounded-l-lg" : ""}`}
+                      className={`absolute top-0 h-full bg-red transition-all duration-300 ${amount ? "rounded-r-lg" : ""} ${Number(amount) === selectedPot.total ? "rounded-l-lg" : ""}`}
                       style={{
                         width: `calc(${Math.min(projectedProgress, 100)}% - 2px)`,
-                        left: `calc(${Math.min(currentProgress, 100)}% + 2px)`,
+                        right: `calc(100% - ${Math.min(currentProgress, 100)}%)`,
                       }}
                     ></div>
                   </div>
                   <div className="flex w-full items-center justify-between">
                     <span
-                      className={`text-xs leading-normal ${amount ? "text-green" : "text-grey-500"}`}
+                      className={`text-xs leading-normal ${amount ? "text-red" : "text-grey-500"}`}
                     >
-                      {(currentProgress + projectedProgress).toFixed(2)}%
+                      {(currentProgress - projectedProgress).toFixed(2)}%
                     </span>
                     <span className="text-xs leading-normal text-grey-500">
                       Target of P{selectedPot.target}
@@ -189,7 +185,7 @@ const AddToPot = ({
           >
             <div className="flex flex-col gap-1">
               <label className="text-xs font-bold leading-normal text-grey-500">
-                Amount to Add
+                Amount to Withdraw
               </label>
               <input
                 type="number"
@@ -217,7 +213,7 @@ const AddToPot = ({
               type="submit"
               className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white"
             >
-              Confirm Addition
+              Confirm Withdrawal
             </button>
           </form>
         </div>
@@ -226,4 +222,4 @@ const AddToPot = ({
   );
 };
 
-export default AddToPot;
+export default WithdrawFromPot;

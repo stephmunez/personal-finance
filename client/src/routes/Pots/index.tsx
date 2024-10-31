@@ -4,6 +4,7 @@ import CreatePotModal from "../../components/CreatePotModal";
 import DeletePotModal from "../../components/DeletePotModal";
 import EditPotModal from "../../components/EditPotModal";
 import PotsList from "../../components/PotsList";
+import WithdrawFromPot from "../../components/WithdrawFromPotModal";
 import { Pot } from "../../types";
 import { getNameByColor } from "../../utils";
 
@@ -11,6 +12,8 @@ const Pots = () => {
   const [pots, setPots] = useState<Pot[] | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isAddToPotModalOpen, setIsAddToPotModalOpen] =
+    useState<boolean>(false);
+  const [isWithdrawFromPotModalOpen, setIsWithdrawFromPotModalOpen] =
     useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -121,6 +124,10 @@ const Pots = () => {
     setSelectedPot(pot);
     setIsAddToPotModalOpen(true);
   };
+  const openWithdrawFromPotModal = (pot: Pot) => {
+    setSelectedPot(pot);
+    setIsWithdrawFromPotModalOpen(true);
+  };
 
   return (
     <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
@@ -140,7 +147,8 @@ const Pots = () => {
         pots={pots}
         onEdit={openEditModal}
         onDelete={openDeleteModal}
-        onAddToPot={openAddToPotModal}
+        onAdd={openAddToPotModal}
+        onWithdraw={openWithdrawFromPotModal}
       />
 
       <CreatePotModal
@@ -167,6 +175,12 @@ const Pots = () => {
         selectedPot={selectedPot}
         onClose={() => setIsAddToPotModalOpen(false)}
         onAddToPot={editPot}
+      />
+      <WithdrawFromPot
+        isOpen={isWithdrawFromPotModalOpen}
+        selectedPot={selectedPot}
+        onClose={() => setIsWithdrawFromPotModalOpen(false)}
+        onWithdrawFromPot={editPot}
       />
     </main>
   );
