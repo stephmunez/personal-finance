@@ -61,6 +61,7 @@ const AddToPot = ({
   };
 
   const handleClose = () => {
+    setAmount("");
     setErrors({ amount: "" });
     onClose();
   };

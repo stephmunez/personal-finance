@@ -61,6 +61,7 @@ const WithdrawFromPot = ({
   };
 
   const handleClose = () => {
+    setAmount("");
     setErrors({ amount: "" });
     onClose();
   };
