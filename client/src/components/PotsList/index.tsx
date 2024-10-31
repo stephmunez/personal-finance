@@ -6,10 +6,17 @@ interface PotsListProps {
   pots: Pot[] | null;
   onEdit: (pot: Pot) => void;
   onDelete: (pot: Pot) => void;
-  onAddToPot: (pot: Pot) => void;
+  onAdd: (pot: Pot) => void;
+  onWithdraw: (pot: Pot) => void;
 }
 
-const PotsList = ({ pots, onEdit, onDelete, onAddToPot }: PotsListProps) => {
+const PotsList = ({
+  pots,
+  onEdit,
+  onDelete,
+  onAdd,
+  onWithdraw,
+}: PotsListProps) => {
   const [selectedPot, setSelectedPot] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -94,11 +101,14 @@ const PotsList = ({ pots, onEdit, onDelete, onAddToPot }: PotsListProps) => {
             <div className="flex w-full items-center gap-4">
               <button
                 className="flex h-14 flex-1 items-center justify-center rounded-lg bg-beige-100 text-sm font-bold leading-normal tracking-normal text-grey-900"
-                onClick={() => onAddToPot(pot)}
+                onClick={() => onAdd(pot)}
               >
                 + Add Money
               </button>
-              <button className="flex h-14 flex-1 items-center justify-center rounded-lg bg-beige-100 text-sm font-bold leading-normal tracking-normal text-grey-900">
+              <button
+                className="flex h-14 flex-1 items-center justify-center rounded-lg bg-beige-100 text-sm font-bold leading-normal tracking-normal text-grey-900"
+                onClick={() => onWithdraw(pot)}
+              >
                 Withdraw
               </button>
             </div>
