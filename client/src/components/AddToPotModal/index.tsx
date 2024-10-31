@@ -100,13 +100,11 @@ const AddToPot = ({
   };
 
   const currentProgress = selectedPot
-    ? (selectedPot.total / selectedPot.target) * 100
+    ? Math.min((selectedPot.total / selectedPot.target) * 100, 100)
     : 0;
-  const projectedProgress = selectedPot
-    ? (Math.min(selectedPot.total + Number(amount || 0), selectedPot.target) /
-        selectedPot.target) *
-      100
-    : 0;
+
+  const projectedProgress =
+    selectedPot && amount ? (Number(amount) / selectedPot.target) * 100 : 0;
 
   return (
     <div
@@ -157,13 +155,13 @@ const AddToPot = ({
                 <div className="flex w-full flex-col gap-3">
                   <div className="relative h-2 w-full overflow-hidden rounded-lg bg-beige-100">
                     <div
-                      className="h-full bg-grey-900 transition-all duration-300"
+                      className={`h-full bg-grey-900 transition-all duration-300 ${!amount ? "rounded-r-lg" : ""}`}
                       style={{ width: `${Math.min(currentProgress, 100)}%` }}
                     ></div>
                     <div
                       className="absolute top-0 h-full rounded-r-lg transition-all duration-300"
                       style={{
-                        width: `${Math.min(projectedProgress - currentProgress, 100 - currentProgress)}%`,
+                        width: `calc(${Math.min(projectedProgress, 100)}% - 2px)`,
                         left: `calc(${Math.min(currentProgress, 100)}% + 2px)`,
                         backgroundColor: `${selectedPot.theme}`,
                       }}
@@ -174,7 +172,7 @@ const AddToPot = ({
                       className="text-xs leading-normal"
                       style={{ color: `${selectedPot.theme}` }}
                     >
-                      {projectedProgress.toFixed(2)}%
+                      {(currentProgress + projectedProgress).toFixed(2)}%
                     </span>
                     <span className="text-xs leading-normal text-grey-500">
                       Target of P{selectedPot.target}
