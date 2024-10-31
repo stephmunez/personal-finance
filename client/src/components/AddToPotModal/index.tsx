@@ -160,18 +160,16 @@ const AddToPot = ({
                       style={{ width: `${Math.min(currentProgress, 100)}%` }}
                     ></div>
                     <div
-                      className="absolute top-0 h-full rounded-r-lg transition-all duration-300"
+                      className={`absolute top-0 h-full rounded-r-lg bg-green transition-all duration-300 ${selectedPot.total === 0 ? "rounded-l-lg" : ""}`}
                       style={{
                         width: `calc(${Math.min(projectedProgress, 100)}% - 2px)`,
                         left: `calc(${Math.min(currentProgress, 100)}% + 2px)`,
-                        backgroundColor: `${selectedPot.theme}`,
                       }}
                     ></div>
                   </div>
                   <div className="flex w-full items-center justify-between">
                     <span
-                      className="text-xs leading-normal"
-                      style={{ color: `${selectedPot.theme}` }}
+                      className={`text-xs leading-normal ${amount ? "text-green" : "text-grey-500"}`}
                     >
                       {(currentProgress + projectedProgress).toFixed(2)}%
                     </span>

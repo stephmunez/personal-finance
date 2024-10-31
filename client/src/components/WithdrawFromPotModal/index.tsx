@@ -48,10 +48,7 @@ const WithdrawFromPot = ({
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
       newErrors.amount = "Please enter a valid amount.";
       valid = false;
-    } else if (
-      selectedPot &&
-      Number(amount) > selectedPot.target - selectedPot.total
-    ) {
+    } else if (selectedPot && Number(amount) > selectedPot.total) {
       newErrors.amount = `Amount exceeds the remaining balance to reach the target of P${selectedPot.target}.`;
       valid = false;
     }
@@ -159,18 +156,16 @@ const WithdrawFromPot = ({
                       }}
                     ></div>
                     <div
-                      className={`absolute top-0 h-full transition-all duration-300 ${amount ? "rounded-r-lg" : ""} ${Number(amount) === selectedPot.total ? "rounded-l-lg" : ""}`}
+                      className={`absolute top-0 h-full bg-red transition-all duration-300 ${amount ? "rounded-r-lg" : ""} ${Number(amount) === selectedPot.total ? "rounded-l-lg" : ""}`}
                       style={{
                         width: `calc(${Math.min(projectedProgress, 100)}% - 2px)`,
                         right: `calc(100% - ${Math.min(currentProgress, 100)}%)`,
-                        backgroundColor: `${selectedPot.theme}`,
                       }}
                     ></div>
                   </div>
                   <div className="flex w-full items-center justify-between">
                     <span
-                      className="text-xs leading-normal"
-                      style={{ color: `${selectedPot.theme}` }}
+                      className={`text-xs leading-normal ${amount ? "text-red" : "text-grey-500"}`}
                     >
                       {(currentProgress - projectedProgress).toFixed(2)}%
                     </span>
