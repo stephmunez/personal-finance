@@ -76,7 +76,9 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
               >
                 <div
                   className="h-full w-1 rounded-lg"
-                  style={{ backgroundColor: budget.theme }}
+                  style={{
+                    backgroundColor: getThemeByCategory(budget.category),
+                  }}
                 ></div>
                 <div className="flex flex-col gap-1">
                   <h4 className="text-xs leading-normal text-grey-500">
