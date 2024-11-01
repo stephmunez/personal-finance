@@ -94,7 +94,7 @@ const Home = () => {
           Overview
         </h1>
       </div>
-      <OverviewSummary transactions={transactions} />
+      <OverviewSummary transactions={transactions} pots={pots} />
       <div className="flex w-full flex-col gap-6">
         <div className="flex w-full flex-col gap-4">
           <OverviewPots pots={pots} />

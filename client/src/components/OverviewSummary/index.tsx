@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Transaction } from "../../types";
+import { Pot, Transaction } from "../../types";
 
 interface OverviewSummaryProps {
   transactions: Transaction[];
+  pots: Pot[];
 }
 
-const OverviewSummary = ({ transactions }: OverviewSummaryProps) => {
+const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
   const [balance, setBalance] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
@@ -14,6 +15,7 @@ const OverviewSummary = ({ transactions }: OverviewSummaryProps) => {
     const calculateTotals = (transactions: Transaction[]) => {
       let income = 0;
       let expenses = 0;
+      let potsTotal = 0;
 
       transactions.forEach((transaction) => {
         if (transaction.amount > 0) {
@@ -23,9 +25,13 @@ const OverviewSummary = ({ transactions }: OverviewSummaryProps) => {
         }
       });
 
+      pots.forEach((pot) => {
+        potsTotal += pot.total;
+      });
+
       setTotalIncome(income);
       setTotalExpenses(expenses);
-      setBalance(income - expenses);
+      setBalance(income - expenses - potsTotal);
     };
 
     calculateTotals(transactions);

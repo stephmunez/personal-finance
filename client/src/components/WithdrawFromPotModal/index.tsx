@@ -119,7 +119,7 @@ const WithdrawFromPot = ({
           <div className="flex w-full flex-col gap-5">
             <div className="flex w-full items-center justify-between">
               <h2 className="text-xl font-bold leading-[1.2] text-grey-900">
-                Add to '{selectedPot && selectedPot.name}'
+                Withdraw from '{selectedPot && selectedPot.name}'
               </h2>
               <button
                 onClick={handleClose}
