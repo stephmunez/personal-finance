@@ -192,12 +192,13 @@ const WithdrawFromPot = ({
                 value={amount}
                 onChange={handleAmountChange}
                 placeholder="e.g. 100"
+                disabled={selectedPot ? selectedPot.total === 0 : false}
                 max={
                   selectedPot
                     ? selectedPot.target - selectedPot.total
                     : undefined
                 }
-                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.amount ? "border-red" : "border-beige-500"}`}
+                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none disabled:cursor-not-allowed ${errors.amount ? "border-red" : "border-beige-500"}`}
                 style={{
                   WebkitAppearance: "none",
                   MozAppearance: "textfield",
@@ -208,10 +209,16 @@ const WithdrawFromPot = ({
                   {errors.amount}
                 </span>
               )}
+              {selectedPot && selectedPot.total === 0 && (
+                <span className="text-xs leading-normal text-red">
+                  This pot is empty. You cannot withdraw more.
+                </span>
+              )}
             </div>
             <button
               type="submit"
-              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white"
+              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={selectedPot ? selectedPot.total === 0 : false}
             >
               Confirm Withdrawal
             </button>
