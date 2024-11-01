@@ -54,6 +54,9 @@ const AddToPot = ({
     ) {
       newErrors.amount = `Amount exceeds the remaining balance to reach the target of P${selectedPot.target}.`;
       valid = false;
+    } else if (selectedPot && selectedPot.total >= selectedPot.target) {
+      newErrors.amount = "This pot is already full. You cannot add more.";
+      valid = false;
     }
 
     setErrors(newErrors);
@@ -196,12 +199,15 @@ const AddToPot = ({
                 value={amount}
                 onChange={handleAmountChange}
                 placeholder="e.g. 100"
+                disabled={
+                  selectedPot ? selectedPot.total === selectedPot.target : false
+                }
                 max={
                   selectedPot
                     ? selectedPot.target - selectedPot.total
                     : undefined
                 }
-                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.amount ? "border-red" : "border-beige-500"}`}
+                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none disabled:cursor-not-allowed ${errors.amount ? "border-red" : "border-beige-500"}`}
                 style={{
                   WebkitAppearance: "none",
                   MozAppearance: "textfield",
@@ -212,10 +218,18 @@ const AddToPot = ({
                   {errors.amount}
                 </span>
               )}
+              {selectedPot && selectedPot.total === selectedPot.target && (
+                <span className="text-xs leading-normal text-green">
+                  This pot is already full. You cannot add more.
+                </span>
+              )}
             </div>
             <button
               type="submit"
-              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white"
+              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={
+                selectedPot ? selectedPot.total === selectedPot.target : false
+              }
             >
               Confirm Addition
             </button>
