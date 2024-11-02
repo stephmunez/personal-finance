@@ -261,13 +261,13 @@ const EditTransactionModal = ({
                       textField: {
                         InputProps: {
                           sx: {
-                            padding: "0px",
+                            padding: "8px 16px",
                             borderRadius: "8px",
                           },
                         },
                         inputProps: {
                           sx: {
-                            padding: "12px 20px",
+                            padding: "0",
                             fontFamily: "Public Sans",
                             fontSize: "14px",
                             borderRadius: "8px",
@@ -275,7 +275,7 @@ const EditTransactionModal = ({
                         },
                       },
                       openPickerButton: {
-                        color: "primary",
+                        color: "default",
                       },
                     }}
                   />
