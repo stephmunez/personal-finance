@@ -10,7 +10,7 @@ interface CustomFormSelectProps {
   existingCategories?: string[];
   existingColors?: string[];
   isColorTag?: boolean;
-  currentTheme?: string;
+  disabled?: boolean;
 }
 
 const CustomFormSelect = ({
@@ -20,7 +20,7 @@ const CustomFormSelect = ({
   existingCategories,
   isColorTag,
   existingColors,
-  currentTheme,
+  disabled,
 }: CustomFormSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -55,7 +55,8 @@ const CustomFormSelect = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between rounded-lg border border-beige-500 px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-grey-500 focus:outline-none"
+        className="flex w-full items-center justify-between rounded-lg border border-beige-500 px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-grey-500 focus:outline-none disabled:cursor-not-allowed"
+        disabled={disabled}
       >
         <div className="flex items-center gap-3">
           {isColorTag && (
