@@ -168,11 +168,19 @@ const CreateTransactionModal = ({
                   value={category}
                   onChange={setCategory}
                   existingCategories={existingCategories}
+                  disabled={existingCategories.length === categories.length}
                 />
-                {existingCategories.includes(category) && (
+                {existingCategories.includes(category) &&
+                  existingCategories.length !== categories.length && (
+                    <span className="text-xs leading-normal text-red">
+                      A budget for this category already exists. Selecting the
+                      next available category.
+                    </span>
+                  )}
+                {existingCategories.length === categories.length && (
                   <span className="text-xs leading-normal text-red">
-                    A budget for this category already exists. Selecting the
-                    next available category.
+                    All categories are currently in use. Please delete a budget
+                    to free up a category.
                   </span>
                 )}
               </div>
@@ -200,7 +208,8 @@ const CreateTransactionModal = ({
             </div>
             <button
               type="submit"
-              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white"
+              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={existingCategories.length === categories.length}
             >
               Add Budget
             </button>
