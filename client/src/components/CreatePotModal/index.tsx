@@ -260,18 +260,28 @@ const CreateTransactionModal = ({
                   }}
                   existingColors={existingColors}
                   isColorTag
+                  disabled={existingColors.length === colors.length}
                 />
-                {existingColors.includes(color) && (
+                {existingColors.includes(color) &&
+                  existingColors.length !== colors.length && (
+                    <span className="text-xs leading-normal text-red">
+                      A theme for this pot already exists. Selecting the next
+                      available category.
+                    </span>
+                  )}
+
+                {existingColors.length === colors.length && (
                   <span className="text-xs leading-normal text-red">
-                    A theme for this pot already exists. Selecting the next
-                    available category.
+                    All colors currently in use. Please delete a pot to free up
+                    a color.
                   </span>
                 )}
               </div>
             </div>
             <button
               type="submit"
-              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white"
+              className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={existingColors.length === colors.length}
             >
               Add Pot
             </button>
