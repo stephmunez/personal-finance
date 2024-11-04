@@ -3,7 +3,7 @@ import { Transaction } from "../../types";
 import { getIconByCategory, getThemeByCategory } from "../../utils";
 
 interface TransactionListProps {
-  transactions: Transaction[];
+  transactions: Transaction[] | null;
   onEdit: (transaction: Transaction) => void;
   onDelete: (transaction: Transaction) => void;
 }
@@ -16,15 +16,20 @@ const TransactionList = ({
   const [selectedTransaction, setSelectedTransaction] = useState<string | null>(
     null,
   );
+  const [loading, setLoading] = useState(true);
   const transactionListRef = useRef<HTMLUListElement | null>(null);
 
   const handleTransactionClick = (transactionId: string) => {
-    if (selectedTransaction === transactionId) {
-      setSelectedTransaction(null);
-    } else {
-      setSelectedTransaction(transactionId);
-    }
+    setSelectedTransaction((prev) =>
+      prev === transactionId ? null : transactionId,
+    );
   };
+
+  useEffect(() => {
+    if (transactions) {
+      setLoading(false);
+    }
+  }, [transactions]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,7 +50,33 @@ const TransactionList = ({
 
   return (
     <>
-      {transactions.length > 0 ? (
+      {loading ? (
+        // Skeleton loaders while data is loading
+        <ul className="animate-pulse">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <li
+              key={index}
+              className={`relative flex cursor-auto flex-col items-start justify-between py-4 ${
+                index !== 4 ? "border-b border-solid border-grey-100" : ""
+              }`}
+            >
+              <div className="flex w-full items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-grey-100"></div>
+                  <div className="flex flex-col gap-1">
+                    <div className="h-4 w-24 rounded bg-grey-100"></div>
+                    <div className="h-3 w-16 rounded bg-grey-100"></div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="h-4 w-16 rounded bg-grey-100"></div>
+                  <div className="h-3 w-20 rounded bg-grey-100"></div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : transactions && transactions.length > 0 ? (
         <ul ref={transactionListRef}>
           {transactions.map((transaction, i) => (
             <li
