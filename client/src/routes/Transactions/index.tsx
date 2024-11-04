@@ -1,5 +1,5 @@
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CreateTransactionModal from "../../components/CreateTransactionModal";
 import DeleteTransactionModal from "../../components/DeleteTransactionModal";
@@ -87,28 +87,25 @@ const Transactions = () => {
     }
   };
 
-  // Sync state with URL parameters
-  useEffect(() => {
-    const params = {
+  // Memoizing the params for URL synchronization
+  const params = useMemo(
+    () => ({
       page: currentPage !== 1 ? currentPage.toString() : undefined,
       search: searchQuery ? searchQuery : undefined,
       category: categoryFilter !== "All" ? categoryFilter : undefined,
       sort: sortOption !== "Latest" ? sortOption : undefined,
-    };
+    }),
+    [currentPage, searchQuery, categoryFilter, sortOption],
+  );
 
+  // Sync state with URL parameters
+  useEffect(() => {
     const queryParams = queryString.stringify(params);
     navigate(
       { pathname: location.pathname, search: queryParams },
       { replace: true },
     );
-  }, [
-    currentPage,
-    searchQuery,
-    categoryFilter,
-    sortOption,
-    navigate,
-    location.pathname,
-  ]);
+  }, [params, navigate, location.pathname]);
 
   useEffect(() => {
     fetchTransactions();
