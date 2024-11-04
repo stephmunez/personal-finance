@@ -13,15 +13,16 @@ const OverviewTransactions = ({ transactions }: OverviewTransactionsProps) => {
   const [recentTransactions, setRecentTransactions] = useState<
     Transaction[] | null
   >(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (transactions) {
-      // Sort transactions by date (newest first) and take the 5 most recent ones
       const sortedTransactions = [...transactions]
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, 5);
 
       setRecentTransactions(sortedTransactions);
+      setLoading(false);
     }
   }, [transactions]);
 
@@ -39,7 +40,27 @@ const OverviewTransactions = ({ transactions }: OverviewTransactionsProps) => {
         </Link>
       </div>
       <ul className="flex w-full flex-col gap-5">
-        {recentTransactions ? (
+        {loading ? (
+          Array.from({ length: 5 }).map((_, index) => (
+            <li
+              key={index}
+              className={`flex items-center justify-between ${
+                index !== 4
+                  ? "border-b border-solid border-grey-500/15 pb-5"
+                  : ""
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className="h-8 w-8 animate-pulse rounded-full bg-grey-100"></div>
+                <div className="h-4 w-24 animate-pulse rounded bg-grey-100"></div>
+              </div>
+              <div className="flex flex-col items-end gap-2">
+                <div className="h-4 w-16 animate-pulse rounded bg-grey-100"></div>
+                <div className="h-3 w-12 animate-pulse rounded bg-grey-100"></div>
+              </div>
+            </li>
+          ))
+        ) : recentTransactions && recentTransactions.length > 0 ? (
           recentTransactions.map((transaction, i) => (
             <li
               key={transaction._id}
@@ -84,7 +105,7 @@ const OverviewTransactions = ({ transactions }: OverviewTransactionsProps) => {
           ))
         ) : (
           <li className="text-center text-[0.875rem] leading-normal tracking-normal text-grey-500">
-            No pots yet.
+            No transactions yet.
           </li>
         )}
       </ul>

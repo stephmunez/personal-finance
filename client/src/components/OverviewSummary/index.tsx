@@ -10,6 +10,7 @@ const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
   const [balance, setBalance] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const calculateTotals = (transactions: Transaction[]) => {
@@ -32,10 +33,11 @@ const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
       setTotalIncome(income);
       setTotalExpenses(expenses);
       setBalance(income - expenses - potsTotal);
+      setLoading(false);
     };
 
     calculateTotals(transactions);
-  }, [transactions]);
+  }, [transactions, pots]);
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -43,25 +45,37 @@ const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
         <span className="text-sm leading-normal text-white">
           Current Balance
         </span>
-        <span className="text-[2rem] font-bold leading-[1.2] text-white">
-          P{balance.toFixed(2)}
-        </span>
+        {loading ? (
+          <div className="h-10 w-32 animate-pulse rounded bg-grey-100"></div>
+        ) : (
+          <span className="text-[2rem] font-bold leading-[1.2] text-white">
+            P{balance.toFixed(2)}
+          </span>
+        )}
       </div>
       <div className="flex flex-col gap-3 rounded-xl bg-white p-5">
         <span className="text-sm leading-normal text-grey-500">
           Total Income
         </span>
-        <span className="text-[2rem] font-bold leading-[1.2] text-grey-900">
-          P{totalIncome.toFixed(2)}
-        </span>
+        {loading ? (
+          <div className="h-10 w-32 animate-pulse rounded bg-grey-100"></div>
+        ) : (
+          <span className="text-[2rem] font-bold leading-[1.2] text-grey-900">
+            P{totalIncome.toFixed(2)}
+          </span>
+        )}
       </div>
       <div className="flex flex-col gap-3 rounded-xl bg-white p-5">
         <span className="text-sm leading-normal text-grey-500">
           Total Expenses
         </span>
-        <span className="text-[2rem] font-bold leading-[1.2] text-grey-900">
-          P{totalExpenses.toFixed(2)}
-        </span>
+        {loading ? (
+          <div className="h-10 w-32 animate-pulse rounded bg-grey-100"></div>
+        ) : (
+          <span className="text-[2rem] font-bold leading-[1.2] text-grey-900">
+            P{totalExpenses.toFixed(2)}
+          </span>
+        )}
       </div>
     </div>
   );

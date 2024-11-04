@@ -11,6 +11,7 @@ interface OverviewPotsProps {
 const OverviewPots = ({ pots }: OverviewPotsProps) => {
   const [totalSaved, setTotalSaved] = useState(0);
   const [topPots, setTopPots] = useState<Pot[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const calculateTotalSaved = (pots: Pot[]) => {
@@ -26,6 +27,7 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
 
     calculateTotalSaved(pots);
     getTopPots(pots);
+    setLoading(false);
   }, [pots]);
 
   return (
@@ -48,29 +50,46 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
             <h3 className="text-sm leading-normal text-grey-500">
               Total Saved
             </h3>
-            <span className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
-              P{totalSaved.toFixed(0)}
-            </span>
+            {loading ? (
+              <div className="h-10 w-32 animate-pulse rounded bg-grey-100"></div>
+            ) : (
+              <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
+                P{totalSaved.toFixed(0)}
+              </span>
+            )}
           </div>
         </div>
       </div>
       <ul className="flex w-full flex-wrap gap-4">
-        {topPots.map((pot) => (
-          <li key={pot._id} className="flex flex-[1_1_calc(50%-16px)] gap-4">
-            <div
-              className="h-full w-1 rounded-lg"
-              style={{ backgroundColor: pot.theme }}
-            ></div>
-            <div className="flex flex-col gap-1">
-              <h4 className="text-xs leading-normal text-grey-500">
-                {pot.name}
-              </h4>
-              <span className="text-sm font-bold leading-normal text-grey-900">
-                P{pot.total.toFixed(0)}
-              </span>
-            </div>
-          </li>
-        ))}
+        {loading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <li key={index} className="flex flex-[1_1_calc(50%-16px)] gap-4">
+                <div className="bg-grey-200 h-full w-1 animate-pulse rounded-lg"></div>
+                <div className="flex flex-col gap-1">
+                  <div className="h-4 w-20 animate-pulse rounded bg-grey-100"></div>
+                  <div className="h-5 w-16 animate-pulse rounded bg-grey-100"></div>
+                </div>
+              </li>
+            ))
+          : topPots.map((pot) => (
+              <li
+                key={pot._id}
+                className="flex flex-[1_1_calc(50%-16px)] gap-4"
+              >
+                <div
+                  className="h-full w-1 rounded-lg"
+                  style={{ backgroundColor: pot.theme }}
+                ></div>
+                <div className="flex flex-col gap-1">
+                  <h4 className="text-xs leading-normal text-grey-500">
+                    {pot.name}
+                  </h4>
+                  <span className="text-sm font-bold leading-normal text-grey-900">
+                    P{pot.total.toFixed(0)}
+                  </span>
+                </div>
+              </li>
+            ))}
       </ul>
     </section>
   );

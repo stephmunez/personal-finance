@@ -41,19 +41,22 @@ const RecurringBills = () => {
       </div>
       <div className="flex w-full flex-col gap-6">
         <RecurringBillsSummary recurringBills={recurringBills} />
-        <div className="flex min-h-80 flex-col gap-6 rounded-xl bg-white px-5 py-6">
-          <RecurringBillsSearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-          <RecurringBillsList
-            recurringBills={recurringBills}
-            searchQuery={searchQuery}
-            sortOption={sortOption}
-          />
-        </div>
+
+        {recurringBills && recurringBills.length > 1 && (
+          <div className="flex min-h-80 flex-col gap-6 rounded-xl bg-white px-5 py-6">
+            <RecurringBillsSearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              sortOption={sortOption}
+              setSortOption={setSortOption}
+            />
+            <RecurringBillsList
+              recurringBills={recurringBills}
+              searchQuery={searchQuery}
+              sortOption={sortOption}
+            />
+          </div>
+        )}
       </div>
     </main>
   );

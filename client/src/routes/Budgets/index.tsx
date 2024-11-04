@@ -184,13 +184,16 @@ const Budgets = () => {
       </div>
       <div className="flex w-full flex-col gap-6">
         <BudgetsSummary budgets={budgets} totalSpent={totalSpent} />
-        <BudgetsList
-          budgets={budgets}
-          transactions={transactions}
-          totalSpent={totalSpent}
-          onEdit={openEditModal}
-          onDelete={openDeleteModal}
-        />
+
+        {budgets && budgets.length > 0 && (
+          <BudgetsList
+            budgets={budgets}
+            transactions={transactions}
+            totalSpent={totalSpent}
+            onEdit={openEditModal}
+            onDelete={openDeleteModal}
+          />
+        )}
       </div>
 
       <CreateBudgetModal
