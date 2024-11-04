@@ -19,6 +19,7 @@ const PotsList = ({
 }: PotsListProps) => {
   const [selectedPot, setSelectedPot] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const handlePotClick = (potId: string) => {
     if (selectedPot === potId) {
@@ -27,6 +28,12 @@ const PotsList = ({
       setSelectedPot(potId);
     }
   };
+
+  useEffect(() => {
+    if (pots) {
+      setLoading(false);
+    }
+  }, [pots]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,7 +53,42 @@ const PotsList = ({
 
   return (
     <div className="flex w-full flex-col gap-6">
-      {pots && pots.length > 0 ? (
+      {loading ? (
+        // Render the skeletons while loading
+        Array.from({ length: 2 }).map(() => (
+          <div className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="h-4 w-4 animate-pulse rounded-full bg-grey-100"></div>
+                <h2 className="h-6 w-32 animate-pulse rounded bg-grey-100"></h2>
+              </div>
+            </div>
+            <div className="flex w-full flex-col gap-4 py-3">
+              <div className="flex w-full items-center justify-between">
+                <span className="h-4 w-24 animate-pulse rounded bg-grey-100"></span>
+                <span className="h-8 w-32 animate-pulse rounded bg-grey-100"></span>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="h-2 w-full rounded-[4px] bg-beige-100">
+                  <div className="h-2 rounded-[4px] bg-grey-100"></div>
+                </div>
+                <div className="flex w-full items-center justify-between">
+                  <span className="h-4 w-12 animate-pulse rounded bg-grey-100"></span>
+                  <span className="h-4 w-24 animate-pulse rounded bg-grey-100"></span>
+                </div>
+              </div>
+            </div>
+            <div className="flex w-full items-center gap-4">
+              <button className="flex h-14 flex-1 animate-pulse items-center justify-center rounded-lg bg-grey-100">
+                <span className="h-4 w-24 animate-pulse rounded bg-grey-100"></span>
+              </button>
+              <button className="flex h-14 flex-1 animate-pulse items-center justify-center rounded-lg bg-grey-100">
+                <span className="h-4 w-24 animate-pulse rounded bg-grey-100"></span>
+              </button>
+            </div>
+          </div>
+        ))
+      ) : pots && pots.length > 0 ? (
         pots.map((pot) => (
           <div
             key={pot._id}
