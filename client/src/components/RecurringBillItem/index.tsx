@@ -11,11 +11,12 @@ import {
 
 interface RecurringBillItemProps {
   bill: RecurringBill;
+  className?: string;
 }
 
-const RecurringBillItem = ({ bill }: RecurringBillItemProps) => {
+const RecurringBillItem = ({ bill, className }: RecurringBillItemProps) => {
   return (
-    <li key={bill._id} className="flex flex-col gap-2 p-4">
+    <li key={bill._id} className={`flex flex-col gap-2 p-4 ${className}`}>
       <div className="flex items-center gap-4">
         <div
           className="flex h-8 w-8 items-center justify-center rounded-full"

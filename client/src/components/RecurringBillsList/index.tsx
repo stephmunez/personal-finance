@@ -54,8 +54,12 @@ const RecurringBillsList = ({
     <ul>
       {recurringBills && recurringBills.length > 0 ? (
         filterAndSortBills(recurringBills).length > 0 ? (
-          filterAndSortBills(recurringBills).map((bill) => (
-            <RecurringBillItem key={bill._id} bill={bill} />
+          filterAndSortBills(recurringBills).map((bill, i) => (
+            <RecurringBillItem
+              key={bill._id}
+              bill={bill}
+              className={`${i !== recurringBills.length - 1 ? "border-b border-grey-100" : ""}`}
+            />
           ))
         ) : (
           <li className="text-center text-[0.875rem] leading-normal tracking-normal text-grey-500">
