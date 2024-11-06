@@ -5,12 +5,16 @@ interface RecurringBillsListProps {
   recurringBills: RecurringBill[] | null;
   searchQuery: string;
   sortOption: string;
+  onEdit: (bill: RecurringBill) => void;
+  onDelete: (bill: RecurringBill) => void;
 }
 
 const RecurringBillsList = ({
   recurringBills = [],
   searchQuery,
   sortOption,
+  onEdit,
+  onDelete,
 }: RecurringBillsListProps) => {
   const filterAndSortBills = (bills: RecurringBill[]) => {
     let filteredBills = bills;
@@ -59,6 +63,8 @@ const RecurringBillsList = ({
               key={bill._id}
               bill={bill}
               className={`${i !== recurringBills.length - 1 ? "border-b border-grey-100" : ""}`}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))
         ) : (

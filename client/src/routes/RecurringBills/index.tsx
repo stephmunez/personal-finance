@@ -26,6 +26,10 @@ const RecurringBills = () => {
     fetchRecurringBills();
   }, []);
 
+  const editRecurringBill = async (updatedRecurringBill: RecurringBill) => {};
+
+  const deleteRecurringBill = async () => {};
+
   return (
     <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
       <div className="flex items-center justify-between">
@@ -54,6 +58,8 @@ const RecurringBills = () => {
               recurringBills={recurringBills}
               searchQuery={searchQuery}
               sortOption={sortOption}
+              onEdit={editRecurringBill}
+              onDelete={deleteRecurringBill}
             />
           </div>
         )}
