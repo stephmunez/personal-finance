@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import DeleteRecurringBillModal from "../../components/DeleteRecurringBillModal";
 import RecurringBillsList from "../../components/RecurringBillsList";
 import RecurringBillsSearchBar from "../../components/RecurringBillsSearchBar";
 import RecurringBillsSummary from "../../components/RecurringBillsSummary";
@@ -10,28 +11,57 @@ const RecurringBills = () => {
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("Latest");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [selectedRecurringBill, setSelectedRecurringBill] =
+    useState<RecurringBill | null>(null);
+
+  const fetchRecurringBills = async () => {
+    const response = await fetch(
+      "http://localhost:4000/api/v1/recurring-bills",
+    );
+    const data = await response.json();
+
+    if (response.ok) {
+      setRecurringBills(data.recurringBills);
+    }
+  };
 
   useEffect(() => {
-    const fetchRecurringBills = async () => {
-      const response = await fetch(
-        "http://localhost:4000/api/v1/recurring-bills",
-      );
-      const data = await response.json();
-
-      if (response.ok) {
-        setRecurringBills(data.recurringBills);
-      }
-    };
-
     fetchRecurringBills();
   }, []);
 
   const editRecurringBill = async (updatedRecurringBill: RecurringBill) => {};
 
-  const deleteRecurringBill = async () => {};
+  const deleteRecurringBill = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/recurring-bills/${selectedRecurringBill?._id}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (response.ok) {
+        setIsDeleteModalOpen(false);
+        await fetchRecurringBills();
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
+
+  const openDeleteModal = (bill: RecurringBill) => {
+    setSelectedRecurringBill(bill);
+    setIsDeleteModalOpen(true);
+  };
 
   return (
-    <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6">
+    <main className="relative flex w-full flex-col gap-8 px-4 pb-20 pt-6">
       <div className="flex items-center justify-between">
         <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
           Recurring <br className="min-[480px]:hidden" /> Bills
@@ -59,11 +89,18 @@ const RecurringBills = () => {
               searchQuery={searchQuery}
               sortOption={sortOption}
               onEdit={editRecurringBill}
-              onDelete={deleteRecurringBill}
+              onDelete={openDeleteModal}
             />
           </div>
         )}
       </div>
+
+      <DeleteRecurringBillModal
+        isOpen={isDeleteModalOpen}
+        selectedRecurringBill={selectedRecurringBill}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDeleteRecurringBill={deleteRecurringBill}
+      />
     </main>
   );
 };
