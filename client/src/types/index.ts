@@ -8,7 +8,6 @@ export interface Transaction {
 
 export interface RecurringBill {
   _id?: string;
-  avatar: string;
   name: string;
   category: string;
   amount: number;

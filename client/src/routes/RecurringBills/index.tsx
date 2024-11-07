@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DeleteRecurringBillModal from "../../components/DeleteRecurringBillModal";
+import EditRecurringBillModal from "../../components/EditRecurringBillModal";
 import RecurringBillsList from "../../components/RecurringBillsList";
 import RecurringBillsSearchBar from "../../components/RecurringBillsSearchBar";
 import RecurringBillsSummary from "../../components/RecurringBillsSummary";
@@ -12,6 +13,7 @@ const RecurringBills = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("Latest");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [selectedRecurringBill, setSelectedRecurringBill] =
     useState<RecurringBill | null>(null);
 
@@ -30,7 +32,31 @@ const RecurringBills = () => {
     fetchRecurringBills();
   }, []);
 
-  const editRecurringBill = async (updatedRecurringBill: RecurringBill) => {};
+  const editRecurringBill = async (updatedRecurringBill: RecurringBill) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/recurring-bills/${updatedRecurringBill._id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedRecurringBill),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsEditModalOpen(false);
+        await fetchRecurringBills();
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
 
   const deleteRecurringBill = async () => {
     try {
@@ -95,6 +121,12 @@ const RecurringBills = () => {
         )}
       </div>
 
+      <EditRecurringBillModal
+        isOpen={isEditModalOpen}
+        selectedRecurringBill={selectedRecurringBill}
+        onClose={() => setIsEditModalOpen(false)}
+        onEditRecurringBill={editRecurringBill}
+      />
       <DeleteRecurringBillModal
         isOpen={isDeleteModalOpen}
         selectedRecurringBill={selectedRecurringBill}
