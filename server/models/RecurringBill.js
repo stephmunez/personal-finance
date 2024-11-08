@@ -39,6 +39,7 @@ const recurringBillSchema = new Schema(
     status: {
       type: String,
       required: true,
+      enum: ['due', 'paid'],
       default: 'due',
     },
     startDate: {

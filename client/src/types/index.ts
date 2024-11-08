@@ -14,6 +14,7 @@ export interface RecurringBill {
   dueDate: number;
   frequency: string;
   status: string;
+  startDate: string;
 }
 
 export interface Pot {

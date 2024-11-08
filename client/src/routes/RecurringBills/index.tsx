@@ -85,6 +85,10 @@ const RecurringBills = () => {
     setSelectedRecurringBill(bill);
     setIsDeleteModalOpen(true);
   };
+  const openEditModal = (bill: RecurringBill) => {
+    setSelectedRecurringBill(bill);
+    setIsEditModalOpen(true);
+  };
 
   return (
     <main className="relative flex w-full flex-col gap-8 px-4 pb-20 pt-6">
@@ -114,7 +118,7 @@ const RecurringBills = () => {
               recurringBills={recurringBills}
               searchQuery={searchQuery}
               sortOption={sortOption}
-              onEdit={editRecurringBill}
+              onEdit={openEditModal}
               onDelete={openDeleteModal}
             />
           </div>
