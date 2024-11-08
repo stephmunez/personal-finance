@@ -1,45 +1,58 @@
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import moment, { Moment } from "moment";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
 import { RecurringBill } from "../../types";
-import { getColorByName, getNameByColor } from "../../utils";
 import CustomFormSelect from "../CustomFormSelect";
+
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 interface EditRecurringBillModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEditRecurringBill: (recurringBill: RecurringBill) => void;
+  onEditRecurringBill: (bill: RecurringBill) => void;
   selectedRecurringBill: RecurringBill | null;
 }
-const colors = [
-  "Green",
-  "Yellow",
-  "Cyan",
-  "Navy",
-  "Red",
-  "Purple",
-  "Turquoise",
-  "Brown",
-  "Magenta",
-  "Blue",
-  "Grey",
-  "Army",
-  "Pink",
-  "Gold",
-  "Orange",
+
+const recurringBillPlaceholders = [
+  "Rent Payment",
+  "Electricity Bill",
+  "Internet Subscription",
+  "Mobile Phone Plan",
+  "Water Bill",
+  "Gas Bill",
+  "Credit Card Payment",
+  "Health Insurance Premium",
+  "Car Loan",
+  "Streaming Service Subscription",
 ];
 
-const potPlaceholders = [
-  "Emergency Fund",
-  "Vacation Savings",
-  "New Car Fund",
-  "Home Renovation",
-  "Wedding Fund",
-  "Holiday Gifts",
-  "Education Savings",
-  "Health & Wellness",
-  "Pet Expenses",
-  "Gadget Upgrade",
+const categories = [
+  "Entertainment",
+  "Bills",
+  "Groceries",
+  "Dining Out",
+  "Transportation",
+  "Personal Care",
+  "Education",
+  "Lifestyle",
+  "Shopping",
+  "General",
 ];
+
+const daysWithSuffix = Array.from({ length: 31 }, (_, index) => {
+  const day = index + 1;
+  const suffix =
+    day === 1 || day === 21 || day === 31
+      ? "st"
+      : day === 2 || day === 22
+        ? "nd"
+        : day === 3 || day === 23
+          ? "rd"
+          : "th";
+  return `${day}${suffix}`;
+});
 
 const EditRecurringBillModal = ({
   isOpen,
@@ -48,16 +61,22 @@ const EditRecurringBillModal = ({
   selectedRecurringBill,
 }: EditRecurringBillModalProps) => {
   const [name, setName] = useState("");
-  const [target, setTarget] = useState("");
-  const [total, setTotal] = useState("");
-  const [theme, setTheme] = useState<string>("");
-  const [color, setColor] = useState<string>("");
-  const [placeholder, setPlaceholder] = useState<string>("");
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [frequency, setFrequency] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [startDate, setStartDate] = useState<Moment | null>(null);
+  const [placeholder, setPlaceholder] = useState("");
 
   const [errors, setErrors] = useState({
     name: "",
-    target: "",
-    theme: "",
+    category: "",
+    amount: "",
+    dueDate: "",
+    frequency: "",
+    status: "",
+    startDate: "",
   });
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -66,14 +85,28 @@ const EditRecurringBillModal = ({
     if (isOpen && selectedRecurringBill) {
       document.body.style.overflow = "hidden";
       const randomPlaceholder =
-        potPlaceholders[Math.floor(Math.random() * potPlaceholders.length)];
+        recurringBillPlaceholders[
+          Math.floor(Math.random() * recurringBillPlaceholders.length)
+        ];
       setPlaceholder(randomPlaceholder);
 
       setName(selectedRecurringBill.name);
-      setTarget(selectedRecurringBill.target.toString());
-      setTotal(selectedRecurringBill.total.toString());
-      setTheme(selectedRecurringBill.theme);
-      setColor(getNameByColor(selectedRecurringBill.theme) || "");
+      setCategory(selectedRecurringBill.category);
+      setAmount(selectedRecurringBill.amount.toString());
+      setDueDate(formatDayWithSuffix(selectedRecurringBill.dueDate));
+      setFrequency(
+        selectedRecurringBill.frequency.charAt(0).toUpperCase() +
+          selectedRecurringBill.frequency.slice(1),
+      );
+      setStatus(
+        selectedRecurringBill.status.charAt(0).toUpperCase() +
+          selectedRecurringBill.status.slice(1),
+      );
+      setStartDate(
+        selectedRecurringBill.startDate
+          ? moment(selectedRecurringBill.startDate)
+          : null,
+      );
     } else {
       document.body.style.overflow = "";
     }
@@ -114,56 +147,130 @@ const EditRecurringBillModal = ({
     }
   }, [isOpen, onClose]);
 
-  useEffect(() => {
-    if (color) {
-      setTheme(getColorByName(color));
-    }
-  }, [color]);
-
   const validateForm = () => {
     let valid = true;
-    const newErrors = { name: "", target: "", total: "", theme: "" };
+    const newErrors = {
+      name: "",
+      category: "",
+      amount: "",
+      dueDate: "",
+      frequency: "",
+      status: "",
+      startDate: "",
+    };
 
     if (!name.trim()) {
       newErrors.name = "RecurringBill name is required.";
       valid = false;
     }
 
-    if (!theme.trim()) {
-      newErrors.theme = "RecurringBill theme is required.";
+    if (!category.trim()) {
+      newErrors.category = "RecurringBill category is required.";
       valid = false;
     }
 
-    if (!target || isNaN(Number(target)) || Number(target) <= 0) {
-      newErrors.target = "Please enter a valid amount.";
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      newErrors.amount = "Please enter a valid amount.";
       valid = false;
     }
+
+    if (!dueDate.trim()) {
+      newErrors.dueDate = "RecurringBill Due Date is required.";
+      valid = false;
+    }
+
+    if (!frequency.trim()) {
+      newErrors.frequency = "RecurringBill frequency is required.";
+      valid = false;
+    }
+    if (!status.trim()) {
+      newErrors.status = "RecurringBill status is required.";
+      valid = false;
+    }
+    if (!startDate) {
+      newErrors.startDate = "Date is required.";
+      valid = false;
+    }
+
+    console.log(newErrors);
 
     setErrors(newErrors);
     return valid;
   };
 
   const handleClose = () => {
-    setErrors({ name: "", target: "", total: "", theme: "" });
+    setErrors({
+      name: "",
+      category: "",
+      amount: "",
+      dueDate: "",
+      frequency: "",
+      status: "",
+      startDate: "",
+    });
     onClose();
   };
 
   const handleSubmit = (e: FormEvent) => {
+    const formattedDate = startDate?.toISOString();
     e.preventDefault();
+    console.log({
+      _id: selectedRecurringBill?._id || "",
+      name,
+      amount: Number(amount),
+      category,
+      dueDate: parseInt(dueDate),
+      frequency: frequency.toLowerCase(),
+      status: status.toLowerCase(),
+      startDate: formattedDate!,
+    });
 
     if (validateForm()) {
+      const formattedDate = startDate?.toISOString();
       onEditRecurringBill({
         _id: selectedRecurringBill?._id || "",
         name,
-        total: Number(total),
-        target: Number(target),
-        theme,
+        amount: Number(amount),
+        category,
+        dueDate: parseInt(dueDate),
+        frequency: frequency.toLowerCase(),
+        status: status.toLowerCase(),
+        startDate: formattedDate!,
       });
 
-      setErrors({ name: "", target: "", total: "", theme: "" });
+      setErrors({
+        name: "",
+        category: "",
+        amount: "",
+        dueDate: "",
+        frequency: "",
+        status: "",
+        startDate: "",
+      });
+
       onClose();
     }
   };
+
+  function formatDayWithSuffix(day: number) {
+    let suffix = "th";
+    if (day >= 11 && day <= 13) {
+      suffix = "th";
+    } else {
+      switch (day % 10) {
+        case 1:
+          suffix = "st";
+          break;
+        case 2:
+          suffix = "nd";
+          break;
+        case 3:
+          suffix = "rd";
+          break;
+      }
+    }
+    return `${day}${suffix}`;
+  }
 
   return (
     <div
@@ -177,7 +284,7 @@ const EditRecurringBillModal = ({
       <div
         role="dialog"
         aria-modal="true"
-        className="flex h-screen min-h-[480px] w-full flex-col items-center justify-center px-5 py-20"
+        className="flex h-screen min-h-[480px] w-full flex-col items-center px-5 py-20"
       >
         <div
           ref={modalRef}
@@ -188,7 +295,7 @@ const EditRecurringBillModal = ({
           <div className="flex w-full flex-col gap-5">
             <div className="flex w-full items-center justify-between">
               <h2 className="text-xl font-bold leading-[1.2] text-grey-900">
-                Edit RecurringBill
+                Edit Recurring Bill
               </h2>
               <button
                 onClick={handleClose}
@@ -202,8 +309,9 @@ const EditRecurringBillModal = ({
               </button>
             </div>
             <p className="text-sm leading-normal text-grey-500">
-              You can easily update your pot details to keep your savings on
-              track and reach your financial goals faster.
+              You can easily update your recurring bill details to stay on top
+              of your payments and maintain control of your finances, helping
+              you reach your financial goals faster.
             </p>
           </div>
 
@@ -212,10 +320,10 @@ const EditRecurringBillModal = ({
             className="flex w-full flex-col gap-5"
             noValidate
           >
-            <div className="flex w-full flex-col gap-4">
-              <div className="flex flex-col gap-1">
+            <div className="grid w-full grid-cols-2 gap-4">
+              <div className="col-span-2 flex flex-col gap-1">
                 <label className="text-xs font-bold leading-normal text-grey-500">
-                  RecurringBill Name
+                  Name
                 </label>
                 <input
                   type="text"
@@ -228,34 +336,9 @@ const EditRecurringBillModal = ({
                   placeholder={`e.g. ${placeholder}`}
                 />
 
-                {errors.name ? (
+                {errors.name && (
                   <span className="text-xs leading-normal text-red">
                     {errors.name}
-                  </span>
-                ) : (
-                  <span className="self-end text-xs text-grey-500">
-                    {30 - name.length} of 30 characters left
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold leading-normal text-grey-500">
-                  Target
-                </label>
-                <input
-                  type="number"
-                  value={target}
-                  onChange={(e) => setTarget(e.target.value)}
-                  placeholder="e.g. 100"
-                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.target ? "border-red" : "border-beige-500"}`}
-                  style={{
-                    WebkitAppearance: "none",
-                    MozAppearance: "textfield",
-                  }}
-                />
-                {errors.target && (
-                  <span className="text-xs leading-normal text-red">
-                    {errors.target}
                   </span>
                 )}
               </div>
@@ -264,15 +347,127 @@ const EditRecurringBillModal = ({
                   Category
                 </label>
                 <CustomFormSelect
-                  options={colors}
-                  value={color}
-                  onChange={(selectedColor) => {
-                    setColor(selectedColor);
-                    setTheme(getColorByName(selectedColor));
+                  options={categories}
+                  value={category}
+                  onChange={(val) => {
+                    setCategory(val);
                   }}
-                  existingColors={existingColors}
-                  isColorTag
                 />
+                {errors.category && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.category}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold leading-normal text-grey-500">
+                  Amount
+                </label>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="e.g. 100"
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.amount ? "border-red" : "border-beige-500"}`}
+                  style={{
+                    WebkitAppearance: "none",
+                    MozAppearance: "textfield",
+                  }}
+                />
+                {errors.amount && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.amount}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold leading-normal text-grey-500">
+                  Frequency
+                </label>
+                <CustomFormSelect
+                  options={["Monthly", "Weekly", "Biweekly"]}
+                  value={frequency}
+                  onChange={(val) => {
+                    setFrequency(val);
+                  }}
+                />
+                {errors.frequency && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.frequency}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold leading-normal text-grey-500">
+                  Date Due (day of month)
+                </label>
+                <CustomFormSelect
+                  options={daysWithSuffix}
+                  value={dueDate}
+                  onChange={(val) => {
+                    setDueDate(val);
+                  }}
+                />
+                {errors.dueDate && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.dueDate}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold leading-normal text-grey-500">
+                  Status
+                </label>
+                <CustomFormSelect
+                  options={["Paid", "Due"]}
+                  value={status}
+                  onChange={(val) => {
+                    setStatus(val);
+                  }}
+                />
+                {errors.status && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.status}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold leading-normal text-grey-500">
+                  Start Date
+                </label>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DatePicker
+                    value={startDate}
+                    onChange={(newDate) => setStartDate(newDate)}
+                    slotProps={{
+                      textField: {
+                        InputProps: {
+                          sx: {
+                            padding: "14px 16px",
+                            borderRadius: "8px",
+                          },
+                        },
+                        inputProps: {
+                          sx: {
+                            padding: "0",
+                            fontFamily: "Public Sans",
+                            fontSize: "14px",
+                            borderRadius: "8px",
+                          },
+                        },
+                      },
+                      openPickerButton: {
+                        color: "default",
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+                {errors.startDate && (
+                  <span className="text-red-500 text-xs">
+                    {errors.startDate}
+                  </span>
+                )}
               </div>
             </div>
             <button
