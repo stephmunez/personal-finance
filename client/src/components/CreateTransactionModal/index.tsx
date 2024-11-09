@@ -221,7 +221,10 @@ const CreateTransactionModal = ({
                   onChange={setTransactionType}
                 />
               </div>
-              <div className="flex flex-col gap-1">
+              <div
+                className="flex flex-col gap-1"
+                onMouseDown={(e) => e.stopPropagation()}
+              >
                 <label className="text-xs font-bold leading-normal text-grey-500">
                   Date
                 </label>
