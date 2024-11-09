@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CreateRecurringBillModal from "../../components/CreateRecurringBillModal";
 import DeleteRecurringBillModal from "../../components/DeleteRecurringBillModal";
 import EditRecurringBillModal from "../../components/EditRecurringBillModal";
 import RecurringBillsList from "../../components/RecurringBillsList";
@@ -12,6 +13,7 @@ const RecurringBills = () => {
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("Latest");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [selectedRecurringBill, setSelectedRecurringBill] =
@@ -31,6 +33,32 @@ const RecurringBills = () => {
   useEffect(() => {
     fetchRecurringBills();
   }, []);
+
+  const createRecurringBill = async (newRecurringBill: RecurringBill) => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/v1/recurring-bills",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newRecurringBill),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsCreateModalOpen(false);
+        await fetchRecurringBills();
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
 
   const editRecurringBill = async (updatedRecurringBill: RecurringBill) => {
     try {
@@ -99,6 +127,7 @@ const RecurringBills = () => {
         <button
           type="button"
           className="h-14 rounded-lg bg-black p-4 text-[0.875rem] font-bold leading-normal tracking-normal text-white"
+          onClick={() => setIsCreateModalOpen(true)}
         >
           + Add New
         </button>
@@ -106,7 +135,7 @@ const RecurringBills = () => {
       <div className="flex w-full flex-col gap-6">
         <RecurringBillsSummary recurringBills={recurringBills} />
 
-        {recurringBills && recurringBills.length > 1 && (
+        {recurringBills && recurringBills.length > 0 && (
           <div className="flex min-h-80 flex-col gap-6 rounded-xl bg-white px-5 py-6">
             <RecurringBillsSearchBar
               searchQuery={searchQuery}
@@ -125,6 +154,11 @@ const RecurringBills = () => {
         )}
       </div>
 
+      <CreateRecurringBillModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreateRecurringBill={createRecurringBill}
+      />
       <EditRecurringBillModal
         isOpen={isEditModalOpen}
         selectedRecurringBill={selectedRecurringBill}
