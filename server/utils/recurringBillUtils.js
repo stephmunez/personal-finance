@@ -27,11 +27,18 @@ const createNextRecurringBill = async (bill) => {
     const today = new Date();
     const newDueDate = calculateNextDueDate(bill.frequency, today);
 
+    let newAmount = bill.amount;
+    if (bill.status !== 'paid') {
+      newAmount += bill.amount;
+
+      await RecurringBill.findByIdAndDelete(bill._id);
+    }
+
     const newBill = await RecurringBill.create({
       avatar: bill.avatar,
       name: bill.name,
       category: bill.category,
-      amount: bill.amount,
+      amount: newAmount,
       dueDate: newDueDate.getDate(),
       frequency: bill.frequency,
       status: 'due',
