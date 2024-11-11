@@ -30,10 +30,10 @@ const createNextRecurringBill = async (bill) => {
     let newAmount = bill.amount;
     if (bill.status !== 'paid') {
       newAmount += bill.amount; // Double the amount if the bill wasn't paid
-
-      // Delete the current bill (the old one)
-      await RecurringBill.findByIdAndDelete(bill._id);
     }
+
+    // Delete the current bill (the old one)
+    await RecurringBill.findByIdAndDelete(bill._id);
 
     // Create the new bill with the updated due date and new amount
     const newBill = await RecurringBill.create({
