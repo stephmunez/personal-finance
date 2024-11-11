@@ -1,6 +1,7 @@
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Moment } from "moment";
+import moment from "moment-timezone";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
 import { RecurringBill } from "../../types";
@@ -40,19 +41,6 @@ const categories = [
   "General",
 ];
 
-const daysWithSuffix = Array.from({ length: 31 }, (_, index) => {
-  const day = index + 1;
-  const suffix =
-    day === 1 || day === 21 || day === 31
-      ? "st"
-      : day === 2 || day === 22
-        ? "nd"
-        : day === 3 || day === 23
-          ? "rd"
-          : "th";
-  return `${day}${suffix}`;
-});
-
 const CreateRecurringBillModal = ({
   isOpen,
   onClose,
@@ -61,10 +49,9 @@ const CreateRecurringBillModal = ({
   const [name, setName] = useState("");
   const [category, setCategory] = useState("General");
   const [amount, setAmount] = useState("");
-  const [dueDate, setDueDate] = useState("1st");
   const [frequency, setFrequency] = useState<string>("Monthly");
   const [status, setStatus] = useState<string>("Due");
-  const [startDate, setStartDate] = useState<Moment | null>(null);
+  const [dueDate, setDueDate] = useState<Moment | null>(null);
   const [placeholder, setPlaceholder] = useState("");
 
   const [errors, setErrors] = useState({
@@ -74,7 +61,6 @@ const CreateRecurringBillModal = ({
     dueDate: "",
     frequency: "",
     status: "",
-    startDate: "",
   });
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -136,7 +122,6 @@ const CreateRecurringBillModal = ({
       dueDate: "",
       frequency: "",
       status: "",
-      startDate: "",
     };
 
     if (!name.trim()) {
@@ -154,11 +139,6 @@ const CreateRecurringBillModal = ({
       valid = false;
     }
 
-    if (!dueDate.trim()) {
-      newErrors.dueDate = "RecurringBill Due Date is required.";
-      valid = false;
-    }
-
     if (!frequency.trim()) {
       newErrors.frequency = "RecurringBill frequency is required.";
       valid = false;
@@ -167,8 +147,8 @@ const CreateRecurringBillModal = ({
       newErrors.status = "RecurringBill status is required.";
       valid = false;
     }
-    if (!startDate) {
-      newErrors.startDate = "Date is required.";
+    if (!dueDate) {
+      newErrors.dueDate = "Date is required.";
       valid = false;
     }
 
@@ -186,7 +166,6 @@ const CreateRecurringBillModal = ({
       dueDate: "",
       frequency: "",
       status: "",
-      startDate: "",
     });
     onClose();
   };
@@ -195,17 +174,28 @@ const CreateRecurringBillModal = ({
     e.preventDefault();
 
     if (validateForm()) {
-      const formattedDate = startDate?.toISOString();
+      // Convert the dueDate to local time and format it as an ISO string
+      const formattedDate = dueDate?.toISOString();
+      console.log(formattedDate);
+
       onCreateRecurringBill({
         name,
         amount: Number(amount),
         category,
-        dueDate: parseInt(dueDate),
         frequency: frequency.toLowerCase(),
         status: status.toLowerCase(),
-        startDate: formattedDate!,
+        dueDate: formattedDate!, // Ensure that the date passed is in the correct format
       });
 
+      // Reset state values
+      setName("");
+      setCategory("General");
+      setAmount("");
+      setFrequency("Monthly");
+      setStatus("Due");
+      setDueDate(null);
+
+      // Reset form errors and close the modal
       setErrors({
         name: "",
         category: "",
@@ -213,7 +203,6 @@ const CreateRecurringBillModal = ({
         dueDate: "",
         frequency: "",
         status: "",
-        startDate: "",
       });
 
       onClose();
@@ -257,7 +246,7 @@ const CreateRecurringBillModal = ({
               </button>
             </div>
             <p className="text-sm leading-normal text-grey-500">
-              hoose a category, set the due date, specify the frequency, and
+              Choose a category, set the due date, specify the frequency, and
               enter the amount to ensure your recurring bills are tracked and
               paid on time, keeping your finances in check.
             </p>
@@ -345,52 +334,20 @@ const CreateRecurringBillModal = ({
                   </span>
                 )}
               </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold leading-normal text-grey-500">
-                  Date Due (day of month)
-                </label>
-                <CustomFormSelect
-                  options={daysWithSuffix}
-                  value={dueDate}
-                  onChange={(val) => {
-                    setDueDate(val);
-                  }}
-                />
-                {errors.dueDate && (
-                  <span className="text-xs leading-normal text-red">
-                    {errors.dueDate}
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold leading-normal text-grey-500">
-                  Status
-                </label>
-                <CustomFormSelect
-                  options={["Paid", "Due"]}
-                  value={status}
-                  onChange={(val) => {
-                    setStatus(val);
-                  }}
-                />
-                {errors.status && (
-                  <span className="text-xs leading-normal text-red">
-                    {errors.status}
-                  </span>
-                )}
-              </div>
               <div
                 className="flex flex-col gap-1"
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 <label className="text-xs font-bold leading-normal text-grey-500">
-                  Start Date
+                  Due Date
                 </label>
-                <LocalizationProvider dateAdapter={AdapterMoment}>
+                <LocalizationProvider
+                  dateAdapter={AdapterMoment}
+                  adapterLocale="en-sg"
+                >
                   <DatePicker
-                    value={startDate}
-                    onChange={(newDate) => setStartDate(newDate)}
+                    value={dueDate}
+                    onChange={(newDate) => setDueDate(newDate)}
                     slotProps={{
                       textField: {
                         InputProps: {
@@ -414,9 +371,24 @@ const CreateRecurringBillModal = ({
                     }}
                   />
                 </LocalizationProvider>
-                {errors.startDate && (
-                  <span className="text-red-500 text-xs">
-                    {errors.startDate}
+                {errors.dueDate && (
+                  <span className="text-red-500 text-xs">{errors.dueDate}</span>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold leading-normal text-grey-500">
+                  Status
+                </label>
+                <CustomFormSelect
+                  options={["Paid", "Due"]}
+                  value={status}
+                  onChange={(val) => {
+                    setStatus(val);
+                  }}
+                />
+                {errors.status && (
+                  <span className="text-xs leading-normal text-red">
+                    {errors.status}
                   </span>
                 )}
               </div>
