@@ -27,10 +27,6 @@ const recurringBillSchema = new Schema(
       type: Number,
       required: true,
     },
-    dueDate: {
-      type: Number,
-      required: true,
-    },
     frequency: {
       type: String,
       enum: ['monthly', 'weekly', 'biweekly'],
@@ -42,7 +38,7 @@ const recurringBillSchema = new Schema(
       enum: ['due', 'paid'],
       default: 'due',
     },
-    startDate: {
+    dueDate: {
       type: Date,
       required: true,
     },

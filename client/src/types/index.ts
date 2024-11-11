@@ -11,10 +11,9 @@ export interface RecurringBill {
   name: string;
   category: string;
   amount: number;
-  dueDate: number;
   frequency: string;
   status: string;
-  startDate: string;
+  dueDate: string;
 }
 
 export interface Pot {
