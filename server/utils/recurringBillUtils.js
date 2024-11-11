@@ -37,7 +37,6 @@ const createNextRecurringBill = async (bill) => {
 
     // Create the new bill with the updated due date and new amount
     const newBill = await RecurringBill.create({
-      avatar: bill.avatar,
       name: bill.name,
       category: bill.category,
       amount: newAmount,
