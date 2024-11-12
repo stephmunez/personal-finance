@@ -149,43 +149,33 @@ fiveDaysFromNow.setDate(today.getDate() + 5);
 const upcomingDay = fiveDaysFromNow.getDate();
 
 export const isDueSoon = (bill: RecurringBill) => {
-  const billDueDate = new Date(bill.dueDate);
-
   if (bill.frequency === "monthly") {
-    return (
-      billDueDate.getDate() > todayDay &&
-      billDueDate.getDate() <= upcomingDay &&
-      billDueDate.getMonth() === todayMonth &&
-      billDueDate.getFullYear() === todayYear
-    );
+    return bill.dueDate > todayDay && bill.dueDate <= upcomingDay;
   } else if (bill.frequency === "weekly") {
-    const daysToNextDue = (7 + billDueDate.getDay() - currentDayOfWeek) % 7;
-    const nextDueDate = new Date(today);
-    nextDueDate.setDate(today.getDate() + daysToNextDue);
-    return nextDueDate <= fiveDaysFromNow;
+    return (
+      bill.dueDate > currentDayOfWeek &&
+      bill.dueDate <= (currentDayOfWeek + 5) % 7
+    );
   } else if (bill.frequency === "biweekly") {
-    const daysToNextDue = (14 + billDueDate.getDay() - currentDayOfWeek) % 14;
-    const nextDueDate = new Date(today);
-    nextDueDate.setDate(today.getDate() + daysToNextDue);
-    return nextDueDate <= fiveDaysFromNow;
+    return (
+      bill.dueDate > currentDayOfWeek &&
+      bill.dueDate <= (currentDayOfWeek + 5) % 14
+    );
   }
   return false;
 };
 
 export const isOverdue = (bill: RecurringBill) => {
-  const billDueDate = new Date(bill.dueDate); // Convert dueDate string to Date object
   let dueDate;
 
   if (bill.frequency === "monthly") {
-    dueDate = new Date(todayYear, todayMonth, billDueDate.getDate());
+    dueDate = new Date(todayYear, todayMonth, bill.dueDate);
   } else if (bill.frequency === "weekly") {
-    const daysToNextDue = (7 + billDueDate.getDay() - currentDayOfWeek) % 7;
-    dueDate = new Date(today);
-    dueDate.setDate(today.getDate() + daysToNextDue);
+    const daysToNextDue = (7 + bill.dueDate - todayDay) % 7;
+    dueDate = new Date(todayYear, todayMonth, todayDay + daysToNextDue);
   } else if (bill.frequency === "biweekly") {
-    const daysToNextDue = (14 + billDueDate.getDay() - currentDayOfWeek) % 14;
-    dueDate = new Date(today);
-    dueDate.setDate(today.getDate() + daysToNextDue);
+    const daysToNextDue = (14 + bill.dueDate - todayDay) % 14;
+    dueDate = new Date(todayYear, todayMonth, todayDay + daysToNextDue);
   } else {
     return false;
   }
