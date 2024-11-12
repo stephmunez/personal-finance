@@ -1,13 +1,11 @@
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Moment } from "moment";
-import moment from "moment-timezone";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import iconCloseModal from "../../assets/images/icon-close-modal.svg";
 import { RecurringBill } from "../../types";
 import CustomFormSelect from "../CustomFormSelect";
-
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 interface CreateRecurringBillModalProps {
   isOpen: boolean;
@@ -152,8 +150,6 @@ const CreateRecurringBillModal = ({
       valid = false;
     }
 
-    console.log(newErrors);
-
     setErrors(newErrors);
     return valid;
   };
@@ -176,7 +172,6 @@ const CreateRecurringBillModal = ({
     if (validateForm()) {
       // Convert the dueDate to local time and format it as an ISO string
       const formattedDate = dueDate?.toISOString();
-      console.log(formattedDate);
 
       onCreateRecurringBill({
         name,
@@ -184,7 +179,7 @@ const CreateRecurringBillModal = ({
         category,
         frequency: frequency.toLowerCase(),
         status: status.toLowerCase(),
-        dueDate: formattedDate!, // Ensure that the date passed is in the correct format
+        dueDate: formattedDate!,
       });
 
       // Reset state values
@@ -341,10 +336,7 @@ const CreateRecurringBillModal = ({
                 <label className="text-xs font-bold leading-normal text-grey-500">
                   Due Date
                 </label>
-                <LocalizationProvider
-                  dateAdapter={AdapterMoment}
-                  adapterLocale="en-sg"
-                >
+                <LocalizationProvider dateAdapter={AdapterMoment}>
                   <DatePicker
                     value={dueDate}
                     onChange={(newDate) => setDueDate(newDate)}
