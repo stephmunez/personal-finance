@@ -26,7 +26,21 @@ const RecurringBills = () => {
     const data = await response.json();
 
     if (response.ok) {
-      setRecurringBills(data.recurringBills);
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
+
+      const filteredBills = data.recurringBills.filter(
+        (bill: RecurringBill) => {
+          const billDate = new Date(bill.dueDate);
+          return (
+            billDate.getMonth() === currentMonth &&
+            billDate.getFullYear() === currentYear
+          );
+        },
+      );
+
+      setRecurringBills(filteredBills);
     }
   };
 
