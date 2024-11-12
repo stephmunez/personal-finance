@@ -1,4 +1,3 @@
-import moment from "moment-timezone";
 import { useEffect, useRef, useState } from "react";
 import iconBillDue from "../../assets/images/icon-bill-due.svg";
 import iconBillPaid from "../../assets/images/icon-bill-paid.svg";
@@ -77,11 +76,7 @@ const RecurringBillItem = ({
         <div className="flex items-center gap-2">
           <span className="text-xs capitalize leading-normal tracking-normal text-green">
             {bill.frequency} -{" "}
-            {getDayWithSuffix(
-              moment
-                .tz(new Date(bill.dueDate).toISOString(), "Asia/Manila")
-                .date(),
-            )}
+            {getDayWithSuffix(new Date(bill.dueDate).getDate())}
           </span>
           <span>
             {bill.status === "paid" ? (
