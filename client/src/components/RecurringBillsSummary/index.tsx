@@ -42,6 +42,9 @@ const RecurringBillsSummary = ({
         .toFixed(2)
     : "0.00";
 
+  const currentMonth = new Date().toLocaleString("default", { month: "long" });
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="flex w-full flex-col gap-6">
       {loading ? (
@@ -81,7 +84,7 @@ const RecurringBillsSummary = ({
             </div>
             <div className="flex flex-col gap-3">
               <h2 className="text-sm leading-normal tracking-normal text-white">
-                Total bills
+                Total bills for {currentMonth} {currentYear}
               </h2>
               <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-white">
                 P{totalAmount}
