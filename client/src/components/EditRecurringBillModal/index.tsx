@@ -168,8 +168,6 @@ const EditRecurringBillModal = ({
       valid = false;
     }
 
-    console.log(newErrors);
-
     setErrors(newErrors);
     return valid;
   };
