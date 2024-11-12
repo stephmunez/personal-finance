@@ -140,47 +140,23 @@ export const getNameByColor = (color: string) => {
 
 const today = new Date();
 const todayDay = today.getDate();
-const todayMonth = today.getMonth();
-const todayYear = today.getFullYear();
-const currentDayOfWeek = today.getDay();
 
 const fiveDaysFromNow = new Date(today);
 fiveDaysFromNow.setDate(today.getDate() + 5);
 const upcomingDay = fiveDaysFromNow.getDate();
 
 export const isDueSoon = (bill: RecurringBill) => {
-  if (bill.frequency === "monthly") {
-    return bill.dueDate > todayDay && bill.dueDate <= upcomingDay;
-  } else if (bill.frequency === "weekly") {
-    return (
-      bill.dueDate > currentDayOfWeek &&
-      bill.dueDate <= (currentDayOfWeek + 5) % 7
-    );
-  } else if (bill.frequency === "biweekly") {
-    return (
-      bill.dueDate > currentDayOfWeek &&
-      bill.dueDate <= (currentDayOfWeek + 5) % 14
-    );
-  }
-  return false;
+  const billDueDate = new Date(bill.dueDate);
+
+  return (
+    billDueDate.getDate() >= todayDay && billDueDate.getDate() <= upcomingDay
+  );
 };
 
 export const isOverdue = (bill: RecurringBill) => {
-  let dueDate;
+  const billDueDate = new Date(bill.dueDate);
 
-  if (bill.frequency === "monthly") {
-    dueDate = new Date(todayYear, todayMonth, bill.dueDate);
-  } else if (bill.frequency === "weekly") {
-    const daysToNextDue = (7 + bill.dueDate - todayDay) % 7;
-    dueDate = new Date(todayYear, todayMonth, todayDay + daysToNextDue);
-  } else if (bill.frequency === "biweekly") {
-    const daysToNextDue = (14 + bill.dueDate - todayDay) % 14;
-    dueDate = new Date(todayYear, todayMonth, todayDay + daysToNextDue);
-  } else {
-    return false;
-  }
-
-  return dueDate < today;
+  return billDueDate.getDate() < todayDay;
 };
 
 export const getDayWithSuffix = (dueDate: number) => {

@@ -75,7 +75,8 @@ const RecurringBillItem = ({
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xs capitalize leading-normal tracking-normal text-green">
-            {bill.frequency} - {getDayWithSuffix(bill.dueDate)}
+            {bill.frequency} -{" "}
+            {getDayWithSuffix(new Date(bill.dueDate).getDate())}
           </span>
           <span>
             {bill.status === "paid" ? (

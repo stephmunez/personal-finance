@@ -41,13 +41,19 @@ const RecurringBillsList = ({
         filteredBills.sort((a, b) => a.amount - b.amount);
         break;
       case "Latest":
-        filteredBills.sort((a, b) => a.dueDate - b.dueDate);
+        filteredBills.sort(
+          (a, b) => new Date(a.dueDate).getDay() - new Date(b.dueDate).getDay(),
+        );
         break;
       case "Oldest":
-        filteredBills.sort((a, b) => b.dueDate - a.dueDate);
+        filteredBills.sort(
+          (a, b) => new Date(b.dueDate).getDay() - new Date(a.dueDate).getDay(),
+        );
         break;
       default:
-        filteredBills.sort((a, b) => a.dueDate - b.dueDate);
+        filteredBills.sort(
+          (a, b) => new Date(b.dueDate).getDay() - new Date(a.dueDate).getDay(),
+        );
         break;
     }
 
