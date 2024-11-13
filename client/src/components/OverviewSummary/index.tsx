@@ -40,8 +40,8 @@ const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
   }, [transactions, pots]);
 
   return (
-    <div className="flex w-full flex-col gap-3">
-      <div className="flex flex-col gap-3 rounded-xl bg-grey-900 p-5">
+    <div className="flex w-full flex-col gap-3 md:flex-row md:gap-6">
+      <div className="flex w-full flex-col gap-3 rounded-xl bg-grey-900 p-5 md:p-6">
         <span className="text-sm leading-normal text-white">
           Current Balance
         </span>
@@ -53,7 +53,7 @@ const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
           </span>
         )}
       </div>
-      <div className="flex flex-col gap-3 rounded-xl bg-white p-5">
+      <div className="flex w-full flex-col gap-3 rounded-xl bg-white p-5 md:p-6">
         <span className="text-sm leading-normal text-grey-500">
           Total Income
         </span>
@@ -65,7 +65,7 @@ const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
           </span>
         )}
       </div>
-      <div className="flex flex-col gap-3 rounded-xl bg-white p-5">
+      <div className="flex w-full flex-col gap-3 rounded-xl bg-white p-5 md:p-6">
         <span className="text-sm leading-normal text-grey-500">
           Total Expenses
         </span>
