@@ -67,7 +67,10 @@ const RecurringBillItem = ({
             {bill.name}
           </span>
         </div>
-        <button onClick={() => handleBillClick(bill._id || "")}>
+        <button
+          className="flex h-4 w-4 items-center justify-center"
+          onClick={() => handleBillClick(bill._id || "")}
+        >
           <img src={iconEllipsis} alt="ellipsis icon" />
         </button>
       </div>
