@@ -35,8 +35,10 @@ const Home = () => {
         const transactions = data.transactions;
         const spent = transactions.reduce(
           (acc: { [key: string]: number }, transaction: Transaction) => {
-            acc[transaction.category] =
-              (acc[transaction.category] || 0) + transaction.amount;
+            if (transaction.amount < 0) {
+              acc[transaction.category] =
+                (acc[transaction.category] || 0) + Math.abs(transaction.amount);
+            }
             return acc;
           },
           {},
@@ -66,6 +68,7 @@ const Home = () => {
             categoryOrder.indexOf(b.category)
           );
         });
+
         setBudgets(sortedBudgets);
       }
     };
