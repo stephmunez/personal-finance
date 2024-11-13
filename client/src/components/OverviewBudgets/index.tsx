@@ -38,8 +38,14 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
       }))
     : [];
 
+  const sortedBudgets = budgets
+    ? [...budgets].sort(
+        (a, b) => (totalSpent[b.category] || 0) - (totalSpent[a.category] || 0),
+      )
+    : [];
+
   return (
-    <section className="flex flex-col gap-5 rounded-xl bg-white px-5 py-6">
+    <section className="flex flex-col gap-5 rounded-xl bg-white px-5 py-6 md:p-8">
       <div className="flex w-full items-center justify-between">
         <h2 className="text-xl font-bold leading-[1.2] text-grey-900">
           Budgets
@@ -51,7 +57,7 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
           See Details <img src={iconCaretRight} alt="caret right icon" />
         </Link>
       </div>
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-col gap-4 md:flex-row">
         {loading ? (
           // Skeleton loader while loading
           <div className="flex flex-col items-center justify-center gap-5">
@@ -73,39 +79,41 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
           </div>
         ) : (
           <>
-            <div className="relative flex h-72 w-72 items-center justify-center self-center">
-              <PieChart
-                series={[
-                  {
-                    innerRadius: 80,
-                    outerRadius: 124,
-                    data: chartData,
-                    cx: 140,
-                  },
-                ]}
-                slotProps={{
-                  legend: { hidden: true },
-                }}
-                tooltip={{ trigger: "none" }}
-              />
-              <div className="absolute top-1/2 flex h-48 w-48 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-full bg-white/25">
-                <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
-                  P{Math.abs(Number(overallSpent))}
-                </span>
-                <span className="text-xs leading-normal tracking-normal text-grey-500">
-                  of P{overallMaximum.toFixed(0)} limit
-                </span>
+            <div className="flex w-full items-center justify-center md:w-4/5">
+              <div className="relative flex h-72 w-72 items-center justify-center self-center">
+                <PieChart
+                  series={[
+                    {
+                      innerRadius: 80,
+                      outerRadius: 124,
+                      data: chartData,
+                      cx: 140,
+                    },
+                  ]}
+                  slotProps={{
+                    legend: { hidden: true },
+                  }}
+                  tooltip={{ trigger: "none" }}
+                />
+                <div className="absolute top-1/2 flex h-48 w-48 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-full bg-white/25">
+                  <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
+                    P{Math.abs(Number(overallSpent))}
+                  </span>
+                  <span className="text-xs leading-normal tracking-normal text-grey-500">
+                    of P{overallMaximum.toFixed(0)} limit
+                  </span>
+                </div>
               </div>
             </div>
-            <ul className="flex w-full flex-wrap gap-4">
-              {budgets &&
-                budgets.slice(0, 4).map((budget) => (
+            <ul className="flex w-full flex-wrap gap-4 md:w-1/5 md:flex-col md:flex-nowrap md:justify-center">
+              {sortedBudgets &&
+                sortedBudgets.slice(0, 4).map((budget) => (
                   <li
                     key={budget._id}
-                    className="flex flex-[1_1_calc(50%-16px)] gap-4"
+                    className="flex flex-[1_1_calc(50%-16px)] gap-4 md:flex-initial"
                   >
                     <div
-                      className="h-full w-1 rounded-lg"
+                      className="h-full w-1 rounded-lg md:h-11"
                       style={{
                         backgroundColor: getThemeByCategory(budget.category),
                       }}

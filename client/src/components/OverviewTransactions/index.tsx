@@ -27,7 +27,7 @@ const OverviewTransactions = ({ transactions }: OverviewTransactionsProps) => {
   }, [transactions]);
 
   return (
-    <section className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
+    <section className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:p-8">
       <div className="flex w-full items-center justify-between">
         <h2 className="text-xl font-bold leading-[1.2] text-grey-900">
           Transactions
