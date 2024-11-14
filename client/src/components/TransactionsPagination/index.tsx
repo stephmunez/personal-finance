@@ -25,7 +25,7 @@ const TransactionsPagination = ({
   });
 
   return (
-    <nav>
+    <nav className="pt-6">
       <ul className="flex items-center justify-between">
         <li>
           <button
@@ -37,8 +37,11 @@ const TransactionsPagination = ({
               }
             }}
             disabled={currentPage === 1}
-            className="mr-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500 disabled:cursor-not-allowed disabled:opacity-80"
+            className="group mr-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500 disabled:cursor-not-allowed disabled:opacity-80 md:w-24 md:flex-row-reverse md:gap-4"
           >
+            <span className="hidden text-sm leading-normal text-grey-900 group-disabled:opacity-80 md:block">
+              Prev
+            </span>
             <img src={iconCaretLeft} alt="Previous Page" />
           </button>
         </li>
@@ -88,8 +91,11 @@ const TransactionsPagination = ({
               }
             }}
             disabled={currentPage === totalPages}
-            className="ml-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500 disabled:cursor-not-allowed disabled:opacity-80"
+            className="group ml-4 flex h-10 w-12 items-center justify-center rounded-lg border border-solid border-beige-500 disabled:cursor-not-allowed disabled:opacity-80 md:w-24 md:gap-4"
           >
+            <span className="hidden text-sm leading-normal text-grey-900 group-disabled:opacity-80 md:block">
+              Next
+            </span>
             <img src={iconCaretRight} alt="Next Page" />
           </button>
         </li>

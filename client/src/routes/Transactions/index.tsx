@@ -209,7 +209,7 @@ const Transactions = () => {
   return (
     <main
       ref={mainRef}
-      className="relative flex flex-col gap-8 px-4 pb-20 pt-6"
+      className="relative flex flex-col gap-8 px-4 pb-20 pt-6 md:px-10 md:pb-28 md:pt-10"
     >
       <div className="flex items-center justify-between">
         <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
@@ -224,7 +224,7 @@ const Transactions = () => {
         </button>
       </div>
 
-      <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6">
+      <div className="flex flex-col gap-6 rounded-xl bg-white px-5 py-6 md:p-8">
         <TransactionSearchBar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
