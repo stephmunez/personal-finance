@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import iconBillDue from "../../assets/images/icon-bill-due.svg";
 import iconCaretRight from "../../assets/images/icon-caret-right.svg";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
 import { Budget, Transaction } from "../../types";
@@ -80,6 +81,12 @@ const BudgetsList = ({
                   <h3 className="text-xl font-bold leading-[1.2] tracking-normal text-grey-900">
                     {budget.category}
                   </h3>
+                  {Number(totalSpent[budget.category]) > budget.maximum && (
+                    <span className="flex items-center gap-2 text-xs leading-normal text-red">
+                      <img src={iconBillDue} alt="bill due icon" />
+                      You have exceeded your budget!
+                    </span>
+                  )}
                 </div>
                 <button
                   type="button"
