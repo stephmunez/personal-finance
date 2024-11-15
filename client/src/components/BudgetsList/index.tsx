@@ -81,12 +81,6 @@ const BudgetsList = ({
                   <h3 className="text-xl font-bold leading-[1.2] tracking-normal text-grey-900">
                     {budget.category}
                   </h3>
-                  {Number(totalSpent[budget.category]) > budget.maximum && (
-                    <span className="flex items-center gap-2 text-xs leading-normal text-red">
-                      <img src={iconBillDue} alt="bill due icon" />
-                      You have exceeded your budget!
-                    </span>
-                  )}
                 </div>
                 <button
                   type="button"
@@ -101,20 +95,31 @@ const BudgetsList = ({
                 <p className="text-[0.875rem] leading-normal tracking-normal text-grey-500">
                   Maximum of P{budget.maximum.toFixed(2)}
                 </p>
-                <div className="h-8 w-full rounded-[4px] bg-beige-100 p-1">
+                <div className="flex flex-col gap-1">
                   <div
-                    style={{
-                      backgroundColor: getThemeByCategory(budget.category),
-                      width: `${Math.min(
-                        ((Math.abs(totalSpent[budget.category]) || 0) /
-                          Math.abs(budget.maximum)) *
+                    className={`h-8 w-full rounded-[4px] p-1 ${Number(totalSpent[budget.category]) > budget.maximum ? "bg-red/80" : "bg-beige-100"}`}
+                  >
+                    <div
+                      style={{
+                        backgroundColor: getThemeByCategory(budget.category),
+                        width: `${Math.min(
+                          ((Math.abs(totalSpent[budget.category]) || 0) /
+                            Math.abs(budget.maximum)) *
+                            100,
                           100,
-                        100,
-                      )}%`,
-                    }}
-                    className="h-full rounded-[4px]"
-                  ></div>
+                        )}%`,
+                      }}
+                      className="h-full rounded-[4px]"
+                    ></div>
+                  </div>
+                  {Number(totalSpent[budget.category]) > budget.maximum && (
+                    <span className="flex items-center gap-2 text-xs leading-normal text-red">
+                      <img src={iconBillDue} alt="bill due icon" />
+                      You have exceeded your budget!
+                    </span>
+                  )}
                 </div>
+
                 <div className="flex gap-4">
                   <div className="relative flex flex-1 flex-col gap-1 pl-4">
                     <span
@@ -196,7 +201,9 @@ const BudgetsList = ({
                 ref={dropdownRef}
                 aria-hidden={!selectedBudget}
                 className={`absolute right-5 top-12 z-10 flex cursor-auto flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
-                  selectedBudget === budget._id ? "opacity-100" : "opacity-0"
+                  selectedBudget === budget._id
+                    ? "pointer-events-auto opacity-100"
+                    : "pointer-events-none opacity-0"
                 }`}
               >
                 <button
