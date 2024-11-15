@@ -69,7 +69,7 @@ const Budgets = () => {
         const spent = transactions.reduce(
           (acc: { [key: string]: number }, transaction: Transaction) => {
             acc[transaction.category] =
-              (acc[transaction.category] || 0) + transaction.amount;
+              (acc[transaction.category] || 0) + Math.abs(transaction.amount);
             return acc;
           },
           {},
@@ -169,7 +169,7 @@ const Budgets = () => {
   };
 
   return (
-    <main className="relative flex w-full flex-col gap-8 px-4 pb-20 pt-6">
+    <main className="relative flex w-full flex-col gap-8 px-4 pb-20 pt-6 md:px-10 md:pb-28 md:pt-8">
       <div className="flex items-center justify-between">
         <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
           Budgets

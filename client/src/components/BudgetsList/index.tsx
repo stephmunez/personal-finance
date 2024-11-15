@@ -67,7 +67,7 @@ const BudgetsList = ({
           return (
             <div
               key={budget._id}
-              className="relative flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6"
+              className="relative flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 md:p-8"
             >
               <div className="flex w-full items-center justify-between">
                 <div className="flex w-full items-center gap-4">
@@ -90,7 +90,7 @@ const BudgetsList = ({
                 </button>
               </div>
 
-              <div className="flex w-full flex-col gap-6">
+              <div className="flex w-full flex-col gap-4">
                 <p className="text-[0.875rem] leading-normal tracking-normal text-grey-500">
                   Maximum of P{budget.maximum.toFixed(2)}
                 </p>
@@ -129,12 +129,12 @@ const BudgetsList = ({
                   <div className="relative flex flex-1 flex-col gap-1 pl-4">
                     <span className="absolute left-0 right-0 h-full w-1 rounded-lg bg-beige-100"></span>
                     <span className="text-xs leading-[1.2] tracking-normal text-grey-500">
-                      Free
+                      Remaining
                     </span>
                     <span className="text-sm font-bold leading-[1.5] tracking-normal text-grey-900">
                       P
                       {Math.max(
-                        budget.maximum +
+                        budget.maximum -
                           (Number(totalSpent[budget.category]) || 0),
                         0,
                       ).toFixed(2)}
@@ -143,7 +143,7 @@ const BudgetsList = ({
                 </div>
               </div>
 
-              <div className="flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4">
+              <div className="flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4 md:p-5">
                 <div className="flex w-full items-center justify-between">
                   <span className="text-base font-bold tracking-normal text-grey-900">
                     Latest Spending
@@ -160,12 +160,11 @@ const BudgetsList = ({
                 </div>
                 <ul className="flex flex-col gap-3">
                   {latestTransactions.length > 0 ? (
-                    latestTransactions.map((transaction) => (
+                    latestTransactions.map((transaction, i) => (
                       <li
                         key={transaction.name + transaction.date}
                         className={`flex w-full items-center justify-between ${
-                          latestTransactions.indexOf(transaction) !==
-                          latestTransactions.length - 1
+                          i !== latestTransactions.length - 1
                             ? "border-b border-solid border-grey-500/15 pb-3"
                             : ""
                         }`}

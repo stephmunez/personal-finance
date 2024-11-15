@@ -107,7 +107,7 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
             </div>
             <ul className="flex w-full flex-wrap gap-4 md:w-1/5 md:flex-col md:flex-nowrap md:justify-center">
               {sortedBudgets &&
-                sortedBudgets.slice(0, 4).map((budget) => (
+                sortedBudgets.map((budget) => (
                   <li
                     key={budget._id}
                     className="flex flex-[1_1_calc(50%-16px)] gap-4 md:flex-initial"
