@@ -11,6 +11,12 @@ interface BudgetsSummaryProps {
 const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    if (budgets) {
+      setLoading(false);
+    }
+  }, [budgets]);
+
   const overallSpent = budgets
     ? budgets.reduce(
         (acc, budget) => acc + (totalSpent[budget.category] || 0),
@@ -30,11 +36,11 @@ const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
       }))
     : [];
 
-  useEffect(() => {
-    if (budgets) {
-      setLoading(false);
-    }
-  }, [budgets]);
+  const sortedBudgets = budgets
+    ? [...budgets].sort(
+        (a, b) => (totalSpent[b.category] || 0) - (totalSpent[a.category] || 0),
+      )
+    : [];
 
   return (
     <>
@@ -79,46 +85,48 @@ const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
           </div>
         </div>
       ) : (
-        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
-          <div className="relative flex h-72 w-72 items-center justify-center self-center">
-            <PieChart
-              series={[
-                {
-                  innerRadius: 80,
-                  outerRadius: 124,
-                  data: chartData,
-                  cx: 140,
-                },
-              ]}
-              slotProps={{
-                legend: { hidden: true },
-              }}
-              tooltip={{ trigger: "none" }}
-              height={288}
-            />
+        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:flex-row md:justify-between md:p-8">
+          <div className="flex w-full items-center justify-center md:w-[47%]">
+            <div className="relative flex h-72 w-72 items-center justify-center self-center">
+              <PieChart
+                series={[
+                  {
+                    innerRadius: 80,
+                    outerRadius: 124,
+                    data: chartData,
+                    cx: 140,
+                  },
+                ]}
+                slotProps={{
+                  legend: { hidden: true },
+                }}
+                tooltip={{ trigger: "none" }}
+                height={288}
+              />
 
-            <div className="absolute top-1/2 flex h-48 w-48 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-full bg-white/25">
-              <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
-                {`P${Math.abs(Number(overallSpent))}`}
-              </span>
-              <span className="text-xs leading-normal tracking-normal text-grey-500">
-                {`of P${overallMaximum.toFixed(0)} limit`}
-              </span>
+              <div className="absolute top-1/2 flex h-48 w-48 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-full bg-white/25">
+                <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
+                  {`P${Math.abs(Number(overallSpent))}`}
+                </span>
+                <span className="text-xs leading-normal tracking-normal text-grey-500">
+                  {`of P${overallMaximum.toFixed(0)} limit`}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="flex w-full flex-col gap-6">
+          <div className="flex w-full flex-col gap-6 md:w-[47%] md:justify-center">
             <h2 className="text-xl font-bold leading-[1.2] tracking-normal text-grey-900">
               Spending Summary
             </h2>
 
             <ul className="flex w-full flex-col gap-4">
-              {budgets &&
-                budgets.map((budget, i) => (
+              {sortedBudgets &&
+                sortedBudgets.map((budget, i) => (
                   <li
                     key={budget._id}
                     className={`flex w-full items-center justify-between ${
-                      i !== budgets.length - 1
+                      i !== sortedBudgets.length - 1
                         ? "border-b border-solid border-grey-500/15 pb-4"
                         : ""
                     }`}
