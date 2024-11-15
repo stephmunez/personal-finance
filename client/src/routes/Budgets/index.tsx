@@ -69,7 +69,7 @@ const Budgets = () => {
         const spent = transactions.reduce(
           (acc: { [key: string]: number }, transaction: Transaction) => {
             acc[transaction.category] =
-              (acc[transaction.category] || 0) + transaction.amount;
+              (acc[transaction.category] || 0) + Math.abs(transaction.amount);
             return acc;
           },
           {},
