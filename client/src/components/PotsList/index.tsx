@@ -55,8 +55,11 @@ const PotsList = ({
     <div className="flex w-full flex-col gap-6">
       {loading ? (
         // Render the skeletons while loading
-        Array.from({ length: 2 }).map(() => (
-          <div className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
+        Array.from({ length: 2 }).map((_, i) => (
+          <div
+            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6"
+            key={i}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="h-4 w-4 animate-pulse rounded-full bg-grey-100"></div>
