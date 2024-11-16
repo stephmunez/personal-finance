@@ -47,9 +47,9 @@ const RecurringBillItem = ({
   return (
     <li
       key={bill._id}
-      className={`relative flex flex-col gap-2 p-4 ${className}`}
+      className={`flex flex-col gap-2 px-4 pt-4 md:px-5 md:pt-5 ${className} md:flex-row md:justify-between md:gap-8`}
     >
-      <div className="flex w-full items-center justify-between">
+      <div className="relative flex w-full items-center justify-between md:w-[58%]">
         <div className="flex items-center gap-4">
           <div
             className="flex h-8 w-8 items-center justify-center rounded-full"
@@ -73,9 +73,32 @@ const RecurringBillItem = ({
         >
           <img src={iconEllipsis} alt="ellipsis icon" />
         </button>
+
+        <div
+          className={`absolute right-0 top-1/3 z-10 flex cursor-auto flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
+            selectedBill === bill._id
+              ? "visible opacity-100"
+              : "invisible opacity-0"
+          }`}
+          ref={menuRef}
+        >
+          <button
+            className="text-left text-sm leading-normal text-grey-900"
+            onClick={() => onEdit(bill)}
+          >
+            Edit Recurring Bill
+          </button>
+          <div className="pointer-events-none h-px w-full bg-grey-100"></div>
+          <button
+            className="text-left text-sm leading-normal text-red"
+            onClick={() => onDelete(bill)}
+          >
+            Delete Recurring Bill
+          </button>
+        </div>
       </div>
 
-      <div className="flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between md:w-[43%]">
         <div className="flex items-center gap-2">
           <span className="text-xs capitalize leading-normal tracking-normal text-green">
             {bill.frequency} -{" "}
@@ -92,32 +115,9 @@ const RecurringBillItem = ({
             )}
           </span>
         </div>
-        <span className="text-sm font-bold leading-normal tracking-normal text-grey-900">
+        <span className="text-sm font-bold leading-normal tracking-normal text-grey-900 md:text-end">
           P{bill.amount.toFixed(2)}
         </span>
-      </div>
-
-      <div
-        className={`absolute right-0 top-1/2 z-10 flex cursor-auto flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
-          selectedBill === bill._id
-            ? "visible opacity-100"
-            : "invisible opacity-0"
-        }`}
-        ref={menuRef}
-      >
-        <button
-          className="text-left text-sm leading-normal text-grey-900"
-          onClick={() => onEdit(bill)}
-        >
-          Edit Recurring Bill
-        </button>
-        <div className="pointer-events-none h-px w-full bg-grey-100"></div>
-        <button
-          className="text-left text-sm leading-normal text-red"
-          onClick={() => onDelete(bill)}
-        >
-          Delete Recurring Bill
-        </button>
       </div>
     </li>
   );
