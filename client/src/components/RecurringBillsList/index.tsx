@@ -62,13 +62,27 @@ const RecurringBillsList = ({
 
   return (
     <ul>
+      <li className="hidden w-full items-center justify-between gap-8 border-b border-solid border-grey-100 px-5 py-4 md:flex">
+        <span className="w-[58%] text-[0.75rem] leading-normal tracking-normal text-grey-500">
+          Bill Title
+        </span>
+
+        <div className="flex w-[43%] items-center justify-between">
+          <span className="text-[0.75rem] leading-normal tracking-normal text-grey-500">
+            Due Date
+          </span>
+          <span className="text-[0.75rem] leading-normal tracking-normal text-grey-500">
+            Amount
+          </span>
+        </div>
+      </li>
       {recurringBills && recurringBills.length > 0 ? (
         filterAndSortBills(recurringBills).length > 0 ? (
           filterAndSortBills(recurringBills).map((bill, i) => (
             <RecurringBillItem
               key={bill._id}
               bill={bill}
-              className={`${i !== recurringBills.length - 1 ? "border-b border-grey-100" : ""}`}
+              className={`${i !== recurringBills.length - 1 ? "border-b border-grey-100 pb-4 md:pb-5" : "pb-0"}`}
               onEdit={onEdit}
               onDelete={onDelete}
             />
