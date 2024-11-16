@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import iconBillPaid from "../../assets/images/icon-bill-paid.svg";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
 import { Pot } from "../../types";
 
@@ -55,8 +56,11 @@ const PotsList = ({
     <div className="flex w-full flex-col gap-6">
       {loading ? (
         // Render the skeletons while loading
-        Array.from({ length: 2 }).map(() => (
-          <div className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
+        Array.from({ length: 2 }).map((_, i) => (
+          <div
+            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6"
+            key={i}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="h-4 w-4 animate-pulse rounded-full bg-grey-100"></div>
@@ -92,7 +96,7 @@ const PotsList = ({
         pots.map((pot) => (
           <div
             key={pot._id}
-            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6"
+            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:p-6"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -121,15 +125,24 @@ const PotsList = ({
                 </span>
               </div>
               <div className="flex flex-col gap-3">
-                <div className="h-2 w-full rounded-[4px] bg-beige-100">
-                  <div
-                    className="h-2 rounded-[4px]"
-                    style={{
-                      backgroundColor: pot.theme,
-                      width: `${Math.min((pot.total / pot.target) * 100, 100)}%`,
-                    }}
-                  ></div>
+                <div className="flex flex-col gap-1">
+                  <div className="h-2 w-full rounded-[4px] bg-beige-100">
+                    <div
+                      className="h-2 rounded-[4px]"
+                      style={{
+                        backgroundColor: pot.theme,
+                        width: `${Math.min((pot.total / pot.target) * 100, 100)}%`,
+                      }}
+                    ></div>
+                  </div>
+                  {pot.total >= pot.target && (
+                    <span className="flex items-center gap-2 text-xs leading-normal text-green">
+                      <img src={iconBillPaid} alt="bill paid icon" />
+                      You have reached your pot goal!
+                    </span>
+                  )}
                 </div>
+
                 <div className="flex w-full items-center justify-between">
                   <span className="text-xs font-bold leading-normal tracking-normal text-grey-500">
                     {`${Math.min((pot.total / pot.target) * 100, 100).toFixed(1)}%`}
