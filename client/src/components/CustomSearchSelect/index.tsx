@@ -87,7 +87,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       ref={dropdownRef} // Attach the ref to the wrapper div
     >
       <button
-        className={`flex w-full items-center justify-center md:justify-between md:rounded-lg md:border md:border-solid md:border-grey-500 md:px-5 md:py-3 ${buttonClass}`}
+        className={`flex w-full items-center justify-center md:justify-between md:rounded-lg md:border md:border-solid md:border-grey-500 md:px-4 md:py-3 ${buttonClass}`}
         onClick={toggleDropdown}
         aria-haspopup="listbox"
         aria-label="Select an option"
