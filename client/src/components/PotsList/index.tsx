@@ -95,7 +95,7 @@ const PotsList = ({
         pots.map((pot) => (
           <div
             key={pot._id}
-            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6"
+            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:p-6"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
