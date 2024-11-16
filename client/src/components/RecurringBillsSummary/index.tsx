@@ -46,7 +46,7 @@ const RecurringBillsSummary = ({
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex w-full flex-col gap-6 md:flex-row">
       {loading ? (
         <>
           <div className="flex w-full items-center gap-5 rounded-xl bg-grey-900 px-5 py-6">
@@ -78,7 +78,7 @@ const RecurringBillsSummary = ({
         </>
       ) : (
         <>
-          <div className="flex w-full items-center gap-5 rounded-xl bg-grey-900 px-5 py-6">
+          <div className="flex w-full items-center gap-5 rounded-xl bg-grey-900 px-5 py-6 md:flex-col md:items-start md:gap-8 md:p-6">
             <div className="flex h-10 w-10 items-center justify-center">
               <img src={iconRecurringBills} alt="recurring bills icon" />
             </div>
