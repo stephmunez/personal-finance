@@ -133,7 +133,7 @@ const RecurringBills = () => {
   };
 
   return (
-    <main className="relative flex w-full flex-col gap-8 px-4 pb-20 pt-6">
+    <main className="relative flex w-full flex-col gap-8 px-4 pb-20 pt-6 md:px-10 md:pb-28 md:pt-8">
       <div className="flex items-center justify-between">
         <h1 className="leading[1.2] text-[2rem] font-bold tracking-normal text-grey-900">
           Recurring <br className="min-[480px]:hidden" /> Bills
@@ -150,7 +150,7 @@ const RecurringBills = () => {
         {recurringBills && recurringBills.length > 0 ? (
           <>
             <RecurringBillsSummary recurringBills={recurringBills} />
-            <div className="flex min-h-80 flex-col gap-6 rounded-xl bg-white px-5 py-6">
+            <div className="flex min-h-80 flex-col gap-6 rounded-xl bg-white px-5 py-6 md:p-8">
               <RecurringBillsSearchBar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
