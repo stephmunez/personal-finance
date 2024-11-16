@@ -22,7 +22,7 @@ const RecurringBillsSearchBar = ({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="relative w-[85%]">
+      <div className="relative w-[85%] md:w-1/2">
         <img
           src={iconSearch}
           alt="Search"
@@ -36,7 +36,10 @@ const RecurringBillsSearchBar = ({
           className="w-full rounded-lg border border-solid border-beige-500 px-5 py-3 text-[0.875rem] leading-normal text-grey-900 outline-none placeholder:text-beige-500"
         />
       </div>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2">
+        <span className="hidden text-sm leading-normal text-grey-500 md:block">
+          Sort by
+        </span>
         <CustomSelect
           options={["Latest", "Oldest", "A-Z", "Z-A", "Highest", "Lowest"]}
           value={sortOption}
@@ -45,6 +48,7 @@ const RecurringBillsSearchBar = ({
           setIsOpen={toggleSortOpen}
           placeholder="Sort by"
           placeholderImage={iconSortMobile}
+          buttonClass="md:w-28"
         />
       </div>
     </div>
