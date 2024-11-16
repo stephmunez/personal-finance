@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import iconBillPaid from "../../assets/images/icon-bill-paid.svg";
 import iconEllipsis from "../../assets/images/icon-ellipsis.svg";
 import { Pot } from "../../types";
 
@@ -124,15 +125,24 @@ const PotsList = ({
                 </span>
               </div>
               <div className="flex flex-col gap-3">
-                <div className="h-2 w-full rounded-[4px] bg-beige-100">
-                  <div
-                    className="h-2 rounded-[4px]"
-                    style={{
-                      backgroundColor: pot.theme,
-                      width: `${Math.min((pot.total / pot.target) * 100, 100)}%`,
-                    }}
-                  ></div>
+                <div className="flex flex-col gap-1">
+                  <div className="h-2 w-full rounded-[4px] bg-beige-100">
+                    <div
+                      className="h-2 rounded-[4px]"
+                      style={{
+                        backgroundColor: pot.theme,
+                        width: `${Math.min((pot.total / pot.target) * 100, 100)}%`,
+                      }}
+                    ></div>
+                  </div>
+                  {pot.total >= pot.target && (
+                    <span className="flex items-center gap-2 text-xs leading-normal text-green">
+                      <img src={iconBillPaid} alt="bill paid icon" />
+                      You have reached your pot goal!
+                    </span>
+                  )}
                 </div>
+
                 <div className="flex w-full items-center justify-between">
                   <span className="text-xs font-bold leading-normal tracking-normal text-grey-500">
                     {`${Math.min((pot.total / pot.target) * 100, 100).toFixed(1)}%`}
