@@ -45,7 +45,7 @@ const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
   return (
     <>
       {loading ? (
-        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6">
+        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:flex-row md:p-8">
           <div className="relative flex h-72 w-72 items-center justify-center self-center">
             <div className="h-72 w-72 animate-pulse rounded-full bg-grey-100"></div>
 
