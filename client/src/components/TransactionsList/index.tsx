@@ -27,7 +27,7 @@ const TransactionList = ({
 
   useEffect(() => {
     if (transactions) {
-      // setLoading(false);
+      setLoading(false);
     }
   }, [transactions]);
 
