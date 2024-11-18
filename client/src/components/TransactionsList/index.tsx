@@ -27,7 +27,7 @@ const TransactionList = ({
 
   useEffect(() => {
     if (transactions) {
-      setLoading(false);
+      // setLoading(false);
     }
   }, [transactions]);
 
@@ -63,12 +63,12 @@ const TransactionList = ({
               <div className="flex w-full items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-full bg-grey-100"></div>
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 md:flex-row">
                     <div className="h-4 w-24 rounded bg-grey-100"></div>
-                    <div className="h-3 w-16 rounded bg-grey-100"></div>
+                    <div className="h-3 w-16 rounded bg-grey-100 md:hidden"></div>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-1">
+                <div className="flex flex-col items-end gap-1 md:flex-row md:gap-20">
                   <div className="h-4 w-16 rounded bg-grey-100"></div>
                   <div className="h-3 w-20 rounded bg-grey-100"></div>
                 </div>
