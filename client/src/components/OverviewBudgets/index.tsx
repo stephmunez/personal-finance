@@ -57,12 +57,15 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
           See Details <img src={iconCaretRight} alt="caret right icon" />
         </Link>
       </div>
-      <div className="flex w-full flex-col gap-4 md:flex-row">
+      <div className="flex w-full flex-col gap-4 md:flex-row md:justify-between">
         {loading ? (
           // Skeleton loader while loading
-          <div className="flex flex-col items-center justify-center gap-5">
-            <div className="relative flex h-72 w-72 animate-pulse rounded-full bg-grey-100"></div>
-            <ul className="flex w-full flex-wrap gap-4">
+          <>
+            <div className="flex w-full items-center justify-center md:w-4/5">
+              <div className="relative flex h-72 w-72 animate-pulse rounded-full bg-grey-100"></div>
+            </div>
+
+            <ul className="flex w-full flex-wrap gap-4 md:w-1/5 md:flex-col md:flex-nowrap md:justify-center">
               {Array.from({ length: 4 }).map((_, index) => (
                 <li
                   key={index}
@@ -76,7 +79,7 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
                 </li>
               ))}
             </ul>
-          </div>
+          </>
         ) : (
           <>
             <div className="flex w-full items-center justify-center md:w-4/5">
