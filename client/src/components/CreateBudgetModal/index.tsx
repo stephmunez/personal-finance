@@ -133,7 +133,7 @@ const CreateTransactionModal = ({
       >
         <div
           ref={modalRef}
-          className={`flex w-full flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 ${isOpen ? "translate-y-0" : "translate-y-5"}`}
+          className={`flex w-full max-w-96 flex-col gap-5 rounded-xl bg-white px-5 py-6 transition-transform duration-300 md:max-w-[560px] md:p-8 ${isOpen ? "translate-y-0" : "translate-y-5"}`}
         >
           <div className="flex w-full flex-col gap-5">
             <div className="flex w-full items-center justify-between">
