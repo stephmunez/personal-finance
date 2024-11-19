@@ -201,9 +201,7 @@ const BudgetsList = ({
                 ref={dropdownRef}
                 aria-hidden={!selectedBudget}
                 className={`absolute right-5 top-12 z-10 flex cursor-auto flex-col gap-3 rounded-lg bg-white px-5 py-3 shadow-[0_4px_24px_0px_rgba(0,0,0,0.25)] transition-opacity duration-300 ${
-                  selectedBudget === budget._id
-                    ? "pointer-events-auto opacity-100"
-                    : "pointer-events-none opacity-0"
+                  selectedBudget === budget._id ? "opacity-100" : "opacity-0"
                 }`}
               >
                 <button
