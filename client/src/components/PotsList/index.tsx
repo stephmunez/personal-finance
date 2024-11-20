@@ -53,12 +53,12 @@ const PotsList = ({
   }, []);
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex w-full flex-col gap-6 lg:flex-row lg:flex-wrap">
       {loading ? (
         // Render the skeletons while loading
         Array.from({ length: 2 }).map((_, i) => (
           <div
-            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6"
+            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 lg:w-[48%]"
             key={i}
           >
             <div className="flex items-center justify-between">
@@ -96,7 +96,7 @@ const PotsList = ({
         pots.map((pot) => (
           <div
             key={pot._id}
-            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:p-6"
+            className="relative flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:p-6 lg:w-[48%]"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
