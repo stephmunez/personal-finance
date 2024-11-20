@@ -104,7 +104,7 @@ const Home = () => {
   }, []);
 
   return (
-    <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6 md:px-10 md:pb-28 md:pt-8">
+    <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6 md:px-10 md:pb-28 md:pt-8 lg:py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
           Overview
