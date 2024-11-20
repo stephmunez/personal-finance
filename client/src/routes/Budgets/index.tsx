@@ -182,7 +182,7 @@ const Budgets = () => {
           + Add New
         </button>
       </div>
-      <div className="flex w-full flex-col gap-6 lg:flex-row">
+      <div className="flex w-full flex-col gap-6 lg:max-h-[calc(100vh-120px)] lg:min-h-[690px] lg:flex-row lg:overflow-hidden">
         <BudgetsSummary budgets={budgets} totalSpent={totalSpent} />
 
         {budgets && budgets.length > 0 && (
