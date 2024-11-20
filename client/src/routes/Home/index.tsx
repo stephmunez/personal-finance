@@ -111,7 +111,7 @@ const Home = () => {
         </h1>
       </div>
       <OverviewSummary transactions={transactions} pots={pots} />
-      <div className="flex w-full flex-col gap-6">
+      <div className="flex w-full flex-col gap-6 lg:flex-row">
         <div className="flex w-full flex-col gap-4 md:gap-6">
           <OverviewPots pots={pots} />
           <OverviewTransactions transactions={transactions} />
