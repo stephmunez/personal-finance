@@ -50,7 +50,7 @@ const BudgetsList = ({
   }, []);
 
   return (
-    <div className="flex w-full flex-col gap-6 lg:w-[56%]">
+    <div className="flex w-full flex-col gap-6 lg:max-h-[calc(100vh-120px)] lg:min-h-[690px] lg:w-[56%] lg:overflow-scroll">
       {budgets &&
         budgets.map((budget) => {
           const filteredTransactions =
