@@ -52,7 +52,7 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
                 Total Saved
               </h3>
               {loading ? (
-                <div className="h-10 w-32 animate-pulse rounded bg-grey-100"></div>
+                <div className="h-10 w-full animate-pulse rounded bg-grey-100"></div>
               ) : (
                 <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
                   P{totalSaved.toFixed(0)}
