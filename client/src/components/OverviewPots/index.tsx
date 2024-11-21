@@ -78,7 +78,7 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
             : topPots.map((pot) => (
                 <li
                   key={pot._id}
-                  className="flex flex-[1_1_calc(50%-16px)] gap-4"
+                  className="flex flex-[1_1_calc(50%-16px)] items-center gap-4"
                 >
                   <div
                     className="h-full w-1 rounded-lg"
