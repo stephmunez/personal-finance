@@ -9,3 +9,7 @@
 :root {
   @apply min-h-[667px] min-w-80 bg-beige-100 font-sans;
 }
+
+#root {
+  @apply xl:flex xl:flex-row;
+}
