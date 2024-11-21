@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import DesktopNav from "../components/DesktopNav";
 import MobileNav from "../components/MobileNav";
 
 const Root = () => {
@@ -11,6 +12,7 @@ const Root = () => {
   return (
     <>
       <MobileNav />
+      <DesktopNav />
       <Outlet />
     </>
   );
