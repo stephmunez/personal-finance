@@ -45,7 +45,7 @@ const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
   return (
     <>
       {loading ? (
-        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:flex-row md:p-8 lg:h-fit lg:w-2/5 lg:flex-col">
+        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:flex-row md:p-8 xl:h-fit xl:w-2/5 xl:flex-col">
           <div className="relative flex h-72 w-72 items-center justify-center self-center">
             <div className="h-72 w-72 animate-pulse rounded-full bg-grey-100"></div>
 
@@ -85,8 +85,8 @@ const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
           </div>
         </div>
       ) : (
-        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:flex-row md:justify-between md:p-8 lg:h-fit lg:w-2/5 lg:flex-col">
-          <div className="flex w-full items-center justify-center md:w-[47%] lg:w-full">
+        <div className="flex w-full flex-col gap-8 rounded-xl bg-white px-5 py-6 md:flex-row md:justify-between md:p-8 xl:h-fit xl:w-2/5 xl:flex-col">
+          <div className="flex w-full items-center justify-center md:w-[47%] xl:w-full">
             <div className="relative flex h-72 w-72 items-center justify-center self-center">
               <PieChart
                 series={[
@@ -115,7 +115,7 @@ const BudgetSummary = ({ budgets, totalSpent }: BudgetsSummaryProps) => {
             </div>
           </div>
 
-          <div className="flex w-full flex-col gap-6 md:w-[47%] md:justify-center lg:w-full">
+          <div className="flex w-full flex-col gap-6 md:w-[47%] md:justify-center xl:w-full">
             <h2 className="text-xl font-bold leading-[1.2] tracking-normal text-grey-900">
               Spending Summary
             </h2>
