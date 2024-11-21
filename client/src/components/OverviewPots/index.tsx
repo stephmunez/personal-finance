@@ -42,9 +42,9 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
         </Link>
       </div>
       <div className="flex w-full flex-col gap-5 md:flex-row">
-        <div className="flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4 md:w-2/5 xl:justify-center">
+        <div className="@container flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4 md:w-2/5 xl:justify-center">
           <div className="flex items-center gap-4">
-            <div className="flex h-10 w-10 min-w-10 items-center justify-center">
+            <div className="@[150px]:flex hidden h-10 w-10 min-w-10 items-center justify-center">
               <img src={iconPot} alt="pot icon" />
             </div>
             <div className="flex flex-col gap-2">
