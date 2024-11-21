@@ -42,19 +42,19 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
         </Link>
       </div>
       <div className="flex w-full flex-col gap-5 md:flex-row">
-        <div className="flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4 md:w-2/5">
+        <div className="flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4 md:w-2/5 xl:justify-center">
           <div className="flex items-center gap-4">
-            <div className="flex h-10 w-10 items-center justify-center">
+            <div className="flex h-10 w-10 min-w-10 items-center justify-center">
               <img src={iconPot} alt="pot icon" />
             </div>
             <div className="flex flex-col gap-2">
-              <h3 className="text-sm leading-normal text-grey-500">
+              <h3 className="break-words text-sm leading-normal text-grey-500">
                 Total Saved
               </h3>
               {loading ? (
                 <div className="h-10 w-full animate-pulse rounded bg-grey-100"></div>
               ) : (
-                <span className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
+                <span className="break-words text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900 xl:text-xl">
                   P{totalSaved.toFixed(0)}
                 </span>
               )}
