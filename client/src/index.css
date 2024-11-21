@@ -11,5 +11,5 @@
 }
 
 #root {
-  @apply lg:flex lg:flex-row;
+  @apply xl:flex xl:flex-row;
 }

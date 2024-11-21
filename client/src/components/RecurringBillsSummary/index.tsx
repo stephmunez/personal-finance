@@ -46,7 +46,7 @@ const RecurringBillsSummary = ({
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="flex w-full flex-col gap-6 md:flex-row lg:w-[32%] lg:flex-col">
+    <div className="flex w-full flex-col gap-6 md:flex-row xl:w-[32%] xl:flex-col">
       {loading ? (
         <>
           <div className="flex w-full items-center gap-5 rounded-xl bg-grey-900 px-5 py-6 md:flex-col md:items-start md:gap-8 md:p-6">
