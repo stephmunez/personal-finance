@@ -9,6 +9,7 @@ const transactionsRouter = require('./routes/transactions');
 const budgetsRouter = require('./routes/budgets');
 const potsRouter = require('./routes/pots');
 const recurringBillsRouter = require('./routes/recurring-bills');
+const userRouter = require('./routes/user');
 require('./utils/scheduler');
 
 // express app
@@ -26,6 +27,7 @@ app.use('/api/v1/transactions', transactionsRouter);
 app.use('/api/v1/budgets', budgetsRouter);
 app.use('/api/v1/pots', potsRouter);
 app.use('/api/v1/recurring-bills', recurringBillsRouter);
+app.use('/api/v1/user', userRouter);
 
 // connect to db
 mongoose
