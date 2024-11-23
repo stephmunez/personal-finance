@@ -18,8 +18,6 @@ const signUpUser = async (req, res) => {
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
-
-  res.send({ message: 'sign up user' });
 };
 
 module.exports = { loginUser, signUpUser };
