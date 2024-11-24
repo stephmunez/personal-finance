@@ -8,7 +8,16 @@ const createToken = (_id) => {
 
 // login
 const loginUser = async (req, res) => {
-  res.send({ message: 'login user' });
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.login(email, password);
+    const token = createToken(user._id);
+
+    res.status(StatusCodes.OK).send({ email, token });
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
+  }
 };
 
 // sign up
@@ -17,7 +26,6 @@ const signUpUser = async (req, res) => {
 
   try {
     const user = await User.signUp(firstName, lastName, email, password);
-
     const token = createToken(user._id);
 
     res.status(StatusCodes.OK).send({ email, token });
