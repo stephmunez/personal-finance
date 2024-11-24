@@ -1,6 +1,10 @@
-const mongoose = require('mongoose');
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
+const jwt = require('jsonwebtoken');
+
+const createToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '3d' });
+};
 
 // login
 const loginUser = async (req, res) => {
@@ -14,7 +18,9 @@ const signUpUser = async (req, res) => {
   try {
     const user = await User.signUp(firstName, lastName, email, password);
 
-    res.status(StatusCodes.OK).send(user);
+    const token = createToken(user._id);
+
+    res.status(StatusCodes.OK).send({ email, token });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
