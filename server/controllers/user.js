@@ -14,7 +14,14 @@ const loginUser = async (req, res) => {
     const user = await User.login(email, password);
     const token = createToken(user._id);
 
-    res.status(StatusCodes.OK).send({ email, token });
+    res.status(StatusCodes.OK).send({
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+      token,
+    });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }
@@ -28,7 +35,14 @@ const signUpUser = async (req, res) => {
     const user = await User.signUp(firstName, lastName, email, password);
     const token = createToken(user._id);
 
-    res.status(StatusCodes.OK).send({ email, token });
+    res.status(StatusCodes.OK).send({
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+      token,
+    });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
   }

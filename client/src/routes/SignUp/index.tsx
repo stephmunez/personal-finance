@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import iconHidePassword from "../../assets/images/icon-hide-password.svg";
 import iconShowPassword from "../../assets/images/icon-show-password.svg";
 import logoLarge from "../../assets/images/logo-large.svg";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { User } from "../../types";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -11,6 +13,39 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const { user, setUser } = useAuthContext();
+
+  const signUpUser = async (user: User) => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/v1/user/sign-up",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser(data.user);
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error: ${error instanceof Error ? error.message : "An unknown error occurred"}`,
+      );
+    }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    signUpUser({ firstName, lastName, email, password });
+  };
+
   return (
     <main className="flex w-full flex-col">
       <div className="flex w-full items-center justify-center rounded-b-lg bg-grey-900 px-10 py-6">
@@ -18,8 +53,17 @@ const SignUp = () => {
           <img src={logoLarge} alt="finance logo" />
         </div>
       </div>
+      {user && (
+        <span>
+          {user.firstName} {user.lastName}
+        </span>
+      )}
       <div className="flex items-center justify-center px-4 py-24">
-        <form className="flex w-full max-w-96 flex-col gap-8 rounded-xl bg-white px-5 py-6">
+        <form
+          className="flex w-full max-w-96 flex-col gap-8 rounded-xl bg-white px-5 py-6"
+          noValidate
+          onSubmit={handleSubmit}
+        >
           <h1 className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
             Sign Up
           </h1>
@@ -51,7 +95,7 @@ const SignUp = () => {
                 Email
               </label>
               <input
-                type="text"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
@@ -93,13 +137,13 @@ const SignUp = () => {
           </button>
           <div className="flex items-center justify-center gap-2">
             <span className="text-sm leading-normal text-grey-500">
-              Need to create a new account?
+              Already have an account?
             </span>
             <Link
-              to="/sign-up"
+              to="/login"
               className="text-sm font-bold leading-normal text-grey-900 underline"
             >
-              Sign Up
+              Login
             </Link>
           </div>
         </form>
