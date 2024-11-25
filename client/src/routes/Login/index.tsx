@@ -17,7 +17,10 @@ const Login = () => {
         </div>
       </div>
       <div className="flex items-center justify-center px-4 py-24">
-        <form className="flex w-full max-w-96 flex-col gap-8 rounded-xl bg-white px-5 py-6">
+        <form
+          className="flex w-full max-w-96 flex-col gap-8 rounded-xl bg-white px-5 py-6"
+          noValidate
+        >
           <h1 className="text-[2rem] font-bold leading-[1.2] tracking-normal text-grey-900">
             Login
           </h1>
@@ -28,7 +31,7 @@ const Login = () => {
               </label>
 
               <input
-                type="text"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
