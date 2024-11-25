@@ -96,13 +96,13 @@ const SignUp = () => {
           </button>
           <div className="flex items-center justify-center gap-2">
             <span className="text-sm leading-normal text-grey-500">
-              Need to create a new account?
+              Already have an account?
             </span>
             <Link
-              to="/sign-up"
+              to="/login"
               className="text-sm font-bold leading-normal text-grey-900 underline"
             >
-              Sign Up
+              Login
             </Link>
           </div>
         </form>
