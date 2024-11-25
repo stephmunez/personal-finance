@@ -9,10 +9,17 @@ const Root = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  const hideNav = pathname === "/login" || pathname === "/sign-up";
+
   return (
     <>
-      <MobileNav />
-      <DesktopNav />
+      {!hideNav && (
+        <>
+          <MobileNav />
+          <DesktopNav />
+        </>
+      )}
       <Outlet />
     </>
   );
