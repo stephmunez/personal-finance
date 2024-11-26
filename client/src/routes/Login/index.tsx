@@ -38,7 +38,6 @@ const Login = () => {
       if (response.ok) {
         setUser(data.user);
         localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", JSON.stringify(data.token));
       } else {
         setIsLoading(false);
         setServerError(data.error);
@@ -94,6 +93,8 @@ const Login = () => {
           <img src={logoLarge} alt="finance logo" />
         </div>
       </div>
+
+      {user && <span>{user.email}</span>}
 
       <div className="flex items-center justify-center px-4 py-24">
         <form
