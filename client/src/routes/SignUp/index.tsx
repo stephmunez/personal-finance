@@ -12,6 +12,12 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
 
   const { user, setUser } = useAuthContext();
 
@@ -40,10 +46,50 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { firstName: "", lastName: "", email: "", password: "" };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!firstName.trim()) {
+      newErrors.firstName = "First name is required.";
+      valid = false;
+    }
+
+    if (!lastName.trim()) {
+      newErrors.lastName = "Last name is required.";
+      valid = false;
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required.";
+      valid = false;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Email is not valid.";
+      valid = false;
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    signUpUser({ firstName, lastName, email, password });
+    if (validateForm()) {
+      await signUpUser({ firstName, lastName, email, password });
+
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setErrors({ firstName: "", lastName: "", email: "", password: "" });
+    }
   };
 
   return (
@@ -53,11 +99,7 @@ const SignUp = () => {
           <img src={logoLarge} alt="finance logo" />
         </div>
       </div>
-      {user && (
-        <span>
-          {user.firstName} {user.lastName}
-        </span>
-      )}
+
       <div className="flex items-center justify-center px-4 py-24">
         <form
           className="flex w-full max-w-96 flex-col gap-8 rounded-xl bg-white px-5 py-6"
@@ -76,8 +118,16 @@ const SignUp = () => {
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
+                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${
+                  errors.firstName ? "border-red" : "border-beige-500"
+                }`}
               />
+
+              {errors.firstName && (
+                <span className="text-xs leading-normal text-red">
+                  {errors.firstName}
+                </span>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs font-bold leading-normal text-grey-500">
@@ -87,8 +137,16 @@ const SignUp = () => {
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
+                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${
+                  errors.lastName ? "border-red" : "border-beige-500"
+                }`}
               />
+
+              {errors.lastName && (
+                <span className="text-xs leading-normal text-red">
+                  {errors.lastName}
+                </span>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs font-bold leading-normal text-grey-500">
@@ -98,8 +156,16 @@ const SignUp = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
+                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${
+                  errors.email ? "border-red" : "border-beige-500"
+                }`}
               />
+
+              {errors.email && (
+                <span className="text-xs leading-normal text-red">
+                  {errors.email}
+                </span>
+              )}
             </div>
             <div className="relative flex flex-col gap-1">
               <label className="text-xs font-bold leading-normal text-grey-500">
@@ -110,7 +176,9 @@ const SignUp = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${
+                    errors.password ? "border-red" : "border-beige-500"
+                  }`}
                 />
                 <button
                   type="button"
@@ -124,9 +192,15 @@ const SignUp = () => {
                   )}
                 </button>
               </div>
-              <span className="self-end text-xs text-grey-500">
-                Password must be at least 8 characters
-              </span>
+              {errors.password ? (
+                <span className="text-xs leading-normal text-red">
+                  {errors.password}
+                </span>
+              ) : (
+                <span className="self-end text-xs text-grey-500">
+                  Password must be at least 8 characters
+                </span>
+              )}
             </div>
           </div>
           <button
