@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
+import iconError from "../../assets/images/icon-bill-due.svg";
 import iconHidePassword from "../../assets/images/icon-hide-password.svg";
 import iconShowPassword from "../../assets/images/icon-show-password.svg";
 import logoLarge from "../../assets/images/logo-large.svg";
@@ -12,6 +13,8 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
@@ -22,6 +25,10 @@ const SignUp = () => {
   const { user, setUser } = useAuthContext();
 
   const signUpUser = async (user: User) => {
+    setIsLoading(true);
+    setErrors({ firstName: "", lastName: "", email: "", password: "" });
+    setServerError("");
+
     try {
       const response = await fetch(
         "http://localhost:4000/api/v1/user/sign-up",
@@ -38,6 +45,9 @@ const SignUp = () => {
         setUser(data.user);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", JSON.stringify(data.token));
+      } else {
+        setIsLoading(false);
+        setServerError(data.error);
       }
     } catch (error) {
       console.error(
@@ -84,11 +94,15 @@ const SignUp = () => {
     if (validateForm()) {
       await signUpUser({ firstName, lastName, email, password });
 
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPassword("");
+      if (!serverError) {
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+      }
+
       setErrors({ firstName: "", lastName: "", email: "", password: "" });
+      setIsLoading(false);
     }
   };
 
@@ -197,18 +211,41 @@ const SignUp = () => {
                   {errors.password}
                 </span>
               ) : (
-                <span className="self-end text-xs text-grey-500">
-                  Password must be at least 8 characters
-                </span>
+                <>
+                  <ul className="list-inside list-disc">
+                    <li className="text-xs text-grey-500">
+                      Password must be at least 8 characters
+                    </li>
+                    <li className="text-xs text-grey-500">
+                      Must contain at least 1 lowercase
+                    </li>
+                    <li className="text-xs text-grey-500">
+                      Must contain at least 1 uppercase letter
+                    </li>
+                    <li className="text-xs text-grey-500">
+                      Must contain at least 1 number
+                    </li>
+                    <li className="text-xs text-grey-500">
+                      Must contain at least 1 symbol (e.g., !, @, #, etc.).
+                    </li>
+                  </ul>
+                </>
               )}
             </div>
           </div>
           <button
             type="submit"
             className="flex items-center justify-center rounded-lg bg-grey-900 py-4 text-sm font-bold leading-normal text-white disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isLoading}
           >
             Sign Up
           </button>
+          {serverError && (
+            <div className="flex w-full items-center gap-2 rounded-lg border border-solid border-red bg-red/10 px-5 py-3 text-sm leading-normal text-red">
+              <img src={iconError} alt="error icon" />
+              <span>{serverError}</span>
+            </div>
+          )}
           <div className="flex items-center justify-center gap-2">
             <span className="text-sm leading-normal text-grey-500">
               Already have an account?
