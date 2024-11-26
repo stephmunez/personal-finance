@@ -11,6 +11,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const { user, setUser } = useAuthContext();
 
   const loginUser = async (user: User) => {
@@ -35,10 +40,38 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { email: "", password: "" };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required.";
+      valid = false;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Email is not valid.";
+      valid = false;
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    loginUser({ email, password });
+    if (validateForm()) {
+      await loginUser({ email, password });
+
+      setEmail("");
+      setPassword("");
+      setErrors({ email: "", password: "" });
+    }
   };
 
   return (
@@ -48,11 +81,6 @@ const Login = () => {
           <img src={logoLarge} alt="finance logo" />
         </div>
       </div>
-      {user && (
-        <span>
-          {user.firstName} {user.lastName}
-        </span>
-      )}
 
       <div className="flex items-center justify-center px-4 py-24">
         <form
@@ -73,8 +101,16 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
+                className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${
+                  errors.email ? "border-red" : "border-beige-500"
+                }`}
               />
+
+              {errors.email && (
+                <span className="text-xs leading-normal text-red">
+                  {errors.email}
+                </span>
+              )}
             </div>
             <div className="relative flex flex-col gap-1">
               <label className="text-xs font-bold leading-normal text-grey-500">
@@ -85,7 +121,9 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none`}
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${
+                    errors.password ? "border-red" : "border-beige-500"
+                  }`}
                 />
                 <button
                   type="button"
@@ -99,6 +137,12 @@ const Login = () => {
                   )}
                 </button>
               </div>
+
+              {errors.password && (
+                <span className="text-xs leading-normal text-red">
+                  {errors.password}
+                </span>
+              )}
             </div>
           </div>
           <button
