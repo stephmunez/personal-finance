@@ -19,8 +19,8 @@ const loginUser = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        token,
       },
-      token,
     });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -40,8 +40,8 @@ const signUpUser = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        token,
       },
-      token,
     });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
