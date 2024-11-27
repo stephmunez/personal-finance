@@ -5,6 +5,7 @@ import EditRecurringBillModal from "../../components/EditRecurringBillModal";
 import RecurringBillsList from "../../components/RecurringBillsList";
 import RecurringBillsSearchBar from "../../components/RecurringBillsSearchBar";
 import RecurringBillsSummary from "../../components/RecurringBillsSummary";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { RecurringBill } from "../../types";
 
 const RecurringBills = () => {
@@ -18,10 +19,16 @@ const RecurringBills = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [selectedRecurringBill, setSelectedRecurringBill] =
     useState<RecurringBill | null>(null);
+  const { user } = useAuthContext();
 
   const fetchRecurringBills = async () => {
+    if (!user) return;
+
     const response = await fetch(
       "http://localhost:4000/api/v1/recurring-bills",
+      {
+        headers: { Authorization: `Bearer ${user.token}` },
+      },
     );
     const data = await response.json();
 
@@ -45,16 +52,23 @@ const RecurringBills = () => {
   };
 
   useEffect(() => {
-    fetchRecurringBills();
-  }, []);
+    if (user) {
+      fetchRecurringBills();
+    }
+  }, [user]);
 
   const createRecurringBill = async (newRecurringBill: RecurringBill) => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         "http://localhost:4000/api/v1/recurring-bills",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
           body: JSON.stringify(newRecurringBill),
         },
       );
@@ -75,12 +89,17 @@ const RecurringBills = () => {
   };
 
   const editRecurringBill = async (updatedRecurringBill: RecurringBill) => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/recurring-bills/${updatedRecurringBill._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
           body: JSON.stringify(updatedRecurringBill),
         },
       );
@@ -101,11 +120,16 @@ const RecurringBills = () => {
   };
 
   const deleteRecurringBill = async () => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/recurring-bills/${selectedRecurringBill?._id}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
         },
       );
 
