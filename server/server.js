@@ -11,6 +11,7 @@ const potsRouter = require('./routes/pots');
 const recurringBillsRouter = require('./routes/recurring-bills');
 const userRouter = require('./routes/user');
 require('./utils/scheduler');
+const requireAuth = require('./middleware/requireAuth');
 
 // express app
 const app = express();
@@ -21,12 +22,12 @@ app.use(morgan('dev'));
 app.use(cors());
 
 // routes
-app.use('/api/v1/overview', overviewRouter);
-app.use('/api/v1/balance', balanceRouter);
-app.use('/api/v1/transactions', transactionsRouter);
-app.use('/api/v1/budgets', budgetsRouter);
-app.use('/api/v1/pots', potsRouter);
-app.use('/api/v1/recurring-bills', recurringBillsRouter);
+app.use('/api/v1/overview', requireAuth, overviewRouter);
+app.use('/api/v1/balance', requireAuth, balanceRouter);
+app.use('/api/v1/transactions', requireAuth, transactionsRouter);
+app.use('/api/v1/budgets', requireAuth, budgetsRouter);
+app.use('/api/v1/pots', requireAuth, potsRouter);
+app.use('/api/v1/recurring-bills', requireAuth, recurringBillsRouter);
 app.use('/api/v1/user', userRouter);
 
 // connect to db
