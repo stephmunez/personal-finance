@@ -14,7 +14,7 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (budgets) {
+    if (budgets && budgets.length) {
       setLoading(false);
     }
   }, [budgets]);
