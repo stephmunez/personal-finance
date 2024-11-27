@@ -16,7 +16,7 @@ const OverviewTransactions = ({ transactions }: OverviewTransactionsProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (transactions) {
+    if (transactions && transactions.length) {
       const sortedTransactions = [...transactions]
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, 5);
