@@ -4,7 +4,21 @@ import OverviewPots from "../../components/OverviewPots";
 import OverviewRecurringBills from "../../components/OverviewRecurringBills";
 import OverviewSummary from "../../components/OverviewSummary";
 import OverviewTransactions from "../../components/OverviewTransactions";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { Budget, Pot, RecurringBill, Transaction } from "../../types";
+
+const categoryOrder = [
+  "Entertainment",
+  "Bills",
+  "Groceries",
+  "Dining Out",
+  "Transportation",
+  "Personal Care",
+  "Education",
+  "Lifestyle",
+  "Shopping",
+  "General",
+];
 
 const Home = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -12,36 +26,18 @@ const Home = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [recurringBills, setRecurringBills] = useState<RecurringBill[]>([]);
   const [totalSpent, setTotalSpent] = useState<{ [key: string]: number }>({});
-
-  const categoryOrder = [
-    "Entertainment",
-    "Bills",
-    "Groceries",
-    "Dining Out",
-    "Transportation",
-    "Personal Care",
-    "Education",
-    "Lifestyle",
-    "Shopping",
-    "General",
-  ];
+  const { user } = useAuthContext();
 
   useEffect(() => {
-    const categoryOrder = [
-      "Entertainment",
-      "Bills",
-      "Groceries",
-      "Dining Out",
-      "Transportation",
-      "Personal Care",
-      "Education",
-      "Lifestyle",
-      "Shopping",
-      "General",
-    ];
-
     const fetchTransactions = async () => {
-      const response = await fetch("http://localhost:4000/api/v1/transactions");
+      if (!user) return;
+
+      const response = await fetch(
+        "http://localhost:4000/api/v1/transactions",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
       const data = await response.json();
 
       if (response.ok) {
@@ -62,7 +58,11 @@ const Home = () => {
     };
 
     const fetchPots = async () => {
-      const response = await fetch("http://localhost:4000/api/v1/pots");
+      if (!user) return;
+
+      const response = await fetch("http://localhost:4000/api/v1/pots", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -71,7 +71,11 @@ const Home = () => {
     };
 
     const fetchBudgets = async () => {
-      const response = await fetch("http://localhost:4000/api/v1/budgets");
+      if (!user) return;
+
+      const response = await fetch("http://localhost:4000/api/v1/budgets", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -87,8 +91,13 @@ const Home = () => {
     };
 
     const fetchRecurringBills = async () => {
+      if (!user) return;
+
       const response = await fetch(
         "http://localhost:4000/api/v1/recurring-bills",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
       );
       const data = await response.json();
 
@@ -97,11 +106,13 @@ const Home = () => {
       }
     };
 
-    fetchTransactions();
-    fetchPots();
-    fetchBudgets();
-    fetchRecurringBills();
-  }, []);
+    if (user) {
+      fetchTransactions();
+      fetchPots();
+      fetchBudgets();
+      fetchRecurringBills();
+    }
+  }, [user]);
 
   return (
     <main className="flex w-full flex-col gap-8 px-4 pb-20 pt-6 md:px-10 md:pb-28 md:pt-8 xl:py-8">
