@@ -7,6 +7,7 @@ import EditTransactionModal from "../../components/EditTransactionModal";
 import TransactionsList from "../../components/TransactionsList";
 import TransactionsPagination from "../../components/TransactionsPagination";
 import TransactionSearchBar from "../../components/TransactionsSearchBar";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { Transaction } from "../../types";
 
 const Transactions = () => {
@@ -35,6 +36,7 @@ const Transactions = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
+  const { user } = useAuthContext();
   const itemsPerPage = 10;
 
   // Ref to handle scrolling
@@ -47,6 +49,8 @@ const Transactions = () => {
 
   // Fetch transactions from the API
   const fetchTransactions = async (forceRefresh = false) => {
+    if (!user) return;
+
     const queryParams = new URLSearchParams({
       page: currentPage.toString(),
       limit: itemsPerPage.toString(),
@@ -64,6 +68,9 @@ const Transactions = () => {
     } else {
       const response = await fetch(
         `http://localhost:4000/api/v1/transactions?${queryParams}`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
       );
       const data = await response.json();
 
@@ -109,16 +116,21 @@ const Transactions = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, [currentPage, searchQuery, categoryFilter, sortOption]);
+  }, [currentPage, searchQuery, categoryFilter, sortOption, user]);
 
   // Functions to handle Create, Edit, and Delete operations
   const createTransaction = async (newTransaction: Transaction) => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         "http://localhost:4000/api/v1/transactions",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
           body: JSON.stringify(newTransaction),
         },
       );
@@ -140,12 +152,17 @@ const Transactions = () => {
   };
 
   const editTransaction = async (updatedTransaction: Transaction) => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/transactions/${updatedTransaction._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
           body: JSON.stringify(updatedTransaction),
         },
       );
@@ -167,11 +184,16 @@ const Transactions = () => {
   };
 
   const deleteTransaction = async () => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/transactions/${selectedTransaction?._id}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
         },
       );
 

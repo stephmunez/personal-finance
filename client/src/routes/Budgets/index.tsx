@@ -4,6 +4,7 @@ import BudgetsSummary from "../../components/BudgetsSummary";
 import CreateBudgetModal from "../../components/CreateBudgetModal";
 import DeleteBudgetModal from "../../components/DeleteBudgetModal";
 import EditBudgetModal from "../../components/EditBudgetModal";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { Budget, Transaction } from "../../types";
 
 // Define order of categories for sorting budgets
@@ -30,14 +31,20 @@ const Budgets = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
   const [existingCategories, setExistingCategories] = useState<string[]>([]);
+  const { user } = useAuthContext();
 
   // Fetch budgets and transactions on component mount
 
   const fetchBudgetsAndTransactions = async () => {
+    if (!user) return;
+
     try {
       // Fetch and sort budgets by defined category order
       const budgetsResponse = await fetch(
         "http://localhost:4000/api/v1/budgets",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
       );
       const budgetsData = await budgetsResponse.json();
       if (budgetsResponse.ok) {
@@ -60,6 +67,9 @@ const Budgets = () => {
       // Fetch transactions and filter only negative amounts
       const transactionsResponse = await fetch(
         "http://localhost:4000/api/v1/transactions",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
       );
       const transactionsData = await transactionsResponse.json();
       if (transactionsResponse.ok) {
@@ -83,14 +93,21 @@ const Budgets = () => {
   };
 
   useEffect(() => {
-    fetchBudgetsAndTransactions();
-  }, []);
+    if (user) {
+      fetchBudgetsAndTransactions();
+    }
+  }, [user]);
 
   const createBudget = async (newBudget: Budget) => {
+    if (!user) return;
+
     try {
       const response = await fetch("http://localhost:4000/api/v1/budgets", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
         body: JSON.stringify(newBudget),
       });
 
@@ -110,12 +127,17 @@ const Budgets = () => {
   };
 
   const editBudget = async (updatedBudget: Budget) => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/budgets/${updatedBudget._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
           body: JSON.stringify(updatedBudget),
         },
       );
@@ -136,11 +158,15 @@ const Budgets = () => {
   };
 
   const deleteBudget = async () => {
+    if (!user) return;
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/budgets/${selectedBudget?._id}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
         },
       );
 

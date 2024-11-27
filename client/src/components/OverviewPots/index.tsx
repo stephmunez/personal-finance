@@ -27,7 +27,10 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
 
     calculateTotalSaved(pots);
     getTopPots(pots);
-    setLoading(false);
+
+    if (pots.length) {
+      setLoading(false);
+    }
   }, [pots]);
 
   return (
@@ -42,9 +45,9 @@ const OverviewPots = ({ pots }: OverviewPotsProps) => {
         </Link>
       </div>
       <div className="flex w-full flex-col gap-5 md:flex-row">
-        <div className="@container flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4 md:w-2/5 xl:justify-center">
+        <div className="flex w-full flex-col gap-5 rounded-xl bg-beige-100 p-4 @container md:w-2/5 xl:justify-center">
           <div className="flex items-center gap-4">
-            <div className="@[150px]:flex hidden h-10 w-10 min-w-10 items-center justify-center">
+            <div className="hidden h-10 w-10 min-w-10 items-center justify-center @[150px]:flex">
               <img src={iconPot} alt="pot icon" />
             </div>
             <div className="flex flex-col gap-2">

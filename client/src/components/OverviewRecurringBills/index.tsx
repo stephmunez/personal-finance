@@ -15,7 +15,7 @@ const OverviewRecurringBills = ({
   const [bills, setBills] = useState<RecurringBill[]>([]);
 
   useEffect(() => {
-    if (recurringBills) {
+    if (recurringBills && recurringBills.length) {
       setBills(recurringBills);
       setLoading(false);
     }

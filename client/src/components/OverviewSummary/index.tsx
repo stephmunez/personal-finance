@@ -33,7 +33,10 @@ const OverviewSummary = ({ transactions, pots }: OverviewSummaryProps) => {
       setTotalIncome(income);
       setTotalExpenses(expenses);
       setBalance(income - expenses - potsTotal);
-      setLoading(false);
+
+      if (transactions.length && pots.length) {
+        setLoading(false);
+      }
     };
 
     calculateTotals(transactions);
