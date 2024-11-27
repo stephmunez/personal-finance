@@ -5,6 +5,7 @@ import DeletePotModal from "../../components/DeletePotModal";
 import EditPotModal from "../../components/EditPotModal";
 import PotsList from "../../components/PotsList";
 import WithdrawFromPot from "../../components/WithdrawFromPotModal";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { Pot } from "../../types";
 import { getNameByColor } from "../../utils";
 
@@ -19,9 +20,13 @@ const Pots = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedPot, setSelectedPot] = useState<Pot | null>(null);
   const [existingColors, setExistingColors] = useState<string[]>([]);
+  const { user } = useAuthContext();
 
   const fetchPots = async () => {
-    const response = await fetch("http://localhost:4000/api/v1/pots");
+    if (!user) return;
+    const response = await fetch("http://localhost:4000/api/v1/pots", {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
     const data = await response.json();
 
     if (response.ok) {
@@ -35,14 +40,21 @@ const Pots = () => {
   };
 
   useEffect(() => {
-    fetchPots();
-  }, []);
+    if (user) {
+      fetchPots();
+    }
+  }, [user]);
 
   const createPot = async (newPot: Pot) => {
+    if (!user) return;
+
     try {
       const response = await fetch("http://localhost:4000/api/v1/pots", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
         body: JSON.stringify(newPot),
       });
 
@@ -62,12 +74,17 @@ const Pots = () => {
   };
 
   const editPot = async (updatedPot: Pot) => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/pots/${updatedPot._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
           body: JSON.stringify(updatedPot),
         },
       );
@@ -88,11 +105,16 @@ const Pots = () => {
   };
 
   const deletePot = async () => {
+    if (!user) return;
+
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/pots/${selectedPot?._id}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
         },
       );
 
