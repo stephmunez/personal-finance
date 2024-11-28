@@ -24,27 +24,27 @@ const App = () => {
         { index: true, element: user ? <Home /> : <Navigate to="/login" /> },
         {
           path: "/transactions",
-          element: <Transactions />,
+          element: user ? <Transactions /> : <Navigate to="/login" />,
         },
         {
           path: "/budgets",
-          element: user ? <Budgets /> : <Navigate to="login" />,
+          element: user ? <Budgets /> : <Navigate to="/login" />,
         },
         {
           path: "/pots",
-          element: user ? <Pots /> : <Navigate to="login" />,
+          element: user ? <Pots /> : <Navigate to="/login" />,
         },
         {
           path: "/recurring-bills",
-          element: user ? <RecurringBills /> : <Navigate to="login" />,
+          element: user ? <RecurringBills /> : <Navigate to="/login" />,
         },
         {
           path: "/sign-up",
-          element: !user ? <SignUp /> : <Home />,
+          element: !user ? <SignUp /> : <Navigate to="/" />,
         },
         {
           path: "/login",
-          element: !user ? <Login /> : <Home />,
+          element: !user ? <Login /> : <Navigate to="/" />,
         },
       ],
     },
