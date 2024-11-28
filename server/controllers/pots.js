@@ -29,7 +29,8 @@ const getPot = async (req, res) => {
 
 const createPot = async (req, res) => {
   try {
-    const pot = await Pot.create(req.body);
+    const user_id = req.user._id;
+    const pot = await Pot.create({ ...req.body, user_id });
     res.status(StatusCodes.OK).send(pot);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });

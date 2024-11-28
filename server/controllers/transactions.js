@@ -83,7 +83,8 @@ const getTransaction = async (req, res) => {
 
 const createTransaction = async (req, res) => {
   try {
-    const transaction = await Transaction.create(req.body);
+    const user_id = req.user._id;
+    const transaction = await Transaction.create({ ...req.body, user_id });
     res.status(StatusCodes.OK).send(transaction);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });

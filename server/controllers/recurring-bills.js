@@ -34,11 +34,13 @@ const getRecurringBill = async (req, res) => {
 const createRecurringBill = async (req, res) => {
   try {
     const { frequency, startDate } = req.body;
+    const user_id = req.user._id;
     const nextDueDate = calculateNextDueDate(frequency, startDate);
 
     const recurringBill = await RecurringBill.create({
       ...req.body,
       nextDueDate,
+      user_id,
     });
     res.status(StatusCodes.OK).send(recurringBill);
   } catch (error) {

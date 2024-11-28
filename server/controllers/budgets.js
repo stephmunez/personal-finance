@@ -29,7 +29,8 @@ const getBudget = async (req, res) => {
 
 const createBudget = async (req, res) => {
   try {
-    const budget = await Budget.create(req.body);
+    const user_id = req.user_id;
+    const budget = await Budget.create({ ...req.body, user_id });
     res.status(StatusCodes.OK).send(budget);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
