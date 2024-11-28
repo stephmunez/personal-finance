@@ -9,7 +9,7 @@ const {
 } = require('../controllers/transactions');
 
 router.get('/', getTransactions);
-router.get('/:id', getTransaction);
+// router.get('/:id', getTransaction);
 router.post('/', createTransaction);
 router.patch('/:id', updateTransaction);
 router.delete('/:id', deleteTransaction);

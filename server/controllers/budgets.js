@@ -3,7 +3,8 @@ const Budget = require('../models/Budget');
 const { StatusCodes } = require('http-status-codes');
 
 const getBudgets = async (req, res) => {
-  const budgets = await Budget.find({}).sort({ createdAt: -1 });
+  const user_id = req.user._id;
+  const budgets = await Budget.find({ user_id }).sort({ createdAt: -1 });
   res.status(StatusCodes.OK).send({ budgets, count: budgets.length });
 };
 
@@ -29,7 +30,7 @@ const getBudget = async (req, res) => {
 
 const createBudget = async (req, res) => {
   try {
-    const user_id = req.user_id;
+    const user_id = req.user._id;
     const budget = await Budget.create({ ...req.body, user_id });
     res.status(StatusCodes.OK).send(budget);
   } catch (error) {
@@ -39,6 +40,7 @@ const createBudget = async (req, res) => {
 
 const updateBudget = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -47,10 +49,14 @@ const updateBudget = async (req, res) => {
   }
 
   try {
-    const budget = await Budget.findOneAndUpdate({ _id: id }, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const budget = await Budget.findOneAndUpdate(
+      { _id: id, user_id },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!budget) {
       return res
@@ -66,6 +72,7 @@ const updateBudget = async (req, res) => {
 
 const deleteBudget = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -76,6 +83,7 @@ const deleteBudget = async (req, res) => {
   try {
     const budget = await Budget.findOneAndDelete({
       _id: id,
+      user_id,
     });
 
     if (!budget) {
