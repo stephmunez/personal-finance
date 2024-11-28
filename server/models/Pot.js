@@ -38,6 +38,10 @@ const potSchema = new Schema(
       required: true,
       enum: themes,
     },
+    user_id: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

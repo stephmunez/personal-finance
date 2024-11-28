@@ -3,12 +3,14 @@ const Pot = require('../models/Pot');
 const { StatusCodes } = require('http-status-codes');
 
 const getPots = async (req, res) => {
-  const pots = await Pot.find({}).sort({ createdAt: -1 });
+  const user_id = req.user._id;
+  const pots = await Pot.find({ user_id }).sort({ createdAt: -1 });
   res.status(StatusCodes.OK).send({ pots, count: pots.length });
 };
 
 const getPot = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -16,7 +18,7 @@ const getPot = async (req, res) => {
       .send({ error: `No pot with id ${id}` });
   }
 
-  const pot = await Pot.findOne({ _id: id });
+  const pot = await Pot.findOne({ _id: id, user_id });
 
   if (!pot) {
     return res
@@ -29,7 +31,8 @@ const getPot = async (req, res) => {
 
 const createPot = async (req, res) => {
   try {
-    const pot = await Pot.create(req.body);
+    const user_id = req.user._id;
+    const pot = await Pot.create({ ...req.body, user_id });
     res.status(StatusCodes.OK).send(pot);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -38,6 +41,7 @@ const createPot = async (req, res) => {
 
 const updatePot = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -46,7 +50,7 @@ const updatePot = async (req, res) => {
   }
 
   try {
-    const pot = await Pot.findOneAndUpdate({ _id: id }, req.body, {
+    const pot = await Pot.findOneAndUpdate({ _id: id, user_id }, req.body, {
       new: true,
       runValidators: true,
     });
@@ -65,6 +69,7 @@ const updatePot = async (req, res) => {
 
 const deletePot = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -75,6 +80,7 @@ const deletePot = async (req, res) => {
   try {
     const pot = await Pot.findOneAndDelete({
       _id: id,
+      user_id,
     });
 
     if (!pot) {

@@ -4,8 +4,9 @@ const { StatusCodes } = require('http-status-codes');
 
 const getTransactions = async (req, res) => {
   const { search, category, sort } = req.query;
+  const { _id } = req.user;
 
-  const queryObject = {};
+  const queryObject = { user_id: _id };
 
   if (search) {
     queryObject.name = { $regex: search, $options: 'i' };
@@ -63,6 +64,7 @@ const getTransactions = async (req, res) => {
 
 const getTransaction = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -70,7 +72,7 @@ const getTransaction = async (req, res) => {
       .send({ error: `No transaction with id ${id}` });
   }
 
-  const transaction = await Transaction.findOne({ _id: id });
+  const transaction = await Transaction.findOne({ _id: id, user_id });
 
   if (!transaction) {
     return res
@@ -82,8 +84,10 @@ const getTransaction = async (req, res) => {
 };
 
 const createTransaction = async (req, res) => {
+  const user_id = req.user._id;
+
   try {
-    const transaction = await Transaction.create(req.body);
+    const transaction = await Transaction.create({ ...req.body, user_id });
     res.status(StatusCodes.OK).send(transaction);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).send({ error: error.message });
@@ -92,6 +96,7 @@ const createTransaction = async (req, res) => {
 
 const updateTransaction = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -101,7 +106,7 @@ const updateTransaction = async (req, res) => {
 
   try {
     const transaction = await Transaction.findOneAndUpdate(
-      { _id: id },
+      { _id: id, user_id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -120,6 +125,7 @@ const updateTransaction = async (req, res) => {
 
 const deleteTransaction = async (req, res) => {
   const { id } = req.params;
+  const user_id = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -130,6 +136,7 @@ const deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndDelete({
       _id: id,
+      user_id,
     });
 
     if (!transaction) {
