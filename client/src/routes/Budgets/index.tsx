@@ -41,7 +41,7 @@ const Budgets = () => {
     try {
       // Fetch and sort budgets by defined category order
       const budgetsResponse = await fetch(
-        "http://localhost:4000/api/v1/budgets",
+        `${process.env.API_URL}/budgets`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -66,7 +66,7 @@ const Budgets = () => {
 
       // Fetch transactions and filter only negative amounts
       const transactionsResponse = await fetch(
-        "http://localhost:4000/api/v1/transactions",
+        `${process.env.API_URL}/transactions`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -102,7 +102,7 @@ const Budgets = () => {
     if (!user) return;
 
     try {
-      const response = await fetch("http://localhost:4000/api/v1/budgets", {
+      const response = await fetch(`${process.env.API_URL}/budgets`,, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +131,7 @@ const Budgets = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/budgets/${updatedBudget._id}`,
+        `${process.env.API_URL}/budgets/${updatedBudget._id}`,
         {
           method: "PATCH",
           headers: {
@@ -161,7 +161,7 @@ const Budgets = () => {
     if (!user) return;
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/budgets/${selectedBudget?._id}`,
+        `${process.env.API_URL}/budgets/${selectedBudget?._id}`,
         {
           method: "DELETE",
           headers: {

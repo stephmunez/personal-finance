@@ -24,12 +24,9 @@ const RecurringBills = () => {
   const fetchRecurringBills = async () => {
     if (!user) return;
 
-    const response = await fetch(
-      "http://localhost:4000/api/v1/recurring-bills",
-      {
-        headers: { Authorization: `Bearer ${user.token}` },
-      },
-    );
+    const response = await fetch(`${process.env.API_URL}/recurring-bills`, {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
     const data = await response.json();
 
     if (response.ok) {
@@ -61,17 +58,14 @@ const RecurringBills = () => {
     if (!user) return;
 
     try {
-      const response = await fetch(
-        "http://localhost:4000/api/v1/recurring-bills",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: JSON.stringify(newRecurringBill),
+      const response = await fetch(`${process.env.API_URL}/recurring-bills`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
         },
-      );
+        body: JSON.stringify(newRecurringBill),
+      });
 
       const data = await response.json();
 
@@ -93,7 +87,7 @@ const RecurringBills = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/recurring-bills/${updatedRecurringBill._id}`,
+        `${process.env.API_URL}/recurring-bills/${updatedRecurringBill._id}`,
         {
           method: "PATCH",
           headers: {
@@ -124,7 +118,7 @@ const RecurringBills = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/recurring-bills/${selectedRecurringBill?._id}`,
+        `${process.env.API_URL}/recurring-bills/${selectedRecurringBill?._id}`,
         {
           method: "DELETE",
           headers: {

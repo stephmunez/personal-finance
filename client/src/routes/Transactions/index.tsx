@@ -67,7 +67,7 @@ const Transactions = () => {
       setTotalPages(cachedData!.totalPages);
     } else {
       const response = await fetch(
-        `http://localhost:4000/api/v1/transactions?${queryParams}`,
+        `${process.env.API_URL}/transactions?${queryParams}`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -123,17 +123,14 @@ const Transactions = () => {
     if (!user) return;
 
     try {
-      const response = await fetch(
-        "http://localhost:4000/api/v1/transactions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: JSON.stringify(newTransaction),
+      const response = await fetch(`${process.env.API_URL}/transactions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
         },
-      );
+        body: JSON.stringify(newTransaction),
+      });
 
       const data = await response.json();
 
@@ -156,7 +153,7 @@ const Transactions = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/transactions/${updatedTransaction._id}`,
+        `${process.env.API_URL}/transactions/${updatedTransaction._id}`,
         {
           method: "PATCH",
           headers: {
@@ -188,7 +185,7 @@ const Transactions = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/transactions/${selectedTransaction?._id}`,
+        `${process.env.API_URL}/transactions/${selectedTransaction?._id}`,
         {
           method: "DELETE",
           headers: {

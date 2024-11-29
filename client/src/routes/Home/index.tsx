@@ -32,12 +32,9 @@ const Home = () => {
     const fetchTransactions = async () => {
       if (!user) return;
 
-      const response = await fetch(
-        "http://localhost:4000/api/v1/transactions",
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        },
-      );
+      const response = await fetch(`${process.env.API_URL}/transactions`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       const data = await response.json();
 
       if (response.ok) {
@@ -60,7 +57,7 @@ const Home = () => {
     const fetchPots = async () => {
       if (!user) return;
 
-      const response = await fetch("http://localhost:4000/api/v1/pots", {
+      const response = await fetch(`${process.env.API_URL}/pots`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await response.json();
@@ -73,7 +70,7 @@ const Home = () => {
     const fetchBudgets = async () => {
       if (!user) return;
 
-      const response = await fetch("http://localhost:4000/api/v1/budgets", {
+      const response = await fetch(`${process.env.API_URL}/budgets`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await response.json();
@@ -93,12 +90,9 @@ const Home = () => {
     const fetchRecurringBills = async () => {
       if (!user) return;
 
-      const response = await fetch(
-        "http://localhost:4000/api/v1/recurring-bills",
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        },
-      );
+      const response = await fetch(`${process.env.API_URL}/recurring-bills`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       const data = await response.json();
 
       if (response.ok) {
