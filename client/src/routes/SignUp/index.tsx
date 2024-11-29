@@ -22,7 +22,7 @@ const SignUp = () => {
     password: "",
   });
 
-  const { user, setUser } = useAuthContext();
+  const { setUser } = useAuthContext();
 
   const signUpUser = async (user: User) => {
     setIsLoading(true);

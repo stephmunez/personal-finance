@@ -146,7 +146,7 @@ const EditPotModal = ({
   };
 
   const handleClose = () => {
-    setErrors({ name: "", target: "", total: "", theme: "" });
+    setErrors({ name: "", target: "", theme: "" });
     onClose();
   };
 
@@ -162,7 +162,7 @@ const EditPotModal = ({
         theme,
       });
 
-      setErrors({ name: "", target: "", total: "", theme: "" });
+      setErrors({ name: "", target: "", theme: "" });
       onClose();
     }
   };

@@ -193,7 +193,7 @@ const CreateTransactionModal = ({
                   value={maximum}
                   onChange={(e) => setMaximum(e.target.value)}
                   placeholder="e.g. 100"
-                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.amount ? "border-red" : "border-beige-500"}`}
+                  className={`w-full rounded-lg border px-5 py-3 text-sm leading-normal text-grey-900 placeholder:text-beige-500 focus:outline-none ${errors.maximum ? "border-red" : "border-beige-500"}`}
                   style={{
                     WebkitAppearance: "none",
                     MozAppearance: "textfield",
