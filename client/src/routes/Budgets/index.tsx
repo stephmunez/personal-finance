@@ -41,7 +41,7 @@ const Budgets = () => {
     try {
       // Fetch and sort budgets by defined category order
       const budgetsResponse = await fetch(
-        `${process.env.API_URL}/budgets`,
+        `${import.meta.env.VITE_API_URL}/budgets`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -66,7 +66,7 @@ const Budgets = () => {
 
       // Fetch transactions and filter only negative amounts
       const transactionsResponse = await fetch(
-        `${process.env.API_URL}/transactions`,
+        `${import.meta.env.VITE_API_URL}/transactions`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -102,7 +102,7 @@ const Budgets = () => {
     if (!user) return;
 
     try {
-      const response = await fetch(`${process.env.API_URL}/budgets`,, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/budgets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +131,7 @@ const Budgets = () => {
 
     try {
       const response = await fetch(
-        `${process.env.API_URL}/budgets/${updatedBudget._id}`,
+        `${import.meta.env.VITE_API_URL}/budgets/${updatedBudget._id}`,
         {
           method: "PATCH",
           headers: {
@@ -161,7 +161,7 @@ const Budgets = () => {
     if (!user) return;
     try {
       const response = await fetch(
-        `${process.env.API_URL}/budgets/${selectedBudget?._id}`,
+        `${import.meta.env.VITE_API_URL}/budgets/${selectedBudget?._id}`,
         {
           method: "DELETE",
           headers: {

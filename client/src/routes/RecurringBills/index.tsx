@@ -24,9 +24,12 @@ const RecurringBills = () => {
   const fetchRecurringBills = async () => {
     if (!user) return;
 
-    const response = await fetch(`${process.env.API_URL}/recurring-bills`, {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/recurring-bills`,
+      {
+        headers: { Authorization: `Bearer ${user.token}` },
+      },
+    );
     const data = await response.json();
 
     if (response.ok) {
@@ -58,14 +61,17 @@ const RecurringBills = () => {
     if (!user) return;
 
     try {
-      const response = await fetch(`${process.env.API_URL}/recurring-bills`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/recurring-bills`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(newRecurringBill),
         },
-        body: JSON.stringify(newRecurringBill),
-      });
+      );
 
       const data = await response.json();
 
@@ -87,7 +93,7 @@ const RecurringBills = () => {
 
     try {
       const response = await fetch(
-        `${process.env.API_URL}/recurring-bills/${updatedRecurringBill._id}`,
+        `${import.meta.env.VITE_API_URL}/recurring-bills/${updatedRecurringBill._id}`,
         {
           method: "PATCH",
           headers: {
@@ -118,7 +124,7 @@ const RecurringBills = () => {
 
     try {
       const response = await fetch(
-        `${process.env.API_URL}/recurring-bills/${selectedRecurringBill?._id}`,
+        `${import.meta.env.VITE_API_URL}/recurring-bills/${selectedRecurringBill?._id}`,
         {
           method: "DELETE",
           headers: {

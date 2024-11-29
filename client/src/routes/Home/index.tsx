@@ -32,9 +32,12 @@ const Home = () => {
     const fetchTransactions = async () => {
       if (!user) return;
 
-      const response = await fetch(`${process.env.API_URL}/transactions`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/transactions`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
       const data = await response.json();
 
       if (response.ok) {
@@ -57,7 +60,7 @@ const Home = () => {
     const fetchPots = async () => {
       if (!user) return;
 
-      const response = await fetch(`${process.env.API_URL}/pots`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/pots`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await response.json();
@@ -70,7 +73,7 @@ const Home = () => {
     const fetchBudgets = async () => {
       if (!user) return;
 
-      const response = await fetch(`${process.env.API_URL}/budgets`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/budgets`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await response.json();
@@ -90,9 +93,12 @@ const Home = () => {
     const fetchRecurringBills = async () => {
       if (!user) return;
 
-      const response = await fetch(`${process.env.API_URL}/recurring-bills`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/recurring-bills`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
       const data = await response.json();
 
       if (response.ok) {

@@ -67,7 +67,7 @@ const Transactions = () => {
       setTotalPages(cachedData!.totalPages);
     } else {
       const response = await fetch(
-        `${process.env.API_URL}/transactions?${queryParams}`,
+        `${import.meta.env.VITE_API_URL}/transactions?${queryParams}`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -123,14 +123,17 @@ const Transactions = () => {
     if (!user) return;
 
     try {
-      const response = await fetch(`${process.env.API_URL}/transactions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/transactions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(newTransaction),
         },
-        body: JSON.stringify(newTransaction),
-      });
+      );
 
       const data = await response.json();
 
@@ -153,7 +156,7 @@ const Transactions = () => {
 
     try {
       const response = await fetch(
-        `${process.env.API_URL}/transactions/${updatedTransaction._id}`,
+        `${import.meta.env.VITE_API_URL}/transactions/${updatedTransaction._id}`,
         {
           method: "PATCH",
           headers: {
@@ -185,7 +188,7 @@ const Transactions = () => {
 
     try {
       const response = await fetch(
-        `${process.env.API_URL}/transactions/${selectedTransaction?._id}`,
+        `${import.meta.env.VITE_API_URL}/transactions/${selectedTransaction?._id}`,
         {
           method: "DELETE",
           headers: {

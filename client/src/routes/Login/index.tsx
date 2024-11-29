@@ -27,11 +27,14 @@ const Login = () => {
     setServerError("");
 
     try {
-      const response = await fetch(`${process.env.API_URL}/user/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+        },
+      );
 
       const data = await response.json();
 
