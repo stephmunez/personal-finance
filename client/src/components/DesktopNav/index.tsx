@@ -15,6 +15,10 @@ import iconNavTransactions from "../../assets/images/icon-nav-transactions.svg";
 import logoLarge from "../../assets/images/logo-large.svg";
 import logoSmall from "../../assets/images/logo-small.svg";
 
+interface MobileNavProps {
+  onLogout: () => void;
+}
+
 const navItems = [
   {
     name: "Overview",
@@ -53,7 +57,7 @@ const navItems = [
   },
 ];
 
-const DesktopNav = () => {
+const DesktopNav = ({ onLogout }: MobileNavProps) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
   const location = useLocation();
@@ -109,6 +113,7 @@ const DesktopNav = () => {
         >
           <button
             className={`flex h-14 w-full items-center gap-4 rounded-r-xl transition-colors ${isMinimized ? "justify-center" : "px-8 py-4"} bg-grey-900`}
+            onClick={() => onLogout()}
           >
             <img src={iconNavLogout} alt="logout icon" />
             {!isMinimized && (

@@ -11,6 +11,10 @@ import iconNavRecurringBills from "../../assets/images/icon-nav-recurring-bills.
 import iconNavTransactionsActive from "../../assets/images/icon-nav-transactions-green.svg";
 import iconNavTransactions from "../../assets/images/icon-nav-transactions.svg";
 
+interface MobileNavProps {
+  onLogout: () => void;
+}
+
 const navItems = [
   {
     name: "Overview",
@@ -49,7 +53,7 @@ const navItems = [
   },
 ];
 
-const MobileNav = () => {
+const MobileNav = ({ onLogout }: MobileNavProps) => {
   const location = useLocation();
 
   return (
@@ -78,7 +82,10 @@ const MobileNav = () => {
           </li>
         ))}
         <li className="max-w-28 flex-1">
-          <button className="flex h-11 w-full items-center justify-center gap-1 rounded-t-lg transition-colors md:h-16 md:flex-col">
+          <button
+            className="flex h-11 w-full items-center justify-center gap-1 rounded-t-lg transition-colors md:h-16 md:flex-col"
+            onClick={() => onLogout()}
+          >
             <img src={iconNavLogout} alt="logout icon" />
             <span className="hidden text-xs font-bold leading-normal text-grey-300 md:block">
               Logout
