@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import iconNavBudgetsActive from "../../assets/images/icon-nav-budgets-green.svg";
 import iconNavBudgets from "../../assets/images/icon-nav-budgets.svg";
+import iconNavLogout from "../../assets/images/icon-nav-logout.svg";
 import iconNavOverviewActive from "../../assets/images/icon-nav-overview-green.svg";
 import iconNavOverview from "../../assets/images/icon-nav-overview.svg";
 import iconNavPotsActive from "../../assets/images/icon-nav-pots-green.svg";
@@ -9,6 +10,10 @@ import iconNavRecurringBillsActive from "../../assets/images/icon-nav-recurring-
 import iconNavRecurringBills from "../../assets/images/icon-nav-recurring-bills.svg";
 import iconNavTransactionsActive from "../../assets/images/icon-nav-transactions-green.svg";
 import iconNavTransactions from "../../assets/images/icon-nav-transactions.svg";
+
+interface MobileNavProps {
+  onLogout: () => void;
+}
 
 const navItems = [
   {
@@ -48,7 +53,7 @@ const navItems = [
   },
 ];
 
-const MobileNav = () => {
+const MobileNav = ({ onLogout }: MobileNavProps) => {
   const location = useLocation();
 
   return (
@@ -76,6 +81,17 @@ const MobileNav = () => {
             </Link>
           </li>
         ))}
+        <li className="max-w-28 flex-1">
+          <button
+            className="flex h-11 w-full items-center justify-center gap-1 rounded-t-lg transition-colors md:h-16 md:flex-col"
+            onClick={() => onLogout()}
+          >
+            <img src={iconNavLogout} alt="logout icon" />
+            <span className="hidden text-xs font-bold leading-normal text-grey-300 md:block">
+              Logout
+            </span>
+          </button>
+        </li>
       </ul>
     </nav>
   );
