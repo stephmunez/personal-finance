@@ -30,12 +30,14 @@ app.use('/api/v1/pots', requireAuth, potsRouter);
 app.use('/api/v1/recurring-bills', requireAuth, recurringBillsRouter);
 app.use('/api/v1/user', userRouter);
 
+const port = process.env.PORT || 4000;
+
 // connect to db
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     // listen for requests
-    app.listen(process.env.PORT, () => {
+    app.listen(port, () => {
       console.log(`listening on port ${process.env.PORT}..`);
     });
   })
