@@ -24,7 +24,7 @@ const Pots = () => {
 
   const fetchPots = async () => {
     if (!user) return;
-    const response = await fetch("http://localhost:4000/api/v1/pots", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/pots`, {
       headers: { Authorization: `Bearer ${user.token}` },
     });
     const data = await response.json();
@@ -49,7 +49,7 @@ const Pots = () => {
     if (!user) return;
 
     try {
-      const response = await fetch("http://localhost:4000/api/v1/pots", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/pots`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const Pots = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/pots/${updatedPot._id}`,
+        `${import.meta.env.VITE_API_URL}/pots/${updatedPot._id}`,
         {
           method: "PATCH",
           headers: {
@@ -109,7 +109,7 @@ const Pots = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/pots/${selectedPot?._id}`,
+        `${import.meta.env.VITE_API_URL}/pots/${selectedPot?._id}`,
         {
           method: "DELETE",
           headers: {

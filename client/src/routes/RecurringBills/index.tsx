@@ -25,7 +25,7 @@ const RecurringBills = () => {
     if (!user) return;
 
     const response = await fetch(
-      "http://localhost:4000/api/v1/recurring-bills",
+      `${import.meta.env.VITE_API_URL}/recurring-bills`,
       {
         headers: { Authorization: `Bearer ${user.token}` },
       },
@@ -62,7 +62,7 @@ const RecurringBills = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/recurring-bills",
+        `${import.meta.env.VITE_API_URL}/recurring-bills`,
         {
           method: "POST",
           headers: {
@@ -93,7 +93,7 @@ const RecurringBills = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/recurring-bills/${updatedRecurringBill._id}`,
+        `${import.meta.env.VITE_API_URL}/recurring-bills/${updatedRecurringBill._id}`,
         {
           method: "PATCH",
           headers: {
@@ -124,7 +124,7 @@ const RecurringBills = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/recurring-bills/${selectedRecurringBill?._id}`,
+        `${import.meta.env.VITE_API_URL}/recurring-bills/${selectedRecurringBill?._id}`,
         {
           method: "DELETE",
           headers: {

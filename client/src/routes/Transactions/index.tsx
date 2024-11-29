@@ -67,7 +67,7 @@ const Transactions = () => {
       setTotalPages(cachedData!.totalPages);
     } else {
       const response = await fetch(
-        `http://localhost:4000/api/v1/transactions?${queryParams}`,
+        `${import.meta.env.VITE_API_URL}/transactions?${queryParams}`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -124,7 +124,7 @@ const Transactions = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/transactions",
+        `${import.meta.env.VITE_API_URL}/transactions`,
         {
           method: "POST",
           headers: {
@@ -156,7 +156,7 @@ const Transactions = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/transactions/${updatedTransaction._id}`,
+        `${import.meta.env.VITE_API_URL}/transactions/${updatedTransaction._id}`,
         {
           method: "PATCH",
           headers: {
@@ -188,7 +188,7 @@ const Transactions = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/transactions/${selectedTransaction?._id}`,
+        `${import.meta.env.VITE_API_URL}/transactions/${selectedTransaction?._id}`,
         {
           method: "DELETE",
           headers: {

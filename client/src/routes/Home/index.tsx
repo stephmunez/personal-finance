@@ -33,7 +33,7 @@ const Home = () => {
       if (!user) return;
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/transactions",
+        `${import.meta.env.VITE_API_URL}/transactions`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },
@@ -60,7 +60,7 @@ const Home = () => {
     const fetchPots = async () => {
       if (!user) return;
 
-      const response = await fetch("http://localhost:4000/api/v1/pots", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/pots`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await response.json();
@@ -73,7 +73,7 @@ const Home = () => {
     const fetchBudgets = async () => {
       if (!user) return;
 
-      const response = await fetch("http://localhost:4000/api/v1/budgets", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/budgets`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await response.json();
@@ -94,7 +94,7 @@ const Home = () => {
       if (!user) return;
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/recurring-bills",
+        `${import.meta.env.VITE_API_URL}/recurring-bills`,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         },

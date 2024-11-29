@@ -22,7 +22,7 @@ const SignUp = () => {
     password: "",
   });
 
-  const { user, setUser } = useAuthContext();
+  const { setUser } = useAuthContext();
 
   const signUpUser = async (user: User) => {
     setIsLoading(true);
@@ -31,7 +31,7 @@ const SignUp = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/user/sign-up",
+        `${import.meta.env.VITE_API_URL}/user/sign-up`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
