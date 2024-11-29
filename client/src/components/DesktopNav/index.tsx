@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import iconMinimizeMenu from "../../assets/images/icon-minimize-menu.svg";
 import iconNavBudgetsActive from "../../assets/images/icon-nav-budgets-green.svg";
 import iconNavBudgets from "../../assets/images/icon-nav-budgets.svg";
+import iconNavLogout from "../../assets/images/icon-nav-logout.svg";
 import iconNavOverviewActive from "../../assets/images/icon-nav-overview-green.svg";
 import iconNavOverview from "../../assets/images/icon-nav-overview.svg";
 import iconNavPotsActive from "../../assets/images/icon-nav-pots-green.svg";
@@ -103,6 +104,22 @@ const DesktopNav = () => {
             </Link>
           </li>
         ))}
+        <li
+          className={`transition-all duration-300 ${isMinimized ? "w-20" : "w-[276px]"}`}
+        >
+          <button
+            className={`flex h-14 w-full items-center gap-4 rounded-r-xl transition-colors ${isMinimized ? "justify-center" : "px-8 py-4"} bg-grey-900`}
+          >
+            <img src={iconNavLogout} alt="logout icon" />
+            {!isMinimized && (
+              <span
+                className={`block text-base font-bold leading-normal text-grey-300`}
+              >
+                Logout
+              </span>
+            )}
+          </button>
+        </li>
       </ul>
       <div
         className={`flex w-full px-8 py-4 ${isMinimized && "justify-center"}`}
