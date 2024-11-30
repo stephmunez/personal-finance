@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import iconError from "../../assets/images/icon-bill-due.svg";
 import iconHidePassword from "../../assets/images/icon-hide-password.svg";
 import iconShowPassword from "../../assets/images/icon-show-password.svg";
+import illustrationAuthentication from "../../assets/images/illustration-authentication.svg";
 import logoLarge from "../../assets/images/logo-large.svg";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { User } from "../../types";
@@ -19,7 +20,7 @@ const Login = () => {
     password: "",
   });
 
-  const { user, setUser } = useAuthContext();
+  const { setUser } = useAuthContext();
 
   const loginUser = async (user: User) => {
     setIsLoading(true);
@@ -90,18 +91,41 @@ const Login = () => {
   };
 
   return (
-    <main className="flex w-full flex-col">
-      <div className="flex w-full items-center justify-center rounded-b-lg bg-grey-900 px-10 py-6">
+    <main className="flex w-full flex-col xl:flex-row">
+      <div className="flex w-full items-center justify-center rounded-b-lg bg-grey-900 px-10 py-6 xl:hidden xl:py-64">
         <div>
           <img src={logoLarge} alt="finance logo" />
         </div>
       </div>
 
-      {user && <span>{user.email}</span>}
+      <div className="relative hidden h-screen w-[42%] flex-col p-5 xl:flex">
+        <div className="absolute bottom-5 left-5 right-5 top-5">
+          <img
+            className="pointer-events-none block h-full w-full rounded-xl object-cover object-top"
+            src={illustrationAuthentication}
+            alt="authentication illustration"
+          />
+        </div>
 
-      <div className="flex items-center justify-center px-4 py-24">
+        <div className="z-10 flex h-full w-full flex-col justify-between">
+          <div className="ml-10 mt-10 w-max">
+            <img src={logoLarge} alt="finance logo" />
+          </div>
+          <div className="flex flex-col gap-6 rounded-xl bg-grey-900/30 p-10">
+            <p className="text-[2rem] font-bold leading-[1.2] text-white">
+              Keep track of your money <br /> and save for your future
+            </p>
+            <p className="text-sm leading-normal text-white">
+              Personal finance app puts you in control of your spending. Track
+              transactions, set budgets, and add to savings pots easily.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex w-full items-center justify-center px-4 py-24 md:py-48 xl:w-[58%] xl:px-36">
         <form
-          className="flex w-full max-w-96 flex-col gap-8 rounded-xl bg-white px-5 py-6"
+          className="flex w-full max-w-96 flex-col gap-8 rounded-xl bg-white px-5 py-6 md:max-w-[560px]"
           noValidate
           onSubmit={handleSubmit}
         >
