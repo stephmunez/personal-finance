@@ -171,9 +171,9 @@ const RecurringBills = () => {
         </button>
       </div>
       <div className="flex w-full flex-col gap-6 xl:flex-row">
-        {recurringBills && recurringBills.length > 0 ? (
+        <RecurringBillsSummary recurringBills={recurringBills} />
+        {recurringBills && recurringBills.length ? (
           <>
-            <RecurringBillsSummary recurringBills={recurringBills} />
             <div className="flex min-h-80 flex-col gap-6 rounded-xl bg-white px-5 py-6 md:p-8 xl:w-[66%]">
               <RecurringBillsSearchBar
                 searchQuery={searchQuery}
@@ -191,8 +191,8 @@ const RecurringBills = () => {
             </div>
           </>
         ) : (
-          <p className="text-center text-sm leading-normal text-grey-500">
-            No recurring bills available.
+          <p className="w-full text-center text-sm leading-normal text-grey-500">
+            There are currently no recurring bills.
           </p>
         )}
       </div>
