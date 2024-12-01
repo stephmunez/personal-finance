@@ -14,7 +14,7 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (budgets && budgets.length) {
+    if (budgets) {
       setLoading(false);
     }
   }, [budgets]);
@@ -80,7 +80,7 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
               ))}
             </ul>
           </>
-        ) : (
+        ) : budgets && budgets.length ? (
           <>
             <div className="flex w-full items-center justify-center md:w-4/5">
               <div className="relative flex h-72 w-72 items-center justify-center self-center">
@@ -133,6 +133,10 @@ const OverviewBudgets = ({ budgets, totalSpent }: OverviewBudgetsProps) => {
                 ))}
             </ul>
           </>
+        ) : (
+          <p className="w-full text-center text-sm leading-normal text-grey-500">
+            No budgets to display.
+          </p>
         )}
       </div>
     </section>

@@ -15,7 +15,7 @@ const OverviewRecurringBills = ({
   const [bills, setBills] = useState<RecurringBill[]>([]);
 
   useEffect(() => {
-    if (recurringBills && recurringBills.length) {
+    if (recurringBills) {
       setBills(recurringBills);
       setLoading(false);
     }
@@ -68,7 +68,7 @@ const OverviewRecurringBills = ({
               <div className="h-4 w-1/4 rounded bg-grey-100" />
             </div>
           </>
-        ) : (
+        ) : recurringBills && recurringBills.lengt ? (
           <>
             {/* Display Paid Bills */}
             <div className="flex items-center justify-between rounded-lg border-l-4 border-solid border-green bg-beige-100 px-4 py-5">
@@ -98,6 +98,10 @@ const OverviewRecurringBills = ({
               </span>
             </div>
           </>
+        ) : (
+          <p className="text-center text-sm leading-normal text-grey-500">
+            There are currently no recurring bills.
+          </p>
         )}
       </div>
     </section>

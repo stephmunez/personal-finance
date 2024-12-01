@@ -21,10 +21,12 @@ const categoryOrder = [
 ];
 
 const Home = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [pots, setPots] = useState<Pot[]>([]);
-  const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [recurringBills, setRecurringBills] = useState<RecurringBill[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[] | null>(null);
+  const [pots, setPots] = useState<Pot[] | null>(null);
+  const [budgets, setBudgets] = useState<Budget[] | null>(null);
+  const [recurringBills, setRecurringBills] = useState<RecurringBill[] | null>(
+    null,
+  );
   const [totalSpent, setTotalSpent] = useState<{ [key: string]: number }>({});
   const { user } = useAuthContext();
 
