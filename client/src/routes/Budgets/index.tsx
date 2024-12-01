@@ -209,16 +209,22 @@ const Budgets = () => {
         </button>
       </div>
       <div className="flex w-full flex-col gap-6 xl:max-h-[calc(100vh-120px)] xl:min-h-[690px] xl:flex-row xl:overflow-hidden">
-        <BudgetsSummary budgets={budgets} totalSpent={totalSpent} />
+        {budgets && budgets.length ? (
+          <>
+            <BudgetsSummary budgets={budgets} totalSpent={totalSpent} />
 
-        {budgets && budgets.length > 0 && (
-          <BudgetsList
-            budgets={budgets}
-            transactions={transactions}
-            totalSpent={totalSpent}
-            onEdit={openEditModal}
-            onDelete={openDeleteModal}
-          />
+            <BudgetsList
+              budgets={budgets}
+              transactions={transactions}
+              totalSpent={totalSpent}
+              onEdit={openEditModal}
+              onDelete={openDeleteModal}
+            />
+          </>
+        ) : (
+          <p className="w-full text-center text-sm leading-normal text-grey-500">
+            No budgets to display.
+          </p>
         )}
       </div>
 
