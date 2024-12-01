@@ -68,7 +68,7 @@ const OverviewRecurringBills = ({
               <div className="h-4 w-1/4 rounded bg-grey-100" />
             </div>
           </>
-        ) : recurringBills && recurringBills.lengt ? (
+        ) : recurringBills && recurringBills.length ? (
           <>
             {/* Display Paid Bills */}
             <div className="flex items-center justify-between rounded-lg border-l-4 border-solid border-green bg-beige-100 px-4 py-5">
