@@ -17,7 +17,7 @@ const Transactions = () => {
   const parsedParams = queryString.parse(location.search);
 
   // States for managing transactions, filters, pagination, and modals
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>(
     parsedParams.search ? String(parsedParams.search) : "",
   );
@@ -262,13 +262,15 @@ const Transactions = () => {
           onDelete={openDeleteModal}
         />
 
-        {transactions.length > 0 && (
+        {transactions && transactions.length ? (
           <TransactionsPagination
             currentPage={currentPage}
             totalPages={totalPages}
             setCurrentPage={setCurrentPage}
             scrollToTop={scrollToTop}
           />
+        ) : (
+          ""
         )}
       </div>
 
