@@ -4,6 +4,7 @@ import { User } from "../types";
 interface AuthContextProps {
   user: User | null;
   setUser: (user: User | null) => void;
+  loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(
@@ -12,6 +13,7 @@ export const AuthContext = createContext<AuthContextProps | undefined>(
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -24,11 +26,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error("Error parsing stored user:", error);
       }
     }
+    setLoading(false); // Mark initialization as complete
   }, []);
 
   const value = {
     user,
     setUser,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

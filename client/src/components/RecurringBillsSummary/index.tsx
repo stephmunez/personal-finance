@@ -14,7 +14,7 @@ const RecurringBillsSummary = ({
   const bills = useMemo(() => recurringBills || [], [recurringBills]);
 
   useEffect(() => {
-    setLoading(!bills.length);
+    setLoading(!bills);
   }, [bills]);
 
   const totalAmount = useMemo(() => {

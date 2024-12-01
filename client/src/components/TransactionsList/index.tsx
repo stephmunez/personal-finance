@@ -26,7 +26,7 @@ const TransactionList = ({
   };
 
   useEffect(() => {
-    if (transactions?.length) {
+    if (transactions) {
       setLoading(false);
     }
   }, [transactions]);
@@ -76,7 +76,7 @@ const TransactionList = ({
             </li>
           ))}
         </ul>
-      ) : transactions && transactions.length > 0 ? (
+      ) : transactions && transactions.length ? (
         <ul ref={transactionListRef}>
           <>
             <li className="hidden w-full items-center justify-between gap-8 border-b border-solid border-grey-100 py-4 md:flex">
@@ -182,7 +182,7 @@ const TransactionList = ({
         </ul>
       ) : (
         <p className="text-center text-sm leading-normal text-grey-500">
-          No transactions available.
+          No transactions yet.
         </p>
       )}
     </>

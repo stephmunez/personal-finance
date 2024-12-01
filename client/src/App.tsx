@@ -14,7 +14,11 @@ import SignUp from "./routes/SignUp";
 import Transactions from "./routes/Transactions";
 
 const App = () => {
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
+
+  if (loading) {
+    return <div>Loading...</div>; // Replace with a spinner or placeholder if needed
+  }
 
   const router = createBrowserRouter([
     {
