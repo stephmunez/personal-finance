@@ -192,9 +192,9 @@ const PotsList = ({
           </div>
         ))
       ) : (
-        <li className="text-center text-[0.875rem] leading-normal tracking-normal text-grey-500">
-          No pots yet.
-        </li>
+        <p className="w-full text-center text-[0.875rem] leading-normal tracking-normal text-grey-500">
+          No pots available.
+        </p>
       )}
     </div>
   );
