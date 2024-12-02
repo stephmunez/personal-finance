@@ -7,7 +7,7 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import Budgets from "./routes/Budgets";
 import Home from "./routes/Home";
 import Login from "./routes/Login";
-import NotFound from "./routes/Not Found";
+import NotFound from "./routes/NotFound";
 import Pots from "./routes/Pots";
 import RecurringBills from "./routes/RecurringBills";
 import Root from "./routes/root";
