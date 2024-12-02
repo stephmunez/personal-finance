@@ -20,7 +20,8 @@ const Root = () => {
     setIsLogoutModalOpen(false);
   };
 
-  const hideNav = pathname === "/login" || pathname === "/sign-up";
+  const hideNav =
+    pathname === "/login" || pathname === "/sign-up" || pathname === "/404";
 
   return (
     <>
